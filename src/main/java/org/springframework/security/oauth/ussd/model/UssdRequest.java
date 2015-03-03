@@ -16,7 +16,7 @@ public class UssdRequest {
     private Integer Sequence;
     private String ClientState;
     private String service_code;
-    private String msisdn;
+    private String MSISDN;
     private String ussd_string;
     
     /**
@@ -27,11 +27,11 @@ public class UssdRequest {
     }
 
     public UssdRequest(String session_id, String service_code,
-			String msisdn, String ussd_string) {
+			String MSISDN, String ussd_string) {
 		// TODO Auto-generated constructor stub
     	this.session_id = session_id;
     	this.service_code = service_code;
-    	this.msisdn = msisdn;
+    	this.MSISDN = MSISDN;
     	this.ussd_string = ussd_string;
     	
 	}
@@ -136,22 +136,22 @@ public class UssdRequest {
 
     
     /**
-     * @return the msisdn
+     * @return the MSISDN
      */
-    public String getmsisdn() {
-	return msisdn;
+    public String getMSISDN() {
+	return MSISDN;
     }
 
     /**
-     * @param msisdn the msisdn to set
+     * @param MSISDN the MSISDN to set
      */
-    public void setmsisdn(String msisdn) {
-	this.msisdn = msisdn;
+    public void setMSISDN(String MSISDN) {
+	this.MSISDN = MSISDN;
     }
     
     
     /**
-     * @return the msisdn
+     * @return the MSISDN
      */
     public String getussd_string() {
 	return ussd_string;
@@ -168,7 +168,7 @@ public class UssdRequest {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((msisdn == null) ? 0 : msisdn.hashCode());
+		result = prime * result + ((MSISDN == null) ? 0 : MSISDN.hashCode());
 		return result;
 	}
     
@@ -176,9 +176,9 @@ public class UssdRequest {
 	@Override
 	public String toString() {
 		return String
-				.format("UssdRequest [Mobile=%s, session_id=%s, Type=%s, message=%s, network=%s, Sequence=%s, ClientState=%s, service_code=%s, msisdn=%s, ussd_string=%s]",
+				.format("UssdRequest [Mobile=%s, session_id=%s, Type=%s, message=%s, network=%s, Sequence=%s, ClientState=%s, service_code=%s, MSISDN=%s, ussd_string=%s]",
 						Mobile, session_id, Type, message, network, Sequence,
-						ClientState, service_code, msisdn, ussd_string);
+						ClientState, service_code, MSISDN, ussd_string);
 	}
 	*/
 

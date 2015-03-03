@@ -41,9 +41,6 @@ public class PeopleService implements IPeopleService {
 			//
 			// Process the Ussd request
 			if(StringUtils.isNotEmpty(ussdRequest.getsession_id())){
-				//(!.isEmpty()) && (!ussdRequest.getsession_id().equals(null)) && (ussdRequest.getsession_id().length() > 0)
-				//UssdResponse ussdResponse =ussdresponse.get(ussdRequest.getsession_id()); 
-				
 
 				// check the various request type
 				if(StringUtils.isEmpty(ussdRequest.getussd_string().substring(1))){
@@ -82,7 +79,7 @@ public class PeopleService implements IPeopleService {
 						HashMap<Integer, String> accesslevels = hole.BlackHole(ussdRequest.getussd_string().substring(1));
 						
 						StringTheory stringtheory = new StringTheory();
-						String message = stringtheory.StringTheory(accesslevels, ussdRequest.getmsisdn());
+						String message = stringtheory.StringTheory(accesslevels, ussdRequest.getMSISDN());
 
 						//accesslevels.get(0)
 		                 addUssdResponse(new UssdResponse(
@@ -167,13 +164,13 @@ public class PeopleService implements IPeopleService {
 			UssdResponse ussdResponse =ussdresponse.get(ussdRequest.getsession_id()); 
 			if(ussdResponse == null)
 			{
-				return "Service is currently down, Please try again later.";
+				return "END Service is currently down 'Null', Please try again later.";
 			}else{
 				return ussdResponse.getmessage();
 			}
 			
 		}else{
-			    return "Smart Session ID missing.";
+			    return "END Smart Session ID missing.";
 		}
 		
 		

@@ -2393,7 +2393,7 @@ public class MembersService implements IMembersService {
 	    ResultSet get_member_resultSet = null;
 	    ResultSet service_tags_resultSet = null;
 	    //order by HOST_DATE asc
-	    String SINGLE_SQL_LIST = "Select MEMBERSHIP_NUMBER, NAMES_AS_IS, MEM_ID, GLOBAL_ID, REASON, SMS_STATUS, PIN_NO from SMART.FIN_MEMBER_DETAILS where PHONE_NO ="+phone_no+" ";
+	    String SINGLE_SQL_LIST = "Select MEMBERSHIP_NUMBER, NAMES_AS_IS, MEM_ID, GLOBAL_ID, REASON, SMS_STATUS, PIN_NO, CARD_SERIAL_NUMBER from SMART.FIN_MEMBER_DETAILS where PHONE_NO ="+phone_no+" ";
 	    System.out.println(SINGLE_SQL_LIST);
 	    
 		
@@ -2411,7 +2411,7 @@ public class MembersService implements IMembersService {
 							String status_msg = "There are no active messages to send";
 					
 				     }
-			
+					
 		
 					while (get_member_resultSet.next()) {
 						    resultArray[0] = get_member_resultSet.getString("GLOBAL_ID");
@@ -2421,6 +2421,7 @@ public class MembersService implements IMembersService {
 							resultArray[4] = get_member_resultSet.getString("NAMES_AS_IS");
 							resultArray[5] = get_member_resultSet.getString("SMS_STATUS");
 							resultArray[6] = get_member_resultSet.getString("PIN_NO");
+							resultArray[7] = get_member_resultSet.getString("CARD_SERIAL_NUMBER");
 					}
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
@@ -2452,7 +2453,7 @@ public class MembersService implements IMembersService {
 	    ResultSet get_member_dep_resultSet = null;
 	    ResultSet service_tags_resultSet = null;
 	    //order by HOST_DATE asc
-	    String SINGLE_SQL_LIST = "Select MEMBER_NUMBER, NAMES_AS_IS, MEM_ID, GLOBAL_ID, REASON, SMS_STATUS, PIN_NO from SMART.FIN_MEMBER_DEP_DETAILS where PHONE_NO ="+phone_no+" ";
+	    String SINGLE_SQL_LIST = "Select MEMBER_NUMBER, NAMES_AS_IS, MEM_ID, GLOBAL_ID, REASON, SMS_STATUS, PIN_NO, CARD_SERIAL_NUMBER from SMART.FIN_MEMBER_DEP_DETAILS where PHONE_NO ="+phone_no+" ";
 	    System.out.println(SINGLE_SQL_LIST);
 	    
 	    try {
@@ -2479,7 +2480,8 @@ public class MembersService implements IMembersService {
 							resultArray[4] = get_member_dep_resultSet.getString("NAMES_AS_IS");
 							resultArray[5] = get_member_dep_resultSet.getString("SMS_STATUS");
 							resultArray[6] = get_member_dep_resultSet.getString("PIN_NO");
-		
+							resultArray[7] = get_member_dep_resultSet.getString("CARD_SERIAL_NUMBER");
+							
 					}
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
@@ -2500,7 +2502,7 @@ public class MembersService implements IMembersService {
 	}
 	
 	
-	private String[] GET_MEMBER_BALANCE(String globalid, String memberid, String reason, String membership_number, String names_as_is, String phoneno, String user_status, String pin_no) {
+	private String[] GET_MEMBER_BALANCE(String globalid, String memberid, String reason, String membership_number, String names_as_is, String phoneno, String user_status, String pin_no, String card_serial_no) {
 		String[] resultArray_PLAN = new String[70];
 	    Connection connection = null;
 	    PreparedStatement get_member_plan_bal_statement = null;
@@ -2814,6 +2816,8 @@ public class MembersService implements IMembersService {
 						resultArray_BALANCE[64] = "messagesessesse";
 						resultArray_BALANCE[65] = "200";
 						resultArray_BALANCE[66] = pin_no;
+						resultArray_BALANCE[67] = card_serial_no;
+						
 					}
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
@@ -2842,21 +2846,26 @@ public class MembersService implements IMembersService {
         return smart;
 	}
 	
-
+	
 	
 	private String[] CalculateMemberPhoneBalanceServiceDBAccess(String phoneno){
 		String smart = "balance from phone";
 		String[] member_details = new String[70];
-		  
+		 
+		System.out.println("THIS IS THE PHONE NUMBER///////////////////: = "+phoneno);
 		member_details = GET_MEMBER_DETAILS_PRINCIPLE_PHONE(phoneno);
+		System.out.println("THIS IS THE FIRST MEMBER DETAILS||||||||||||||||||||||||: = "+member_details[0]);
 		if((member_details[0] == null)||(member_details[0].isEmpty())){
 		member_details = 	GET_MEMBER_DETAILS_DEPENDANCE_PHONE(phoneno);
+		System.out.println("THIS IS THE SECOND MEMBER DETAILS////////////////////: = "+member_details[0]);
 		}
-		if((member_details[0] != null)&&(!member_details[0].isEmpty())){
-		member_details = 	GET_MEMBER_BALANCE(member_details[0], member_details[1], member_details[2], member_details[3], member_details[4], phoneno, member_details[5], member_details[6]);
-		}
-
 		
+		System.out.println("HERE WE GO?????????????????????????????????????????????");
+		
+		if(!member_details[0].isEmpty()){
+		member_details = 	GET_MEMBER_BALANCE(member_details[0], member_details[1], member_details[2], member_details[3], member_details[4], phoneno, member_details[5], member_details[6], member_details[7]);
+		}
+	
 		return member_details;
 	}
 
@@ -3279,11 +3288,81 @@ public class MembersService implements IMembersService {
 	
 	public Balance getMemberBalance(String text_code, String phonenos, String memnos) {
 
+		String[] member_details = new String[70];
+
+		member_details = CalculateMemberPhoneBalanceServiceDBAccess(phonenos);
+
+		Balance balancedetails = new Balance(
+				member_details[0],
+				member_details[1],
+				member_details[2], 
+				member_details[3],
+				member_details[4],
+				member_details[5],
+				member_details[6],
+				member_details[7],
+				member_details[8], 
+				member_details[9],
+				member_details[10],
+				member_details[11],
+				member_details[12],
+				member_details[13],
+				member_details[14], 
+				member_details[15],
+				member_details[16],
+				member_details[17],
+				member_details[18],
+				member_details[19],
+				member_details[20], 
+				member_details[21],
+				member_details[22],
+				member_details[23],
+				member_details[24],
+				member_details[25],
+				member_details[26], 
+				member_details[27],
+				member_details[28],
+				member_details[29],
+				member_details[30],
+				member_details[31],
+				member_details[32], 
+				member_details[33],
+				member_details[34],
+				member_details[35],
+				member_details[36],
+				member_details[37],
+				member_details[38], 
+				member_details[39],
+				member_details[40],
+				member_details[41],
+				member_details[42],
+				member_details[43],
+				member_details[44], 
+				member_details[45],
+				member_details[46],
+				member_details[47],
+				member_details[48],
+				member_details[49],
+				member_details[50], 
+				member_details[51],
+				member_details[52],
+				member_details[53],
+				member_details[54],
+				member_details[55],
+				member_details[56],
+				member_details[57],
+				member_details[58],
+				member_details[60],
+				member_details[61],
+				member_details[62],
+				member_details[63],
+				member_details[64],
+				member_details[65],
+				member_details[66],
+				member_details[67]
+				);
 		
-		
-		
-		Balance balancedetails = null;
-		
+		/*
 		if(!(memnos.equals("0"))){
 
 			memnos.trim();
@@ -3296,95 +3375,31 @@ public class MembersService implements IMembersService {
 			}
 					
 		}
-
+		*/
+        /*
 		if(!(phonenos.equals("0"))){
 			
 			phonenos.trim();
 			String[] allphonenos=phonenos.split("\\|");
-			String[] member_details = new String[70];
-			for (String phoneno : allphonenos) { 
-				member_details = CalculateMemberPhoneBalanceServiceDBAccess(phoneno);
+			
+			for (String phoneno : allphonenos) {
 				
-				/*
-		        for(String str : member_details){
-		            System.out.println(str+"  DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
-		        }
-		        */
+				
+			
+		      //  for(String str : member_details){
+		      //      System.out.println(str+"  I AM IN");
+		      //  }
+		    
 		        
 				
-				balancedetails = new Balance(
-						member_details[0],
-						member_details[1],
-						member_details[2], 
-						member_details[3],
-						member_details[4],
-						member_details[5],
-						member_details[6],
-						member_details[7],
-						member_details[8], 
-						member_details[9],
-						member_details[10],
-						member_details[11],
-						member_details[12],
-						member_details[13],
-						member_details[14], 
-						member_details[15],
-						member_details[16],
-						member_details[17],
-						member_details[18],
-						member_details[19],
-						member_details[20], 
-						member_details[21],
-						member_details[22],
-						member_details[23],
-						member_details[24],
-						member_details[25],
-						member_details[26], 
-						member_details[27],
-						member_details[28],
-						member_details[29],
-						member_details[30],
-						member_details[31],
-						member_details[32], 
-						member_details[33],
-						member_details[34],
-						member_details[35],
-						member_details[36],
-						member_details[37],
-						member_details[38], 
-						member_details[39],
-						member_details[40],
-						member_details[41],
-						member_details[42],
-						member_details[43],
-						member_details[44], 
-						member_details[45],
-						member_details[46],
-						member_details[47],
-						member_details[48],
-						member_details[49],
-						member_details[50], 
-						member_details[51],
-						member_details[52],
-						member_details[53],
-						member_details[54],
-						member_details[55],
-						member_details[56],
-						member_details[57],
-						member_details[58],
-						member_details[60],
-						member_details[61],
-						member_details[62],
-						member_details[63],
-						member_details[64],
-						member_details[65],
-						member_details[66]
-						);
+
 						
 			}
+			
 
 		}
 		
+		*/
 		return balancedetails;
 
 		}
@@ -3468,7 +3483,8 @@ public class MembersService implements IMembersService {
 							member_details[63],
 							member_details[64],
 							member_details[65],
-							member_details[66]
+							member_details[66],
+							member_details[67]
 							);
 			}
 
@@ -3556,7 +3572,8 @@ public class MembersService implements IMembersService {
 						member_details[63],
 						member_details[64],
 						member_details[65],
-						member_details[66]
+						member_details[66],
+						member_details[67]
 						);
 			}
 
@@ -3644,7 +3661,8 @@ public class MembersService implements IMembersService {
 						member_details[63],
 						member_details[64],
 						member_details[65],
-						member_details[66]
+						member_details[66],
+						member_details[67]
 						);
 			}
 

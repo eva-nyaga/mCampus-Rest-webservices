@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth.api.model.healthcare.clients.Balance;
 import org.springframework.security.oauth.api.model.healthcare.clients.ENIGMA;
@@ -23,9 +24,11 @@ public class StringTheory {
 
 	
 	public  StringTheory() {
+		
 	}
 	
 	private String message;
+	MembersService membersService = new MembersService();
 	
 	public String StringTheory(HashMap<Integer, String> accesslevels, String PhoneNumber) {
 		// TODO Auto-generated method stub
@@ -105,10 +108,8 @@ public class StringTheory {
 			//Check balance  equals("1")
 			if((accesslevels.get(1) != null)&&(!accesslevels.get(1).isEmpty())){
 				
-				message = "CON Please enter your Smart Mobile Service PIN.";
-				
+				message = "CON Please enter your Smart Mobile Service Pin No.";
 
-				
 				if((accesslevels.get(2) != null)&&(accesslevels.get(2).equals("1"))){
 				
 				      if(("LEVEL3").equals("1")){
@@ -467,27 +468,19 @@ public class StringTheory {
 				      }
 					  
 				}else{
-					
+					//HERE IS WHERE SAFARICOM IS FAILING
 					BlackHole blackhole = new BlackHole();
 					HashMap<Integer, String> select_map = blackhole.selectMapConvr(accesslevels.get(1));
+					
+					if(StringUtils.isNotEmpty(accesslevels.get(2))){
 
-				     
-					if((accesslevels.get(2) != null)&&(!accesslevels.get(2).isEmpty())){
+						Balance x = membersService.getMemberBalance("NO NEED HERE", PhoneNumber, "NO NEED HERE");
 
-						String text_code = "test";
-						String memnos = "test";
-						
-						
-						MembersService membersService = new MembersService();
-						Balance x = membersService.getMemberBalance(text_code, PhoneNumber, memnos);
-									
-						System.out.println("----------------------------------------------"+x.getStatus());
+                    if(StringUtils.isNotEmpty(x.getStatus())&&(x.getStatus().equals("200"))){  
 
-                    if((!x.getStatus().isEmpty())&&(x.getStatus() !=null)&&(x.getStatus().equals("200"))){
-                    	
-						if((!x.getUserStatus().isEmpty())&&(x.getUserStatus() !=null)){
+						if(StringUtils.isNotEmpty(x.getUserStatus())){ 
 
-							if((x.getUserStatus().equals("1"))||(x.getUserStatus().equals("2"))){
+							if((x.getUserStatus().equals("1"))||(x.getUserStatus().equals("2"))){ 
 	
 								/*
 					            byte[] bytesData = x.getPinNo().getBytes();
@@ -504,53 +497,54 @@ public class StringTheory {
 								*/
 					            
 
-								if(x.getPinNo().equals(accesslevels.get(2).trim())){
+								if(x.getPinNo().equals(accesslevels.get(2)) || x.getPinNo().equals(accesslevels.get(3)) || x.getPinNo().equals(accesslevels.get(4))){ 
 									
 									message = "END Current balance as at "+getCurrentSMSTimeStamp()+" is";
 									  for(Integer key: select_map.keySet()){
 
-										  //select_map.get(key)
 										  if((select_map.get(key).equals("1"))  ){
-											  message = message+" "+select_options.get(1)+" "+x.getOUT_PATIENT_OVERALL()+" KSH,";  
+											  message = message+" "+select_options.get(1)+" "+x.getOUT_PATIENT_OVERALL()+" KSH; ";  
 										  } 
 										  if((select_map.get(key).equals("2"))  ){
-											  message = message+" "+select_options.get(2)+" "+x.getIN_PATIENT_OVERALL()+" KSH,";  
+											  message = message+" "+select_options.get(2)+" "+x.getIN_PATIENT_OVERALL()+" KSH; ";  
 										  } 
 										  if((select_map.get(key).equals("3"))  ){
-											  message = message+" "+select_options.get(3)+" "+x.getOUT_PATIENT_DENTAL()+" KSH,";  
+											  message = message+" "+select_options.get(3)+" "+x.getOUT_PATIENT_DENTAL()+" KSH; ";  
 										  } 
 										  if((select_map.get(key).equals("4"))  ){
-											  message = message+" "+select_options.get(4)+" "+x.getOUT_PATIENT_OPTICAL_DENTAL()+" KSH,";  
+											  message = message+" "+select_options.get(4)+" "+x.getOUT_PATIENT_OPTICAL_DENTAL()+" KSH; ";  
 										  } 
 										  if((select_map.get(key).equals("5"))  ){
-											  message = message+" "+select_options.get(5)+" "+x.getOUT_PATIENT_MATERNITY()+" KSH,";  
+											  message = message+" "+select_options.get(5)+" "+x.getOUT_PATIENT_MATERNITY()+" KSH; ";  
 										  } 
-
+										  
 								     }
-									  
-									 
-									   
-								     
 								     
 								}else{
-									message="CON You have entered the wrong PIN. Please try again";
+									
+									message="CON You entered an invalid Pin No, Please try again!";
+									if(StringUtils.isNotEmpty(accesslevels.get(5))){ 
+										   message="END You have already tried 3 times. Please contact your scheme administrator or our call centre +254733320660, +254718222200 for any assistance.";
+									}
+									
 								}
 								
-							}else if((x.getUserStatus().equals("0"))){
+							}else if(x.getUserStatus().equals("0")){ 
 							
-								message="CON Dear customer, welcome to Smart Mobile Service. 1 - Accept Terms & Conditions of service, 2 - Reject.";
+								message="CON Dear customer, welcome to Smart Mobile Service. 1 - Accept Terms & Conditions of service, 2 - Decline.";
 								
-							}else if(x.getUserStatus().equals("-1")){
+							}else if(x.getUserStatus().equals("-1")){ 
 								
 								message="CON Dear customer, your Smart Mobile Service has been blocked. Please contact your scheme administrator or our call centre +254733320660, +254718222200 for any assistance.";
 								
 							}
 							
-						}	
+						}else{
+	                    	message = "END Dear customer, Your User status isn't stored in Smart. Please contact our call centre +254733320660, +254718222200 for any assistance.";
+	                    }	
 						
                     }else{
-                    	//thos is the message
-                    	message = x.getMessage();
+                    	message = "END Dear customer, Service is currently down. Please contact our call centre +254733320660, +254718222200 for any assistance.";
                     }
 						
 
@@ -564,6 +558,8 @@ public class StringTheory {
 				
 				
 			}else if((accesslevels.get(1) != null)&&(accesslevels.get(1).equals("2"))){
+				
+				
 				
 				if((accesslevels.get(2) != null)&&(accesslevels.get(2).equals("1"))){
 				
@@ -1300,13 +1296,34 @@ public class StringTheory {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
 		else if((accesslevels.get(0) != null)&&(accesslevels.get(0).equals("2"))){
 		    //////////////////////////////////////////////////
-			//Check balance
+			Balance x = membersService.getMemberBalance("NO NEED HERE", PhoneNumber, "NO NEED HERE");
+		
+			message = "CON Dear Customer, The following card is in your account. Name: "+x.getNames()+", Member No: "+x.getMemberNumber()+", Card Serial: "+x.getCardSerial()+". Do you want to reprint the above card? 1. Accept, 2. Reject";
+			
 			if((accesslevels.get(1) != null)&&(accesslevels.get(1).equals("1"))){
+			
+				message = "CON Please enter your payment receipt no.";
 				
-				if((accesslevels.get(2) != null)&&(accesslevels.get(2).equals("1"))){
+				if(StringUtils.isNotEmpty(accesslevels.get(2))){
+					
+					message = "CON Please enter your Smart Mobile Service Pin No.";
 				
-				      if(("LEVEL3").equals("1")){
-					       				
+				      if(StringUtils.isNotEmpty(accesslevels.get(3))){
+
+							if(x.getPinNo().equals(accesslevels.get(3)) || x.getPinNo().equals(accesslevels.get(4)) || x.getPinNo().equals(accesslevels.get(5))){
+								
+								 message = "END Your request has been received successfully. Please contact your scheme administrator or our call centre +254733320660, +254718222200 for any assistance.";
+								 
+							}else{
+								
+								message="CON You entered an invalid Pin No, Please try again!";
+								if(StringUtils.isNotEmpty(accesslevels.get(6))){ 
+									   message="END You have already tried 3 times. Please contact your scheme administrator or our call centre +254733320660, +254718222200 for any assistance.";
+								}
+								
+							}
+				    	  
+		
 				            if(("LEVEL4").equals("1")){
 							
 							  		 if(("LEVEL5").equals("1")){
@@ -1422,973 +1439,12 @@ public class StringTheory {
 				      }else{
 				      }
 					  
-				}else if((accesslevels.get(2) != null)&&(accesslevels.get(2).equals("2"))){
-				
-				      if(("LEVEL3").equals("1")){
-					       				
-				            if(("LEVEL4").equals("1")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("2")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("3")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else{
-				            }
-					  
-				      }if(("LEVEL3").equals("2")){
-					       				
-				            if(("LEVEL4").equals("1")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("2")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("3")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else{
-				            }
-					  
-				      }else if(("LEVEL3").equals("3")){
-					       				
-				            if(("LEVEL4").equals("1")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("2")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("3")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else{
-				            }
-					  
-				      }else{
-				      }
-					  
-				}else if((accesslevels.get(2) != null)&&(accesslevels.get(2).equals("3"))){
-				
-				      if(("LEVEL3").equals("1")){
-					       				
-				            if(("LEVEL4").equals("1")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("2")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("3")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else{
-				            }
-					  
-				      }if(("LEVEL3").equals("2")){
-					       				
-				            if(("LEVEL4").equals("1")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("2")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("3")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else{
-				            }
-					  
-				      }else if(("LEVEL3").equals("3")){
-					       				
-				            if(("LEVEL4").equals("1")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("2")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("3")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else{
-				            }
-					  
-				      }else{
-				      }
-					  
-				}else{
 				}
-				
-			}else if((accesslevels.get(1) != null)&&(accesslevels.get(1).equals("2"))){
-				
-				if((accesslevels.get(2) != null)&&(accesslevels.get(2).equals("1"))){
-				
-				      if(("LEVEL3").equals("1")){
-					       				
-				            if(("LEVEL4").equals("1")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("2")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("3")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else{
-				            }
-					  
-				      }if(("LEVEL3").equals("2")){
-					       				
-				            if(("LEVEL4").equals("1")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("2")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("3")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else{
-				            }
-					  
-				      }else if(("LEVEL3").equals("3")){
-					       				
-				            if(("LEVEL4").equals("1")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("2")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("3")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else{
-				            }
-					  
-				      }else{
-				      }
-					  
-				}else if((accesslevels.get(2) != null)&&(accesslevels.get(2).equals("2"))){
-				
-				      if(("LEVEL3").equals("1")){
-					       				
-				            if(("LEVEL4").equals("1")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("2")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("3")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else{
-				            }
-					  
-				      }if(("LEVEL3").equals("2")){
-					       				
-				            if(("LEVEL4").equals("1")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("2")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("3")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else{
-				            }
-					  
-				      }else if(("LEVEL3").equals("3")){
-					       				
-				            if(("LEVEL4").equals("1")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("2")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("3")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else{
-				            }
-					  
-				      }else{
-				      }
-					  
-				}else if((accesslevels.get(2) != null)&&(accesslevels.get(2).equals("3"))){
-				
-				      if(("LEVEL3").equals("1")){
-					       				
-				            if(("LEVEL4").equals("1")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("2")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("3")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else{
-				            }
-					  
-				      }if(("LEVEL3").equals("2")){
-					       				
-				            if(("LEVEL4").equals("1")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("2")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("3")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else{
-				            }
-					  
-				      }else if(("LEVEL3").equals("3")){
-					       				
-				            if(("LEVEL4").equals("1")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("2")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("3")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else{
-				            }
-					  
-				      }else{
-				      }
-					  
-				}else{
-				}
-				
-			}else if((accesslevels.get(1) != null)&&(accesslevels.get(1).equals("3"))){
-				
-				if((accesslevels.get(2) != null)&&(accesslevels.get(2).equals("1"))){
-				
-				      if(("LEVEL3").equals("1")){
-					       				
-				            if(("LEVEL4").equals("1")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("2")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("3")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else{
-				            }
-					  
-				      }if(("LEVEL3").equals("2")){
-					       				
-				            if(("LEVEL4").equals("1")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("2")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("3")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else{
-				            }
-					  
-				      }else if(("LEVEL3").equals("3")){
-					       				
-				            if(("LEVEL4").equals("1")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("2")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("3")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else{
-				            }
-					  
-				      }else{
-				      }
-					  
-				}else if((accesslevels.get(2) != null)&&(accesslevels.get(2).equals("2"))){
-				
-				      if(("LEVEL3").equals("1")){
-					       				
-				            if(("LEVEL4").equals("1")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("2")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("3")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else{
-				            }
-					  
-				      }if(("LEVEL3").equals("2")){
-					       				
-				            if(("LEVEL4").equals("1")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("2")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("3")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else{
-				            }
-					  
-				      }else if(("LEVEL3").equals("3")){
-					       				
-				            if(("LEVEL4").equals("1")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("2")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("3")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else{
-				            }
-					  
-				      }else{
-				      }
-					  
-				}else if((accesslevels.get(2) != null)&&(accesslevels.get(2).equals("3"))){
-				
-				      if(("LEVEL3").equals("1")){
-					       				
-				            if(("LEVEL4").equals("1")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("2")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("3")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else{
-				            }
-					  
-				      }if(("LEVEL3").equals("2")){
-					       				
-				            if(("LEVEL4").equals("1")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("2")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("3")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else{
-				            }
-					  
-				      }else if(("LEVEL3").equals("3")){
-					       				
-				            if(("LEVEL4").equals("1")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("2")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else if(("LEVEL4").equals("3")){
-							
-							  		 if(("LEVEL5").equals("1")){
-					  
-				                     }else if(("LEVEL5").equals("2")){
-					  
-				                     }else if(("LEVEL5").equals("3")){
-					  
-				                     }else{
-				                     }
-					  
-				            }else{
-				            }
-					  
-				      }else{
-				      }
-					  
-				}else{
-				}
-				
-			}else{	
+		
+			}else if((accesslevels.get(1) != null)&&(accesslevels.get(1).equals("2"))){	
+				message = "END Thank you for using the Smart Mobile Service.";
 			}
+		
 		////////////////////////////////////////////////////////	
 			
 		}
@@ -2404,8 +1460,25 @@ public class StringTheory {
 		
 		else if((accesslevels.get(0) != null)&&(accesslevels.get(0).equals("3"))){
 		    //////////////////////////////////////////////////
-			//Check balance
-			if((accesslevels.get(1) != null)&&(accesslevels.get(1).equals("1"))){
+			message = "CON Please enter your Smart Mobile Service PIN.";
+			
+			if(StringUtils.isNotEmpty(accesslevels.get(1))){
+				
+				Balance x = membersService.getMemberBalance("NO NEED HERE", PhoneNumber, "NO NEED HERE");
+				
+				if(x.getPinNo().equals(accesslevels.get(1)) || x.getPinNo().equals(accesslevels.get(2)) || x.getPinNo().equals(accesslevels.get(3))){ 
+					
+					message = "END The following is  list of services from your last health center visit.";
+				     
+				}else{
+					
+					message="CON You have entered the wrong PIN. Please try again";
+					if(StringUtils.isNotEmpty(accesslevels.get(4))){ 
+						   message="END You have already tried 3 times. Please contact your scheme administrator or our call centre +254733320660, +254718222200 for any assistance.";
+					}
+					
+				}
+
 				
 				if((accesslevels.get(2) != null)&&(accesslevels.get(2).equals("1"))){
 				
@@ -3496,6 +2569,1152 @@ public class StringTheory {
 		////////////////////////////////////////////////////////	
 			
 		}
+		
+		
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		else if ((accesslevels.get(0) != null) && (accesslevels.get(0).equals("4"))) {
+			// ////////////////////////////////////////////////
+			Balance x = membersService.getMemberBalance("NO NEED HERE", PhoneNumber, "NO NEED HERE");
+
+			message = "CON Dear Customer, The following card is in your account. Name: "+x.getNames()+", Member No: "+x.getMemberNumber()+", Card Serial: "+x.getCardSerial()+". Do you want to deactivate the above card? 1. Accept, 2. Decline";
+
+			if ((accesslevels.get(1) != null) && (accesslevels.get(1).equals("1"))) {
+				
+				message = "CON Please enter your Smart Mobile Service Pin No.";
+
+				if(StringUtils.isNotEmpty(accesslevels.get(2))){
+					
+					if(x.getPinNo().equals(accesslevels.get(2)) || x.getPinNo().equals(accesslevels.get(3)) || x.getPinNo().equals(accesslevels.get(4))){ 
+						
+						message = "END Your request has been received successfully. You will be notified when your card is deactivated.";
+					     
+					}else{
+						
+						message="CON You have entered the wrong PIN. Please try again";
+						
+						if(StringUtils.isNotEmpty(accesslevels.get(5))){ 
+							   message="END You have already tried 3 times. Please contact your scheme administrator or our call centre +254733320660, +254718222200 for any assistance.";
+						}
+						
+					}
+					
+
+					
+					
+					if (("LEVEL3").equals("1")) {
+
+						if (("LEVEL4").equals("1")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("2")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("3")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else {
+						}
+
+					}
+					if (("LEVEL3").equals("2")) {
+
+						if (("LEVEL4").equals("1")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("2")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("3")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else {
+						}
+
+					} else if (("LEVEL3").equals("3")) {
+
+						if (("LEVEL4").equals("1")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("2")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("3")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else {
+						}
+
+					} else {
+					}
+
+				} else if ((accesslevels.get(2) != null)
+						&& (accesslevels.get(2).equals("2"))) {
+
+					if (("LEVEL3").equals("1")) {
+
+						if (("LEVEL4").equals("1")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("2")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("3")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else {
+						}
+
+					}
+					if (("LEVEL3").equals("2")) {
+
+						if (("LEVEL4").equals("1")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("2")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("3")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else {
+						}
+
+					} else if (("LEVEL3").equals("3")) {
+
+						if (("LEVEL4").equals("1")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("2")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("3")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else {
+						}
+
+					} else {
+					}
+
+				} else if ((accesslevels.get(2) != null)
+						&& (accesslevels.get(2).equals("3"))) {
+
+					if (("LEVEL3").equals("1")) {
+
+						if (("LEVEL4").equals("1")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("2")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("3")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else {
+						}
+
+					}
+					if (("LEVEL3").equals("2")) {
+
+						if (("LEVEL4").equals("1")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("2")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("3")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else {
+						}
+
+					} else if (("LEVEL3").equals("3")) {
+
+						if (("LEVEL4").equals("1")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("2")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("3")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else {
+						}
+
+					} else {
+					}
+
+				} else {
+				}
+
+			} else if ((accesslevels.get(1) != null) && (accesslevels.get(1).equals("2"))) {
+				
+				message = "CON Thank you for using the Smart Mobile Service.";
+
+				if ((accesslevels.get(2) != null)
+						&& (accesslevels.get(2).equals("1"))) {
+
+					if (("LEVEL3").equals("1")) {
+
+						if (("LEVEL4").equals("1")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("2")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("3")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else {
+						}
+
+					}
+					if (("LEVEL3").equals("2")) {
+
+						if (("LEVEL4").equals("1")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("2")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("3")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else {
+						}
+
+					} else if (("LEVEL3").equals("3")) {
+
+						if (("LEVEL4").equals("1")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("2")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("3")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else {
+						}
+
+					} else {
+					}
+
+				} else if ((accesslevels.get(2) != null)
+						&& (accesslevels.get(2).equals("2"))) {
+
+					if (("LEVEL3").equals("1")) {
+
+						if (("LEVEL4").equals("1")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("2")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("3")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else {
+						}
+
+					}
+					if (("LEVEL3").equals("2")) {
+
+						if (("LEVEL4").equals("1")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("2")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("3")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else {
+						}
+
+					} else if (("LEVEL3").equals("3")) {
+
+						if (("LEVEL4").equals("1")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("2")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("3")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else {
+						}
+
+					} else {
+					}
+
+				} else if ((accesslevels.get(2) != null)
+						&& (accesslevels.get(2).equals("3"))) {
+
+					if (("LEVEL3").equals("1")) {
+
+						if (("LEVEL4").equals("1")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("2")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("3")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else {
+						}
+
+					}
+					if (("LEVEL3").equals("2")) {
+
+						if (("LEVEL4").equals("1")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("2")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("3")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else {
+						}
+
+					} else if (("LEVEL3").equals("3")) {
+
+						if (("LEVEL4").equals("1")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("2")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("3")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else {
+						}
+
+					} else {
+					}
+
+				} else {
+				}
+
+			} else if ((accesslevels.get(1) != null)
+					&& (accesslevels.get(1).equals("3"))) {
+
+				if ((accesslevels.get(2) != null)
+						&& (accesslevels.get(2).equals("1"))) {
+
+					if (("LEVEL3").equals("1")) {
+
+						if (("LEVEL4").equals("1")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("2")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("3")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else {
+						}
+
+					}
+					if (("LEVEL3").equals("2")) {
+
+						if (("LEVEL4").equals("1")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("2")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("3")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else {
+						}
+
+					} else if (("LEVEL3").equals("3")) {
+
+						if (("LEVEL4").equals("1")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("2")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("3")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else {
+						}
+
+					} else {
+					}
+
+				} else if ((accesslevels.get(2) != null)
+						&& (accesslevels.get(2).equals("2"))) {
+
+					if (("LEVEL3").equals("1")) {
+
+						if (("LEVEL4").equals("1")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("2")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("3")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else {
+						}
+
+					}
+					if (("LEVEL3").equals("2")) {
+
+						if (("LEVEL4").equals("1")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("2")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("3")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else {
+						}
+
+					} else if (("LEVEL3").equals("3")) {
+
+						if (("LEVEL4").equals("1")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("2")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("3")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else {
+						}
+
+					} else {
+					}
+
+				} else if ((accesslevels.get(2) != null)
+						&& (accesslevels.get(2).equals("3"))) {
+
+					if (("LEVEL3").equals("1")) {
+
+						if (("LEVEL4").equals("1")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("2")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("3")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else {
+						}
+
+					}
+					if (("LEVEL3").equals("2")) {
+
+						if (("LEVEL4").equals("1")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("2")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("3")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else {
+						}
+
+					} else if (("LEVEL3").equals("3")) {
+
+						if (("LEVEL4").equals("1")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("2")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else if (("LEVEL4").equals("3")) {
+
+							if (("LEVEL5").equals("1")) {
+
+							} else if (("LEVEL5").equals("2")) {
+
+							} else if (("LEVEL5").equals("3")) {
+
+							} else {
+							}
+
+						} else {
+						}
+
+					} else {
+					}
+
+				} else {
+				}
+
+			} else {
+			}
+			// //////////////////////////////////////////////////////
+
+		}	
+		
+		
+		
+		
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

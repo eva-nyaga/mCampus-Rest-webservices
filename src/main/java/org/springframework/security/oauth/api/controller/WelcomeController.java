@@ -110,7 +110,8 @@ public class WelcomeController {
 	public @ResponseBody String processUSSD(UssdRequest ussdrequest) {
 		
 			String message = peopleService.processUssd(ussdrequest);
-			return message+" - "+ussdrequest.getussd_string();
+			//return message+" - "+ussdrequest.getMSISDN();
+			return message;
 	}
 
 	/*
