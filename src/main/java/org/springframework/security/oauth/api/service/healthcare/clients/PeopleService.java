@@ -38,13 +38,15 @@ public class PeopleService implements IPeopleService {
 		
 
 		try{
-			//
+			
 			// Process the Ussd request
 			if(StringUtils.isNotEmpty(ussdRequest.getsession_id())){
 
+				System.out.println("THE STRING INSERT DATA ='"+ussdRequest.getussd_string()+"'");
 				// check the various request type
-				if(StringUtils.isEmpty(ussdRequest.getussd_string().substring(1))){
+				if(StringUtils.isEmpty(ussdRequest.getussd_string().substring(1)) || (ussdRequest.getussd_string().equals("0")) || (ussdRequest.getussd_string().equals("0*")) || (ussdRequest.getussd_string().equals("*0")) || (ussdRequest.getussd_string().equals("*")) || (ussdRequest.getussd_string().equals("")) || (ussdRequest.getussd_string().equals(" "))){
 					
+					System.out.println(ussdRequest.getussd_string());
 					accesslevels.put(0, null);//checkbalance//payaccess/paycardaccess
 					accesslevels.put(1, null);//OP//IP/DEBTAL//
 					accesslevels.put(2, null);
@@ -56,12 +58,11 @@ public class PeopleService implements IPeopleService {
 			          addUssdResponse(new UssdResponse(
 			        		  ussdRequest.getsession_id(),
 			        		  null,
-			        		  "CON Welcome to Smart Mobile Service.\n1. Check balance\n2. Request for card reprint\n3. Query for statement\n4. Report card as stolen or lost",
+			        		  "CON Welcome to Smart Applications Mobile Service.\n1. Check balance\n2. Member status\n3. Query for statement\n4. Scheme status\n5. Settings",
 			        		  "Response",
 			        		  accesslevels
 			                 ), ussdRequest.getsession_id());
 				}else{
-					
 
 					// response case studies
 					if(StringUtils.isNotEmpty(ussdRequest.getussd_string().substring(1))){
@@ -75,20 +76,34 @@ public class PeopleService implements IPeopleService {
 						//String texts = "*91 11*1*2  *3*v  jg  hj*5#";
 						//String texts = "*91 11*1*2  *3*v  jg  hj*5#";
 						
-						BlackHole hole = new BlackHole();
-						HashMap<Integer, String> accesslevels = hole.BlackHole(ussdRequest.getussd_string().substring(1));
-						
-						StringTheory stringtheory = new StringTheory();
-						String message = stringtheory.StringTheory(accesslevels, ussdRequest.getMSISDN());
+						if(ussdRequest.getussd_string().equals("99")){
+							
+							String message = "END Dear customer, Thank you for using the Smart Mobile Service."; 
+			                 addUssdResponse(new UssdResponse(
+			                           ussdRequest.getsession_id(),
+			                           null,
+			                           message,
+			                           "Release",
+			                           accesslevels
+			                        ), ussdRequest.getsession_id());
+						}else{
 
-						//accesslevels.get(0)
-		                 addUssdResponse(new UssdResponse(
-		                           ussdRequest.getsession_id(),
-		                           null,
-		                           message,
-		                           "Release",
-		                           accesslevels
-		                        ), ussdRequest.getsession_id());
+							BlackHole hole = new BlackHole();
+							System.out.println("THE BEGINNING");
+							HashMap<Integer, String> accesslevels = hole.BlackHole(ussdRequest.getussd_string().substring(1));
+							System.out.println("THE END");
+							StringTheory stringtheory = new StringTheory();
+							String message = stringtheory.StringTheory(accesslevels, ussdRequest.getMSISDN());
+
+			                 addUssdResponse(new UssdResponse(
+			                           ussdRequest.getsession_id(),
+			                           null,
+			                           message,
+			                           "Release",
+			                           accesslevels
+			                        ), ussdRequest.getsession_id());
+						}
+						
 
 					}else{
 	

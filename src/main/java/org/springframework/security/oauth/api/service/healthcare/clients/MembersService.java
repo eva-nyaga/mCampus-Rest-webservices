@@ -1,7 +1,6 @@
 package org.springframework.security.oauth.api.service.healthcare.clients;
 
 import java.sql.Connection;
-
 import java.sql.Blob;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -9,7 +8,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,10 +21,14 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.security.oauth.api.data.healthcare.clients.DBConDistribution;
 import org.springframework.security.oauth.api.data.healthcare.clients.DBConSmartBO;
 import org.springframework.security.oauth.api.data.healthcare.clients.DBConSmart;
 import org.springframework.security.oauth.api.data.healthcare.clients.DBConnection;
-import org.springframework.security.oauth.api.data.healthcare.clients.RequestMap;
+import org.springframework.security.oauth.api.data.healthcare.clients.RequestMapIntegstaging;
+import org.springframework.security.oauth.api.data.healthcare.clients.RequestMapInteractive;
 import org.springframework.security.oauth.api.model.healthcare.clients.Activation;
 import org.springframework.security.oauth.api.model.healthcare.clients.Balance;
 import org.springframework.security.oauth.api.model.healthcare.clients.Cardreprint;
@@ -35,6 +40,7 @@ import org.springframework.security.oauth.api.model.healthcare.clients.MoneyAddi
 import org.springframework.security.oauth.api.model.healthcare.clients.MoneyReduction;
 import org.springframework.security.oauth.api.model.healthcare.clients.Person;
 import org.springframework.security.oauth.api.model.healthcare.clients.Renewal;
+import org.springframework.security.oauth.api.model.healthcare.clients.Transaction;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
@@ -47,6 +53,7 @@ import com.google.gson.reflect.TypeToken;
 public class MembersService implements IMembersService {
 	
 	private Map<String, Member> members = new HashMap<String, Member>();
+	private Map<String, Transaction> transactions = new HashMap<String, Transaction>();
 	private Map<String, MoneyAddition> moneyadditions = new HashMap<String, MoneyAddition>();
 	private Map<String, MoneyReduction> moneyreductions = new HashMap<String, MoneyReduction>();
 	private Map<String, Categorychange> categorychanges = new HashMap<String, Categorychange>();
@@ -1010,10 +1017,12 @@ public class MembersService implements IMembersService {
 					" "+MEMBERS_MAP.get("EMAIL")+", " +
 					" "+MEMBERS_MAP.get("INSURER_ID")+", " +
 					" "+MEMBERS_MAP.get("ROAMING_ENABLED")+", " +
-					" "+MEMBERS_MAP.get("ROAMING_COUNTRIES")+" " +
+					" "+MEMBERS_MAP.get("ROAMING_COUNTRIES")+", " +
+					" "+MEMBERS_MAP.get("SCHEME_START_DATE")+", " +
+					" "+MEMBERS_MAP.get("SCHEME_END_DATE")+" " +
 					")" +
 					" VALUES"
-					+ "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?  )";
+					+ "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?  )";
 	 
 			try {
 
@@ -1064,6 +1073,8 @@ public class MembersService implements IMembersService {
 				preparedStatement.setString(42, member.getInsurerId());
 				preparedStatement.setString(43, member.getRoamingEnabled());
 				preparedStatement.setString(44, member.getRoamingCountries());
+				preparedStatement.setDate(45, member.getSchemeStartDate());
+				preparedStatement.setDate(46, member.getSchemeEndDate());
 				
 				System.out.println(insertTableSQL);
 				// execute insert SQL stetement
@@ -1105,6 +1116,152 @@ public class MembersService implements IMembersService {
 	}
 	
 	
+	
+	private String addUSSDCardServiceDBAccess(String[] dbParams, String id,
+			String phoneNumber, String memberNumber, String names,
+			String cardSerial, String paymentReceipts, String requestType) {
+		// TODO Auto-generated method stub
+		
+		    System.out.println("HAVE BEEN LOOKING FOR YOU PRECIOUS!!!!!");
+
+			String itemId = Long.toString(get());
+			String recid = itemId;
+		    //String recid = itemId.substring(itemId.length() - 15);
+		    
+		    // TODO Auto-generated method stub
+			Connection dbUSSDCardConnection = null;
+			//Connection dbConnection = null;
+			PreparedStatement preparedStatement = null;
+			
+		    // (2) create a java timestamp object that represents the current time (i.e., a "current timestamp")
+		    Calendar calendar = Calendar.getInstance();
+		    java.sql.Timestamp ussdTimestampObject = new java.sql.Timestamp(calendar.getTime().getTime());
+	 
+			String insertTableSQL = "INSERT INTO INTERACTIVE.USSD_RESERVOIR "
+					+ "(" +
+					" TRANS_ID," +
+					" PHONE_NO," +
+					" MEMBERSHIP_NUMBER," +
+					" MEMBERSHIP_NAME," +
+					" CARD_SERIAL," +
+					" TRANS_TYPE," +
+					" PAYMENT_CODE," +
+					" DATE_ADDED," +
+					" LAST_UPDATE" +
+					")" +
+					" VALUES"
+					+ "( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+			try {
+				dbUSSDCardConnection = DBConnection.getConnection(dbParams);
+				preparedStatement = dbUSSDCardConnection.prepareStatement(insertTableSQL);
+				preparedStatement.setString(1, recid);
+				preparedStatement.setString(2, phoneNumber);
+				preparedStatement.setString(3, memberNumber);
+				preparedStatement.setString(4, names);
+				preparedStatement.setString(5, cardSerial);
+				preparedStatement.setString(6, requestType);
+				preparedStatement.setString(7, paymentReceipts);
+			    preparedStatement.setTimestamp(8, ussdTimestampObject);
+			    preparedStatement.setTimestamp(9, ussdTimestampObject);
+
+				System.out.println(insertTableSQL);
+				// execute insert SQL stetement
+				preparedStatement.executeUpdate();
+
+
+				System.out.println("Record is inserted into USSD_RESERVOIR table!");
+				
+				
+	 
+			} catch (SQLException e) {
+				recid = null;
+				System.out.println(e.getMessage());
+				throw new IllegalArgumentException(e.getMessage());			
+	 
+			} finally {
+	 
+				if (preparedStatement != null) {
+					try {
+						preparedStatement.close();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+	 
+				if (dbUSSDCardConnection != null) {
+					try {
+						dbUSSDCardConnection.close();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+	 
+			}
+
+		return recid;	
+
+	}
+	
+	
+	
+	private String ChangeSmartPinNoCardServiceDBAccess(String[] dbParams, String id,
+			String phoneNumber, String memberNumber, String names,
+			String cardSerial, String paymentReceipts, String new_pin) {
+		// TODO Auto-generated method stub
+		
+		String recid = "";
+		Connection dbConnection = null;
+		PreparedStatement preparedStatement = null;
+		
+	    String updateTableSQLPrinciple = "UPDATE SMART.FIN_MEMBER_DETAILS SET PIN_NO = ? WHERE PHONE_NO = ?";
+	    String updateTableSQLDependant = "UPDATE SMART.FIN_MEMBER_DETAILS SET PIN_NO = ? WHERE PHONE_NO = ?";
+
+		try {
+			//dbConnection = DBConnection.getConnection(dbParams);
+			//
+			dbConnection = DBConSmartBO.getConnection();
+			preparedStatement = dbConnection.prepareStatement(updateTableSQLPrinciple);
+
+		    preparedStatement.setString(1, new_pin);
+		    preparedStatement.setString(2, phoneNumber);
+ 
+			// execute update SQL stetement
+			preparedStatement.executeUpdate();
+ 
+			System.out.println("Record is updated to DBUSER table!");
+ 
+		} catch (SQLException e) {
+ 
+			System.out.println(e.getMessage());
+ 
+		} finally {
+ 
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+ 
+			if (dbConnection != null) {
+				try {
+					dbConnection.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+ 
+		}
+
+		return recid;	
+
+	}
 	
 	
 	
@@ -2328,6 +2485,197 @@ public class MembersService implements IMembersService {
         
 	}
 	
+	public void SearchTransactionsServiceDBAccess(String[] DBParams, String memberno, String q, String country, int startindex, int maxresults, String orderby){
+		int lastindex  = startindex+maxresults;
+		Connection connection = null;
+        PreparedStatement transactions_statement = null;
+        PreparedStatement service_tags_statement = null;
+        ResultSet transactions_resultSet = null;
+        ResultSet service_tags_resultSet = null;
+
+        final String SEARCH_SQL_LIST = " SELECT outer.*  FROM ( "+
+        		" SELECT ROWNUM rn, inner.*  FROM ( "+  
+        		" SELECT e.*  FROM INTEG_USER.STG_INTEG_TRANSACTIONS e "+  
+        		" WHERE MEMBER_NUMBER LIKE '"+memberno+"' AND "+
+        		" ( "+
+        		"  PROV_DATE             LIKE '%"+q+"%' OR  "+ 
+        		"  SERVER_DATE           LIKE '%"+q+"%' OR  "+ 
+        		"  PROV_ID               LIKE '%"+q+"%' OR  "+ 
+        		"  SERV_PT_ID            LIKE '%"+q+"%' OR  "+ 
+        		"  SERV_POINT_ID         LIKE '%"+q+"%' OR  "+ 
+        		"  ENCOUNTER_AMT         LIKE '%"+q+"%' OR  "+ 
+        		"  POOL_NR               LIKE '%"+q+"%' OR  "+ 
+        		"  CARD_SERIAL_NUMBER    LIKE '%"+q+"%' OR  "+ 
+        		"  CURRENCY_ID           LIKE '%"+q+"%' OR  "+ 
+        		"  POL_CONVERSION_RATE   LIKE '%"+q+"%' OR  "+ 
+        		"  POL_ID                LIKE '%"+q+"%' OR  "+ 
+        		"  LOCAL_CURRENCY_ID     LIKE '%"+q+"%' OR  "+ 
+        		"  BENEFIT_ID            LIKE '%"+q+"%' OR  "+ 
+        		"  MEMBER_NUMBER         LIKE '%"+q+"%' OR  "+ 
+        		"  BALANCE_BEFORE        LIKE '%"+q+"%' OR  "+ 
+        		"  BALANCE_AFTER         LIKE '%"+q+"%' OR  "+ 
+        		"  CLAIMS_REF_NUMBER     LIKE '%"+q+"%' OR  "+ 
+        		"  PROV_INVOICE_NUMBER   LIKE '%"+q+"%' OR  "+ 
+        		"  PATIENT_FILE_NUMBER   LIKE '%"+q+"%' OR  "+ 
+        		"  PRE_AUTH_NUMBER       LIKE '%"+q+"%' OR  "+ 
+        		"  PRE_AUTH_AMOUNT       LIKE '%"+q+"%' OR  "+ 
+        		"  TRANSAC_TYPE_ID       LIKE '%"+q+"%' OR  "+ 
+        		"  COUN_CONVERSION_RATE  LIKE '%"+q+"%' OR  "+ 
+        		"  DUP_OVERRIDE          LIKE '%"+q+"%' OR  "+ 
+        		"  GLOBAL_ID             LIKE '%"+q+"%' OR  "+ 
+        		"  DIAG_CODE             LIKE '%"+q+"%' OR  "+ 
+        		"  DUP_IND               LIKE '%"+q+"%' OR  "+ 
+        		"  COUNTRY               LIKE '%"+q+"%' OR  "+ 
+        		"  CALC_STATE            LIKE '%"+q+"%' OR  "+ 
+        		"  OVERSPEND_IND         LIKE '%"+q+"%' OR  "+ 
+        		"  THRESHOLD_ATTAINED    LIKE '%"+q+"%' OR  "+ 
+        		"  POINT_DATE            LIKE '%"+q+"%' OR  "+ 
+        		"  SKSP_KEY              LIKE '%"+q+"%' OR  "+ 
+        		"  PROVDATE_OVERRIDE     LIKE '%"+q+"%' OR  "+ 
+        		"  POLSTART_OVERRIDE     LIKE '%"+q+"%' OR  "+ 
+        		"  PICKED                LIKE '%"+q+"%' OR  "+ 
+        		"  USECNT_IND            LIKE '%"+q+"%' OR  "+ 
+        		"  TRIG_SOURCE           LIKE '%"+q+"%' OR  "+ 
+        		"  TIMING_SEQ            LIKE '%"+q+"%' OR  "+ 
+        		"  SOURCE_TABLE          LIKE '%"+q+"%' OR  "+ 
+        		"  PICKED_MS             LIKE '%"+q+"%' OR  "+ 
+        		"  SLINKCNT              LIKE '%"+q+"%' OR  "+ 
+        		"  RETCNT                LIKE '%"+q+"%' OR  "+ 
+        		"  RECALSEQ              LIKE '%"+q+"%' OR  "+ 
+        		"  RECAL_CLMCNT          LIKE '%"+q+"%' OR  "+ 
+        		"  FINCLM                LIKE '%"+q+"%' OR  "+ 
+        		"  POINT_CLAIMID         LIKE '%"+q+"%' OR  "+ 
+        		"  PROCESS_TIMESTAMP     LIKE '%"+q+"%' OR  "+ 
+        		"  CALLING_PROC          LIKE '%"+q+"%' OR  "+ 
+        		"  MODIFIED              LIKE '%"+q+"%' OR  "+ 
+        		"  ARRIVE_DATE           LIKE '%"+q+"%' OR  "+ 
+        		"  ID                    LIKE '%"+q+"%' OR  "+ 
+        		"  OTHER_NUMBER          LIKE '%"+q+"%' OR  "+ 
+        		"  NAMES_AS_IS           LIKE '%"+q+"%' OR  "+ 
+        		"  GENDER                LIKE '%"+q+"%' OR  "+ 
+        		"  DOB                   LIKE '%"+q+"%' OR  "+ 
+        		"  ADMIT_ID              LIKE '%"+q+"%' OR  "+ 
+        		"  STATUS                LIKE '%"+q+"%' OR  "+ 
+        		"  REASON                LIKE '%"+q+"%' OR  "+ 
+        		"  BENEFIT_DESC          LIKE '%"+q+"%' OR  "+ 
+        		"  SERVICE_TYPE          LIKE '%"+q+"%' OR  "+ 
+        		"  IS_REPORT             LIKE '%"+q+"%' OR  "+ 
+        		"  REPORT_TIME           LIKE '%"+q+"%' OR  "+ 
+        		"  LOG_TIME              LIKE '%"+q+"%'     "+
+        		" ) ORDER BY "+orderby+"  "+
+        		" ) inner) outer  "+ 
+        		" WHERE outer.rn >= "+startindex+" AND outer.rn < "+lastindex+" ";
+    
+        
+        System.out.println(SEARCH_SQL_LIST);
+        try {
+        	
+            connection = DBConnection.getConnection(DBParams);
+            
+            try {
+				transactions_statement = connection.prepareStatement(SEARCH_SQL_LIST);
+				
+			    System.out.println("--------------------------------------HERE---------------------------------------");
+			    System.out.println(SEARCH_SQL_LIST);
+			    
+				transactions_resultSet = transactions_statement.executeQuery();
+				
+				if (!transactions_resultSet.isBeforeFirst() ) {    
+				    throw new IllegalArgumentException("Your search - "+q+" - did not match any member. "+"Suggestions:"+
+				    		"Make sure all words are spelled correctly."+
+				    		"Try different keywords."+
+				    		"Try more general keywords.");
+				   }
+				
+
+			    
+			    
+				while (transactions_resultSet.next()) {
+				      String rec_Id = transactions_resultSet.getString("CLAIMS_REF_NUMBER");
+
+                      addTransaction(new Transaction(
+                    		  transactions_resultSet.getDate("PROV_DATE"),
+                    		  transactions_resultSet.getDate("SERVER_DATE"),
+                    		  transactions_resultSet.getString("PROV_ID"),
+                    		  transactions_resultSet.getString("SERV_PT_ID"),
+                    		  transactions_resultSet.getString("SERV_POINT_ID"),
+                    		  transactions_resultSet.getLong("ENCOUNTER_AMT"),
+                    		  transactions_resultSet.getString("POOL_NR"),
+                    		  transactions_resultSet.getString("CARD_SERIAL_NUMBER"),
+                    		  transactions_resultSet.getString("CURRENCY_ID"),
+                    		  transactions_resultSet.getString("POL_CONVERSION_RATE"),
+                    		  transactions_resultSet.getString("POL_ID"),
+                    		  transactions_resultSet.getString("LOCAL_CURRENCY_ID"),
+                    		  transactions_resultSet.getString("BENEFIT_ID"),
+                    		  transactions_resultSet.getString("MEMBER_NUMBER"),
+                    		  transactions_resultSet.getLong("BALANCE_BEFORE"),
+                    		  transactions_resultSet.getLong("BALANCE_AFTER"),
+                    		  transactions_resultSet.getString("CLAIMS_REF_NUMBER"),
+                    		  transactions_resultSet.getString("PROV_INVOICE_NUMBER"),
+                    		  transactions_resultSet.getString("PATIENT_FILE_NUMBER"),
+                    		  transactions_resultSet.getString("PRE_AUTH_NUMBER"),
+                    		  transactions_resultSet.getLong("PRE_AUTH_AMOUNT"),
+                    		  transactions_resultSet.getString("TRANSAC_TYPE_ID"),
+                    		  transactions_resultSet.getString("COUN_CONVERSION_RATE"),
+                    		  transactions_resultSet.getString("DUP_OVERRIDE"),
+                    		  transactions_resultSet.getString("GLOBAL_ID"),
+                    		  transactions_resultSet.getString("DIAG_CODE"),
+                    		  transactions_resultSet.getString("DUP_IND"),
+                    		  transactions_resultSet.getString("COUNTRY"),
+                    		  transactions_resultSet.getString("CALC_STATE"),
+                    		  transactions_resultSet.getString("OVERSPEND_IND"),
+                    		  transactions_resultSet.getString("THRESHOLD_ATTAINED"),
+                    		  transactions_resultSet.getDate("POINT_DATE"),
+                    		  transactions_resultSet.getString("SKSP_KEY"),
+                    		  transactions_resultSet.getString("PROVDATE_OVERRIDE"),
+                    		  transactions_resultSet.getString("POLSTART_OVERRIDE"),
+                    		  transactions_resultSet.getString("PICKED"),
+                    		  transactions_resultSet.getString("USECNT_IND"),
+                    		  transactions_resultSet.getString("TRIG_SOURCE"),
+                    		  transactions_resultSet.getString("TIMING_SEQ"),
+                    		  transactions_resultSet.getString("SOURCE_TABLE"),
+                    		  transactions_resultSet.getString("PICKED_MS"),
+                    		  transactions_resultSet.getString("SLINKCNT"),
+                    		  transactions_resultSet.getString("RETCNT"),
+                    		  transactions_resultSet.getString("RECALSEQ"),
+                    		  transactions_resultSet.getString("RECAL_CLMCNT"),
+                    		  transactions_resultSet.getString("FINCLM"),
+                    		  transactions_resultSet.getString("POINT_CLAIMID"),
+                    		  transactions_resultSet.getString("PROCESS_TIMESTAMP"),
+                    		  transactions_resultSet.getString("CALLING_PROC"),
+                    		  transactions_resultSet.getString("MODIFIED"),
+                    		  transactions_resultSet.getDate("ARRIVE_DATE"),
+                    		  transactions_resultSet.getString("ID"),
+                    		  transactions_resultSet.getString("OTHER_NUMBER"),
+                    		  transactions_resultSet.getString("NAMES_AS_IS"),
+                    		  transactions_resultSet.getString("GENDER"),
+                    		  transactions_resultSet.getString("DOB"),
+                    		  transactions_resultSet.getString("ADMIT_ID"),
+                    		  transactions_resultSet.getString("STATUS"),
+                    		  transactions_resultSet.getString("REASON"),
+                    		  transactions_resultSet.getString("BENEFIT_DESC"),
+                    		  transactions_resultSet.getString("SERVICE_TYPE"),
+                    		  transactions_resultSet.getString("IS_REPORT"),
+                    		  transactions_resultSet.getDate("REPORT_TIME"),
+                    		  transactions_resultSet.getDate("LOG_TIME")
+                         ), rec_Id);
+
+
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        } finally {
+        	
+            if (transactions_resultSet != null) try { transactions_resultSet.close(); } catch (SQLException ignore) {}
+        	//if (service_tags_resultSet != null) try { service_tags_resultSet.close(); } catch (SQLException ignore) {}
+            if (transactions_statement != null) try { transactions_statement.close(); } catch (SQLException ignore) {}
+          //  if (service_tags_statement != null) try { service_tags_statement.close(); } catch (SQLException ignore) {}
+            if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+        }
+        
+	}
 	
 	private String[] getSMART_CODE(String[] DBParams, String CUSTOMERID) {
 		String[] SMART = new String[50];
@@ -2385,7 +2733,7 @@ public class MembersService implements IMembersService {
 	
 	
 	private String[] GET_MEMBER_DETAILS_PRINCIPLE_PHONE(String phone_no) {
-		String[] resultArray = new String[70];
+		String[] resultArray = new String[80];
 
 	    Connection connection = null;
 	    PreparedStatement get_member_statement = null;
@@ -2443,9 +2791,67 @@ public class MembersService implements IMembersService {
 		return resultArray;
 	}
 
+	private String[] GET_MEMBER_DETAILS_PRINCIPLE_MEMBER_NUMBER(String member_no) {
+		String[] resultArray = new String[80];
+
+	    Connection connection = null;
+	    PreparedStatement get_member_statement = null;
+	    PreparedStatement service_tags_statement = null;
+	    ResultSet get_member_resultSet = null;
+	    ResultSet service_tags_resultSet = null;
+	    //order by HOST_DATE asc
+	    String SINGLE_SQL_LIST = "Select MEMBERSHIP_NUMBER, NAMES_AS_IS, MEM_ID, GLOBAL_ID, REASON, SMS_STATUS, PIN_NO, CARD_SERIAL_NUMBER from SMART.FIN_MEMBER_DETAILS where MEMBERSHIP_NUMBER ='"+member_no+"' ";
+	    System.out.println(SINGLE_SQL_LIST);
+	    
+		
+		
+	    try {
+	        connection = DBConSmartBO.getConnection();
+	       
+	        try {
+					get_member_statement = connection.prepareStatement(SINGLE_SQL_LIST);
+					get_member_resultSet = get_member_statement.executeQuery();
+					
+					
+					if (!get_member_resultSet.isBeforeFirst()) {    
+						   // throw new IllegalArgumentException("There are no active MSG_OUT to send");
+							String status_msg = "There are no active messages to send";
+					
+				     }
+					
+		
+					while (get_member_resultSet.next()) {
+						    resultArray[0] = get_member_resultSet.getString("GLOBAL_ID");
+							resultArray[1] = get_member_resultSet.getString("MEM_ID");
+							resultArray[2] = get_member_resultSet.getString("REASON");
+							resultArray[3] = get_member_resultSet.getString("MEMBERSHIP_NUMBER");
+							resultArray[4] = get_member_resultSet.getString("NAMES_AS_IS");
+							resultArray[5] = get_member_resultSet.getString("SMS_STATUS");
+							resultArray[6] = get_member_resultSet.getString("PIN_NO");
+							resultArray[7] = get_member_resultSet.getString("CARD_SERIAL_NUMBER");
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					
+
+					
+					resultArray[64] = "Dear customer, we are experiencing technical issues at the moment. We're working to resolve the issues as soon as possible. Please try again later";
+					resultArray[65] = "503";
+				}
+	    } finally {
+	    	
+	        if (get_member_resultSet != null) try { get_member_resultSet.close(); } catch (SQLException ignore) {}
+	        if (get_member_statement != null) try { get_member_statement.close(); } catch (SQLException ignore) {}
+	        if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+	    }
+
+
+		return resultArray;
+	}
 
 	private String[] GET_MEMBER_DETAILS_DEPENDANCE_PHONE(String phone_no) {
-		String[] resultArray = new String[70];
+		String[] resultArray = new String[80];
 			
 	    Connection connection = null;
 	    PreparedStatement get_member_dep_statement = null;
@@ -2502,8 +2908,108 @@ public class MembersService implements IMembersService {
 	}
 	
 	
+	private String[] GET_MEMBER_DETAILS_DEPENDANCE_MEMBER_NUMBER(String member_no) {
+		String[] resultArray = new String[80];
+			
+	    Connection connection = null;
+	    PreparedStatement get_member_dep_statement = null;
+	    PreparedStatement service_tags_statement = null;
+	    ResultSet get_member_dep_resultSet = null;
+	    ResultSet service_tags_resultSet = null;
+	    //order by HOST_DATE asc
+	    String SINGLE_SQL_LIST = "Select MEMBER_NUMBER, NAMES_AS_IS, MEM_ID, GLOBAL_ID, REASON, SMS_STATUS, PIN_NO, CARD_SERIAL_NUMBER from SMART.FIN_MEMBER_DEP_DETAILS where MEMBER_NUMBER ='"+member_no+"' ";
+	    System.out.println(SINGLE_SQL_LIST);
+	    
+	    try {
+	        connection = DBConSmartBO.getConnection();
+	        try {
+					get_member_dep_statement = connection.prepareStatement(SINGLE_SQL_LIST);
+					get_member_dep_resultSet = get_member_dep_statement.executeQuery();
+					
+					
+					if (!get_member_dep_resultSet.isBeforeFirst()) {    
+						   // throw new IllegalArgumentException("There are no active MSG_OUT to send");
+							String status_msg = "There are no active messages to send";
+							
+							
+							resultArray[64] = "Dear customer, we are experiencing technical issues with your Smart mobile service. Please contact your scheme administrator or our call centre +254733320660, +254718222200 for any assistance.";
+							resultArray[65] = "404";
+				     }
+
+					while (get_member_dep_resultSet.next()) {
+						    resultArray[0] = get_member_dep_resultSet.getString("GLOBAL_ID");
+							resultArray[1] = get_member_dep_resultSet.getString("MEM_ID");
+							resultArray[2] = get_member_dep_resultSet.getString("REASON");
+							resultArray[3] = get_member_dep_resultSet.getString("MEMBER_NUMBER");
+							resultArray[4] = get_member_dep_resultSet.getString("NAMES_AS_IS");
+							resultArray[5] = get_member_dep_resultSet.getString("SMS_STATUS");
+							resultArray[6] = get_member_dep_resultSet.getString("PIN_NO");
+							resultArray[7] = get_member_dep_resultSet.getString("CARD_SERIAL_NUMBER");
+							
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					
+					
+					resultArray[64] = "Dear customer, we are experiencing technical issues at the moment. We're working to resolve the issues as soon as possible. Please try again later";
+					resultArray[65] = "503";
+					e.printStackTrace();
+				}
+	    } finally {
+	    	
+	        if (get_member_dep_resultSet != null) try { get_member_dep_resultSet.close(); } catch (SQLException ignore) {}
+	        if (get_member_dep_statement != null) try { get_member_dep_statement.close(); } catch (SQLException ignore) {}
+	        if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+	    }
+	    
+		return resultArray;
+	}
+	
+	
+	
+	private String[] GET_MEMBER_SCHEME_DETAILS(String reason) {
+		String[] resultArray = new String[80];
+
+	    Connection connection = null;
+	    PreparedStatement get_member_statement = null;
+	    PreparedStatement service_tags_statement = null;
+	    ResultSet get_member_resultSet = null;
+	    ResultSet service_tags_resultSet = null;
+		SimpleDateFormat formatter5=new SimpleDateFormat("dd-MM-yyyy");
+		
+	    String SINGLE_SQL_LIST = "SELECT  start_date, end_date, smart_code  FROM SMART.FIN_POLICY_DETAILS P , SMART.FIN_BENEFIT_CATEGORY BC WHERE P.POL_ID = BC.POL_ID AND BC.REASON ='"+reason+"' ";
+	    System.out.println(SINGLE_SQL_LIST);
+
+	    try {
+	        connection = DBConSmartBO.getConnection();
+	       
+	        try {
+					get_member_statement = connection.prepareStatement(SINGLE_SQL_LIST);
+					get_member_resultSet = get_member_statement.executeQuery();
+					while (get_member_resultSet.next()) {
+						
+					    resultArray[0] = formatter5.format(get_member_resultSet.getDate("START_DATE"));
+						resultArray[1] = formatter5.format(get_member_resultSet.getDate("END_DATE"));
+						resultArray[2] = get_member_resultSet.getString("SMART_CODE");
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	    } finally {
+	    	
+	        if (get_member_resultSet != null) try { get_member_resultSet.close(); } catch (SQLException ignore) {}
+	        if (get_member_statement != null) try { get_member_statement.close(); } catch (SQLException ignore) {}
+	        if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+	    }
+
+
+		return resultArray;
+	}
+
+	
 	private String[] GET_MEMBER_BALANCE(String globalid, String memberid, String reason, String membership_number, String names_as_is, String phoneno, String user_status, String pin_no, String card_serial_no) {
-		String[] resultArray_PLAN = new String[70];
+		String[] resultArray_PLAN = new String[80];
 	    Connection connection = null;
 	    PreparedStatement get_member_plan_bal_statement = null;
 	    PreparedStatement service_tags_statement = null;
@@ -2661,8 +3167,12 @@ public class MembersService implements IMembersService {
 	        if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
 	    }
 
-	
-		String[] resultArray_BALANCE = new String[70];	
+
+	    
+		String[] scheme_member_details = new String[80];
+		scheme_member_details = GET_MEMBER_SCHEME_DETAILS(reason);
+	    
+		String[] resultArray_BALANCE = new String[80];	
 	    Connection connection_balance = null;
 	    PreparedStatement get_member_balance_bal_statement = null;
 	    ResultSet get_member_balance_bal_resultSet = null;
@@ -2729,12 +3239,12 @@ public class MembersService implements IMembersService {
 	    		resultArray_PLAN[57].trim() +" as OUT_P_GRAND_POOL,"+
 	    		resultArray_PLAN[58].trim() +" as OFFLINE_BILLING_BENEFIT,"+
 	    		resultArray_PLAN[59].trim() +" as NHIF"+
-	    				" from SMART.BENEFIT_TOTALS where GLOBAL_ID ='"+globalid+"'";
+	    				" from BENEFIT_TOTALS where GLOBAL_ID ='"+globalid+"'";
 
 	    System.out.println(SINGLE_SQL_SUM_LIST);
 
 	    try {
-	        connection_balance = DBConSmartBO.getConnection();
+	        connection_balance = DBConDistribution.getConnection();
 	        try {
 					get_member_balance_bal_statement = connection_balance.prepareStatement(SINGLE_SQL_SUM_LIST);
 					get_member_balance_bal_resultSet = get_member_balance_bal_statement.executeQuery();
@@ -2806,9 +3316,7 @@ public class MembersService implements IMembersService {
 						resultArray_BALANCE[57] = get_member_balance_bal_resultSet.getString("OUT_P_GRAND_POOL");
 						resultArray_BALANCE[58] = get_member_balance_bal_resultSet.getString("OFFLINE_BILLING_BENEFIT");
 						resultArray_BALANCE[59] = get_member_balance_bal_resultSet.getString("NHIF");
-						
-						
-						
+
 						resultArray_BALANCE[60] = membership_number;
 						resultArray_BALANCE[61] = names_as_is;
 						resultArray_BALANCE[62] = phoneno;
@@ -2817,7 +3325,11 @@ public class MembersService implements IMembersService {
 						resultArray_BALANCE[65] = "200";
 						resultArray_BALANCE[66] = pin_no;
 						resultArray_BALANCE[67] = card_serial_no;
-						
+						resultArray_BALANCE[68] = reason;
+						resultArray_BALANCE[69] = scheme_member_details[0];
+						resultArray_BALANCE[70] = scheme_member_details[1];
+						resultArray_BALANCE[71] = scheme_member_details[2];
+
 					}
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
@@ -2837,20 +3349,97 @@ public class MembersService implements IMembersService {
 	}
 	
 	
+	private String[] GET_SCHEME_BALANCE(String globalid, String memberid, String reason, String membership_number, String names_as_is, String phoneno, String user_status, String pin_no, String card_serial_no) {
+
+		
+		java.util.Date today = new java.util.Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+
+		String[] scheme_member_details = new String[80];
+		scheme_member_details = GET_MEMBER_SCHEME_DETAILS(reason);
+	    
+		String[] resultArray_BALANCE = new String[80];	
+	    Connection connection_balance = null;
+	    PreparedStatement get_member_balance_bal_statement = null;
+	    ResultSet get_member_balance_bal_resultSet = null;
+ 
+	    String SINGLE_SQL_SUM_LIST = "SELECT P.POL_NAME, P.START_DATE, P.END_DATE, P.STATUS, P.SMART_CODE FROM SMART.FIN_POLICY_DETAILS P, SMART.FIN_BENEFIT_CATEGORY BC WHERE P.POL_ID = BC.POL_ID AND BC.REASON LIKE '"+reason+"'";
+	    System.out.println(SINGLE_SQL_SUM_LIST);
+
+	    try {
+	        connection_balance = DBConSmartBO.getConnection();
+	        try {
+					get_member_balance_bal_statement = connection_balance.prepareStatement(SINGLE_SQL_SUM_LIST);
+					get_member_balance_bal_resultSet = get_member_balance_bal_statement.executeQuery();
+					
+
+					if (!get_member_balance_bal_resultSet.isBeforeFirst()) {    
+						   // throw new IllegalArgumentException("There are no active MSG_OUT to send");
+							String status_msg = "There are no plans available for the above reason";
+					
+				     }
+
+					while (get_member_balance_bal_resultSet.next()) {
+
+
+
+						resultArray_BALANCE[60] = membership_number;
+						resultArray_BALANCE[61] = get_member_balance_bal_resultSet.getString("POL_NAME");
+						resultArray_BALANCE[62] = phoneno;
+						resultArray_BALANCE[63] = get_member_balance_bal_resultSet.getString("STATUS");
+						resultArray_BALANCE[64] = "messagesessesse";
+						resultArray_BALANCE[65] = "200";
+						resultArray_BALANCE[66] = pin_no;
+						resultArray_BALANCE[67] = card_serial_no;
+						resultArray_BALANCE[68] = reason;
+						resultArray_BALANCE[69] = formatter.format(get_member_balance_bal_resultSet.getDate("START_DATE"));
+						resultArray_BALANCE[70] = formatter.format(get_member_balance_bal_resultSet.getDate("END_DATE"));
+						resultArray_BALANCE[71] = get_member_balance_bal_resultSet.getString("SMART_CODE");
+
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	    } finally {
+	    	
+	        if (get_member_balance_bal_resultSet != null) try { get_member_balance_bal_resultSet.close(); } catch (SQLException ignore) {}
+	        if (get_member_balance_bal_statement != null) try { get_member_balance_bal_statement.close(); } catch (SQLException ignore) {}
+	        if (connection_balance != null) try { connection_balance.close(); } catch (SQLException ignore) {}
+	    }
+
+	    
+		return resultArray_BALANCE;
+
+
+	}
+
+	private String[] CalculateMemberMemnoBalanceServiceDBAccess(String memnos){
+		String smart = "balance from phone";
+		String[] member_details = new String[80];
+		 
+		System.out.println("THIS IS THE PHONE NUMBER///////////////////: = "+memnos);
+		member_details = GET_MEMBER_DETAILS_PRINCIPLE_MEMBER_NUMBER(memnos);
+		System.out.println("THIS IS THE FIRST MEMBER DETAILS||||||||||||||||||||||||: = "+member_details[0]);
+		if((member_details[0] == null)||(member_details[0].isEmpty())){
+		member_details = 	GET_MEMBER_DETAILS_DEPENDANCE_MEMBER_NUMBER(memnos);
+		System.out.println("THIS IS THE SECOND MEMBER DETAILS////////////////////: = "+member_details[0]);
+		}
+		
+		System.out.println("HERE WE GO?????????????????????????????????????????????");
+		
+		if(!member_details[0].isEmpty()){
+		member_details = 	GET_MEMBER_BALANCE(member_details[0], member_details[1], member_details[2], member_details[3], member_details[4], memnos, member_details[5], member_details[6], member_details[7]);
+		}
 	
-	
-	private String CalculateMemberMemnoBalanceServiceDBAccess(String memnos){
-		String smart = "balance from mem no";
-       
-        
-        return smart;
+		return member_details;
 	}
 	
 	
 	
 	private String[] CalculateMemberPhoneBalanceServiceDBAccess(String phoneno){
 		String smart = "balance from phone";
-		String[] member_details = new String[70];
+		String[] member_details = new String[80];
 		 
 		System.out.println("THIS IS THE PHONE NUMBER///////////////////: = "+phoneno);
 		member_details = GET_MEMBER_DETAILS_PRINCIPLE_PHONE(phoneno);
@@ -2864,6 +3453,29 @@ public class MembersService implements IMembersService {
 		
 		if(!member_details[0].isEmpty()){
 		member_details = 	GET_MEMBER_BALANCE(member_details[0], member_details[1], member_details[2], member_details[3], member_details[4], phoneno, member_details[5], member_details[6], member_details[7]);
+		}
+	
+		return member_details;
+	}
+	
+	
+	
+	private String[] CalculateSchemePhoneBalanceServiceDBAccess(String phoneno){
+		String smart = "balance from phone";
+		String[] member_details = new String[80];
+		 
+		System.out.println("THIS IS THE PHONE NUMBER///////////////////: = "+phoneno);
+		member_details = GET_MEMBER_DETAILS_PRINCIPLE_PHONE(phoneno);
+		System.out.println("THIS IS THE FIRST MEMBER DETAILS||||||||||||||||||||||||: = "+member_details[0]);
+		if((member_details[0] == null)||(member_details[0].isEmpty())){
+		member_details = 	GET_MEMBER_DETAILS_DEPENDANCE_PHONE(phoneno);
+		System.out.println("THIS IS THE SECOND MEMBER DETAILS////////////////////: = "+member_details[0]);
+		}
+		
+		System.out.println("HERE WE GO?????????????????????????????????????????????");
+		
+		if(!member_details[0].isEmpty()){
+		member_details = 	GET_SCHEME_BALANCE(member_details[0], member_details[1], member_details[2], member_details[3], member_details[4], phoneno, member_details[5], member_details[6], member_details[7]);
 		}
 	
 		return member_details;
@@ -2924,6 +3536,43 @@ public class MembersService implements IMembersService {
     
 		return output;
 	}
+	
+	private String getProvider(String SkspKey){
+
+		Connection connection = null;
+        PreparedStatement providers_statement = null;
+        PreparedStatement service_tags_statement = null;
+        ResultSet providerdeactivations_resultSet = null;
+        ResultSet service_tags_resultSet = null;
+        String PROV_NAME = "";
+
+        try {
+            connection =  DBConSmartBO.getConnection();
+
+            try {
+
+				providers_statement = connection.prepareStatement("SELECT PROV_NAME FROM SMART.FIN_PROVIDERS WHERE PROVIDER_KEY = '"+SkspKey+"'");
+				providerdeactivations_resultSet = providers_statement.executeQuery();
+
+				while (providerdeactivations_resultSet.next()) {
+				      PROV_NAME = providerdeactivations_resultSet.getString("PROV_NAME");
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        } finally {
+        	
+            if (providerdeactivations_resultSet != null) try { providerdeactivations_resultSet.close(); } catch (SQLException ignore) {}
+        	//if (service_tags_resultSet != null) try { service_tags_resultSet.close(); } catch (SQLException ignore) {}
+            if (providers_statement != null) try { providers_statement.close(); } catch (SQLException ignore) {}
+          //  if (service_tags_statement != null) try { service_tags_statement.close(); } catch (SQLException ignore) {}
+            if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+        }
+        
+        return PROV_NAME;
+	}
+	
 	
 	private String[] ActivateMemberPhoneSMSServiceDBAccess(String phoneno){
 		String smart = "balance from phone";
@@ -3249,7 +3898,7 @@ public class MembersService implements IMembersService {
 		String customertable = "";
 		String customercountry = "";
 		members.clear();
-		RequestMap data = new RequestMap(customerid, country, startindex, maxresults, status, restrict,  orderby);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country, startindex, maxresults, status, restrict,  orderby);
 		MembersServiceDBAccess(data.getDBParams(), customerid, customercountry, startindex, maxresults, status, restrict, orderby);
 		List<Member> allmembers = new ArrayList<Member>(members.values());
 
@@ -3261,7 +3910,7 @@ public class MembersService implements IMembersService {
 		String customertable = "";
 		String customercountry = "";
 	    members.clear();
-		RequestMap data = new RequestMap(customerid, country, startindex, maxresults, status, restrict,  orderby);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country, startindex, maxresults, status, restrict,  orderby);
 		MembersServiceDBAccessChanges(data.getDBParams(), customerid, customercountry, startindex, maxresults, status, restrict, orderby);
 		List<Member> allmembers = new ArrayList<Member>(members.values());
 
@@ -3286,9 +3935,10 @@ public class MembersService implements IMembersService {
 	*/
 	
 	
-	public Balance getMemberBalance(String text_code, String phonenos, String memnos) {
+	public Balance getMemberBalancePhoneNumber(String text_code, String phonenos, String memnos) {
 
-		String[] member_details = new String[70];
+		
+		String[] member_details = new String[80];
 
 		member_details = CalculateMemberPhoneBalanceServiceDBAccess(phonenos);
 
@@ -3359,7 +4009,11 @@ public class MembersService implements IMembersService {
 				member_details[64],
 				member_details[65],
 				member_details[66],
-				member_details[67]
+				member_details[67],
+				member_details[68],
+				member_details[69],
+				member_details[70],
+				member_details[71]
 				);
 		
 		/*
@@ -3401,6 +4055,254 @@ public class MembersService implements IMembersService {
 		
 		*/
 		return balancedetails;
+
+		}
+	
+	
+	public Balance getSchemeBalancePhoneNumber(String text_code, String phonenos, String memnos) {
+
+		
+		String[] member_details = new String[80];
+
+		member_details = CalculateSchemePhoneBalanceServiceDBAccess(phonenos);
+
+		Balance balancedetails = new Balance(
+				member_details[0],
+				member_details[1],
+				member_details[2], 
+				member_details[3],
+				member_details[4],
+				member_details[5],
+				member_details[6],
+				member_details[7],
+				member_details[8], 
+				member_details[9],
+				member_details[10],
+				member_details[11],
+				member_details[12],
+				member_details[13],
+				member_details[14], 
+				member_details[15],
+				member_details[16],
+				member_details[17],
+				member_details[18],
+				member_details[19],
+				member_details[20], 
+				member_details[21],
+				member_details[22],
+				member_details[23],
+				member_details[24],
+				member_details[25],
+				member_details[26], 
+				member_details[27],
+				member_details[28],
+				member_details[29],
+				member_details[30],
+				member_details[31],
+				member_details[32], 
+				member_details[33],
+				member_details[34],
+				member_details[35],
+				member_details[36],
+				member_details[37],
+				member_details[38], 
+				member_details[39],
+				member_details[40],
+				member_details[41],
+				member_details[42],
+				member_details[43],
+				member_details[44], 
+				member_details[45],
+				member_details[46],
+				member_details[47],
+				member_details[48],
+				member_details[49],
+				member_details[50], 
+				member_details[51],
+				member_details[52],
+				member_details[53],
+				member_details[54],
+				member_details[55],
+				member_details[56],
+				member_details[57],
+				member_details[58],
+				member_details[60],
+				member_details[61],
+				member_details[62],
+				member_details[63],
+				member_details[64],
+				member_details[65],
+				member_details[66],
+				member_details[67],
+				member_details[68],
+				member_details[69],
+				member_details[70],
+				member_details[71]
+				);
+		
+		/*
+		if(!(memnos.equals("0"))){
+
+			memnos.trim();
+			String[] allmemnos=memnos.split("\\|");
+			String[] member_details = new String[10];
+			String balance = "";
+			for (String memno : allmemnos) { 
+				//balance = CalculateMemberMemnoBalanceServiceDBAccess(memno);
+				//balancedetails = new Balance(phoneno, member_details[0], member_details[0]);
+			}
+					
+		}
+		*/
+        /*
+		if(!(phonenos.equals("0"))){
+			
+			phonenos.trim();
+			String[] allphonenos=phonenos.split("\\|");
+			
+			for (String phoneno : allphonenos) {
+				
+				
+			
+		      //  for(String str : member_details){
+		      //      System.out.println(str+"  I AM IN");
+		      //  }
+		    
+		        
+				
+
+						
+			}
+			
+
+		}
+		
+		*/
+		return balancedetails;
+
+		}
+	
+	
+	public Balance getMemberBalanceMemberNumber(String text_code, String phonenos, String memnos) {
+		
+		String[] member_details = new String[80];
+		System.out.println("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHEEEEEEEEEEEELLLLLLO");
+		member_details = CalculateMemberMemnoBalanceServiceDBAccess(memnos);
+
+		Balance balancedetails = new Balance(
+				member_details[0],
+				member_details[1],
+				member_details[2], 
+				member_details[3],
+				member_details[4],
+				member_details[5],
+				member_details[6],
+				member_details[7],
+				member_details[8], 
+				member_details[9],
+				member_details[10],
+				member_details[11],
+				member_details[12],
+				member_details[13],
+				member_details[14], 
+				member_details[15],
+				member_details[16],
+				member_details[17],
+				member_details[18],
+				member_details[19],
+				member_details[20], 
+				member_details[21],
+				member_details[22],
+				member_details[23],
+				member_details[24],
+				member_details[25],
+				member_details[26], 
+				member_details[27],
+				member_details[28],
+				member_details[29],
+				member_details[30],
+				member_details[31],
+				member_details[32], 
+				member_details[33],
+				member_details[34],
+				member_details[35],
+				member_details[36],
+				member_details[37],
+				member_details[38], 
+				member_details[39],
+				member_details[40],
+				member_details[41],
+				member_details[42],
+				member_details[43],
+				member_details[44], 
+				member_details[45],
+				member_details[46],
+				member_details[47],
+				member_details[48],
+				member_details[49],
+				member_details[50], 
+				member_details[51],
+				member_details[52],
+				member_details[53],
+				member_details[54],
+				member_details[55],
+				member_details[56],
+				member_details[57],
+				member_details[58],
+				member_details[60],
+				member_details[61],
+				member_details[62],
+				member_details[63],
+				member_details[64],
+				member_details[65],
+				member_details[66],
+				member_details[67],
+				member_details[68],
+				member_details[69],
+				member_details[70],
+				member_details[71]
+				);
+		
+		/*
+		if(!(memnos.equals("0"))){
+
+			memnos.trim();
+			String[] allmemnos=memnos.split("\\|");
+			String[] member_details = new String[10];
+			String balance = "";
+			for (String memno : allmemnos) { 
+				//balance = CalculateMemberMemnoBalanceServiceDBAccess(memno);
+				//balancedetails = new Balance(phoneno, member_details[0], member_details[0]);
+			}
+					
+		}
+		*/
+        /*
+		if(!(phonenos.equals("0"))){
+			
+			phonenos.trim();
+			String[] allphonenos=phonenos.split("\\|");
+			
+			for (String phoneno : allphonenos) {
+				
+				
+			
+		      //  for(String str : member_details){
+		      //      System.out.println(str+"  I AM IN");
+		      //  }
+		    
+		        
+				
+
+						
+			}
+			
+
+		}
+		
+		*/
+		return balancedetails;
+
 
 		}
 	
@@ -3484,7 +4386,11 @@ public class MembersService implements IMembersService {
 							member_details[64],
 							member_details[65],
 							member_details[66],
-							member_details[67]
+							member_details[67],
+							member_details[68],
+							member_details[69],
+							member_details[70],
+							member_details[71]
 							);
 			}
 
@@ -3573,7 +4479,11 @@ public class MembersService implements IMembersService {
 						member_details[64],
 						member_details[65],
 						member_details[66],
-						member_details[67]
+						member_details[67],
+						member_details[68],
+						member_details[69],
+						member_details[70],
+						member_details[71]
 						);
 			}
 
@@ -3662,7 +4572,11 @@ public class MembersService implements IMembersService {
 						member_details[64],
 						member_details[65],
 						member_details[66],
-						member_details[67]
+						member_details[67],
+						member_details[68],
+						member_details[69],
+						member_details[70],
+						member_details[71]
 						);
 			}
 
@@ -3675,7 +4589,7 @@ public class MembersService implements IMembersService {
 	public List<Member> getSearchMembers(String q, String customerid, String country, int startindex, int maxresults, int status, String restrict,  String orderby) {
 
 		members.clear();
-		RequestMap data = new RequestMap(q, customerid, country, startindex, maxresults, status, restrict,  orderby);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(q, customerid, country, startindex, maxresults, status, restrict,  orderby);
 		SearchMembersServiceDBAccess(data.getDBParams(), data.getQ(), data.getCustomerId(), data.getCountry(), data.getStartIndex(), data.getMaxResults(), data.getStatus(), data.getRestrict(), data.getOrderBy());
         List<Member> matchingMembers = new ArrayList<Member>(members.values());
 		return matchingMembers;
@@ -3686,7 +4600,7 @@ public class MembersService implements IMembersService {
 	public Member getMember(String id, String customerid, String country) throws IllegalArgumentException {
 		
 		members.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		SingleMembersServiceDBAccess(data.getDBParams(), id, customerid, country);
 		//CONNECT TO THE DB PULL DATA AND PUT IT INT THE VIEW
 		
@@ -3700,7 +4614,7 @@ public class MembersService implements IMembersService {
 	public Member getMemberChanges(String id, String customerid, String country) throws IllegalArgumentException {
 		
 		members.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		SingleMembersServiceDBAccessChanges(data.getDBParams(), id, customerid, country);
 		//CONNECT TO THE DB PULL DATA AND PUT IT INT THE VIEW
 		
@@ -3719,7 +4633,7 @@ public class MembersService implements IMembersService {
 		}
 		
 		//members.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		int id = idGen.incrementAndGet();
 		String test = "";
 		members.put(test, member);
@@ -3734,7 +4648,7 @@ public class MembersService implements IMembersService {
 			throw new IllegalArgumentException("Member "+member+" already exists.");
 		}
 
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		int clientid = 0;
 		String id = "";
 		id = addMembersServiceDBAccess(data.getDBParams(), clientid, member, medical_allocation_cover, staff_number, customerid, country);
@@ -3744,6 +4658,23 @@ public class MembersService implements IMembersService {
 		return id;
 	}
 	
+	
+	public String addCardReprint(Member member, String medical_allocation_cover,  String staff_number, String customerid, String country) throws IllegalArgumentException {
+
+		members.clear();
+		if(members.containsValue(member)){
+			throw new IllegalArgumentException("Member "+member+" already exists.");
+		}
+
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
+		int clientid = 0;
+		String id = "";
+		id = addMembersServiceDBAccess(data.getDBParams(), clientid, member, medical_allocation_cover, staff_number, customerid, country);
+
+		members.put(id, member);
+		
+		return id;
+	}
 	
 
 	
@@ -3755,7 +4686,7 @@ public class MembersService implements IMembersService {
 		// TODO Auto-generated method stub
 
 		
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		
 		SingleMembersServiceDBAccess(data.getDBParams(), id, customerid, country);
 		if(!members.containsKey(id)){
@@ -3783,7 +4714,7 @@ public class MembersService implements IMembersService {
 		}
 		
 		//members.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		int id = idGen.incrementAndGet();
 		String test = "";
 		members.put(test, member);
@@ -3800,6 +4731,13 @@ public class MembersService implements IMembersService {
 		*/
 		//members.clear();
 		members.put(id, member);
+		return id;
+	}
+	
+	
+	public String addTransaction(Transaction transaction, String id) throws IllegalArgumentException {	
+		
+		transactions.put(id, transaction);
 		return id;
 	}
 	
@@ -3884,7 +4822,7 @@ public class MembersService implements IMembersService {
 	public void updateMember(String id, String customerid, String country) throws IllegalArgumentException {
 		
 		members.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		SingleMembersServiceDBAccess(data.getDBParams(), id, customerid, country);
 		//CONNECT TO THE DB, PULL DATA AND PUT IT INTO THE VIEW
 		if(!members.containsKey(id)){
@@ -3902,7 +4840,7 @@ public class MembersService implements IMembersService {
 	public void updateSwitchedMember(String id, String customerid, String country) throws IllegalArgumentException {
 	    
 		//members.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		SingleMembersServiceDBAccess(data.getDBParams(), id, customerid, country);
 		//CONNECT TO THE DB, PULL DATA AND PUT IT INTO THE VIEW
 		if(!members.containsKey(id)){
@@ -3916,7 +4854,7 @@ public class MembersService implements IMembersService {
 	public String deleteMember(String id, String customerid, String country) throws IllegalArgumentException {
 		
 		//members.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 
 		SingleMembersServiceDBAccess(data.getDBParams(), id, customerid, country);
 		if(!members.containsKey(id)){
@@ -3939,7 +4877,7 @@ public class MembersService implements IMembersService {
 			throw new IllegalArgumentException("Activation "+activation+" already exists.");
 		}
 		
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		String id = "";
              
 		id = addActivationsMembersServiceDBAccess(data.getDBParams(), id, activation, customerid, country);
@@ -3961,7 +4899,7 @@ public class MembersService implements IMembersService {
 		String customercountry = "";
 		int status = 0;
 		//members.clear();
-		RequestMap data = new RequestMap(customerid, country, startindex, maxresults, status, restrict,  orderby);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country, startindex, maxresults, status, restrict,  orderby);
 		ActivateMembersServiceDBAccess(data.getDBParams(), customerid, customercountry, startindex, maxresults, status, restrict, orderby);
 		List<Activation> allactivations = new ArrayList<Activation>(activations.values());
 
@@ -3997,7 +4935,7 @@ public class MembersService implements IMembersService {
 			throw new IllegalArgumentException("Deactivation "+deactivation+" already exists.");
 		}
 		//
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		String id = "";
              
 		id = addDeactivationsMembersServiceDBAccess(data.getDBParams(), id, deactivation, customerid, country);
@@ -4019,7 +4957,7 @@ public class MembersService implements IMembersService {
 		String customercountry = "";
 		int status = 0;
 		//members.clear();
-		RequestMap data = new RequestMap(customerid, country, startindex, maxresults, status, restrict,  orderby);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country, startindex, maxresults, status, restrict,  orderby);
 		DeactivateMembersServiceDBAccess(data.getDBParams(), customerid, customercountry, startindex, maxresults, status, restrict, orderby);
 		List<Deactivation> alldeactivations = new ArrayList<Deactivation>(deactivations.values());
 
@@ -4053,7 +4991,7 @@ public class MembersService implements IMembersService {
 			throw new IllegalArgumentException("Cardreprint "+cardreprint+" already exists.");
 		}
 
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		int id = 0;
         String reprintid = "";
 		//reprintid = addCardreprintsMembersServiceDBAccess(data.getDBParams(), id, cardreprint, customerid, country);
@@ -4168,7 +5106,7 @@ public class MembersService implements IMembersService {
 			throw new IllegalArgumentException("Categorychange "+categorychange+" already exists.");
 		}
 		//
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		String id = "";
 
 		id = addCategorychangesMembersServiceDBAccess(data.getDBParams(), id, categorychange, customerid, country);
@@ -4189,7 +5127,7 @@ public class MembersService implements IMembersService {
 		String customercountry = "";
 		int status = 0;
 		//members.clear();
-		RequestMap data = new RequestMap(customerid, country, startindex, maxresults, status, restrict,  orderby);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country, startindex, maxresults, status, restrict,  orderby);
 		MoneyCategorychangeMembersServiceDBAccess(data.getDBParams(), customerid, customercountry, startindex, maxresults, status, restrict, orderby);
 
 		List<Categorychange> allcategorychanges = new ArrayList<Categorychange>(categorychanges.values());
@@ -4226,7 +5164,7 @@ public class MembersService implements IMembersService {
 			throw new IllegalArgumentException("fingerprintremoval "+fingerprintremoval+" already exists.");
 		}
 	
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		String id = "";
 
 		id = addFingerprintremovalsMembersServiceDBAccess(data.getDBParams(), id, fingerprintremoval, customerid, country);
@@ -4247,7 +5185,7 @@ public class MembersService implements IMembersService {
 		String customercountry = "";
 		int status = 0;
 		//members.clear();
-		RequestMap data = new RequestMap(customerid, country, startindex, maxresults, status, restrict,  orderby);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country, startindex, maxresults, status, restrict,  orderby);
 		FingerprintremovalMembersServiceDBAccess(data.getDBParams(), customerid, customercountry, startindex, maxresults, status, restrict, orderby);
 
 		List<Fingerprintremoval> allfingerprintremovals = new ArrayList<Fingerprintremoval>(fingerprintremovals.values());
@@ -4284,7 +5222,7 @@ public class MembersService implements IMembersService {
 			throw new IllegalArgumentException("Money "+moneyaddition+" already exists.");
 		}
 		
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		String id = "";
 		
 		id = addMoneyadditionsMembersServiceDBAccess(data.getDBParams(), id, moneyaddition, customerid, country);
@@ -4305,7 +5243,7 @@ public class MembersService implements IMembersService {
 		String customercountry = "";
 		int status = 0;
 		//members.clear();
-		RequestMap data = new RequestMap(customerid, country, startindex, maxresults, status, restrict,  orderby);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country, startindex, maxresults, status, restrict,  orderby);
 		MoneyadditionMembersServiceDBAccess(data.getDBParams(), customerid, customercountry, startindex, maxresults, status, restrict, orderby);
 
 		List<MoneyAddition> allmoneyadditions = new ArrayList<MoneyAddition>(moneyadditions.values());
@@ -4343,7 +5281,7 @@ public class MembersService implements IMembersService {
 			throw new IllegalArgumentException("Money "+moneyreduction+" already exists.");
 		}
 		
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		String id = "";
 		
 		id = addMoneyreductionsMembersServiceDBAccess(data.getDBParams(), id, moneyreduction, customerid, country);
@@ -4364,7 +5302,7 @@ public class MembersService implements IMembersService {
 		String customercountry = "";
 		int status = 0;
 		//members.clear();
-		RequestMap data = new RequestMap(customerid, country, startindex, maxresults, status, restrict,  orderby);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country, startindex, maxresults, status, restrict,  orderby);
 		MoneyreductionMembersServiceDBAccess(data.getDBParams(), customerid, customercountry, startindex, maxresults, status, restrict, orderby);
 
 		List<MoneyReduction> allmoneyreductions = new ArrayList<MoneyReduction>(moneyreductions.values());
@@ -4405,11 +5343,75 @@ public class MembersService implements IMembersService {
 	     return sqlDate;
 	}
 
+	public String ChangeSmartPinNo(String phoneNumber, String memberNumber, String names, String cardSerial, String new_pin) {
+		// TODO Auto-generated method stub
+		RequestMapInteractive data = new RequestMapInteractive("ussd", "kenya");
+		String id = "";
+
+		id = ChangeSmartPinNoCardServiceDBAccess(data.getDBParams(), id, phoneNumber, memberNumber, names, cardSerial, "TEST", new_pin);
+		return id;
+	}
+	
+	public String addUSSDCardReprint(String phoneNumber, String memberNumber, String names, String cardSerial, String paymentReceipts) {
+		// TODO Auto-generated method stub
+		RequestMapInteractive data = new RequestMapInteractive("ussd", "kenya");
+		String id = "";
+
+		id = addUSSDCardServiceDBAccess(data.getDBParams(), id, phoneNumber, memberNumber, names, cardSerial, paymentReceipts, "REPRINT");
+		return id;
+	}
+
+	public String addUSSDHealthCareCenters(String phoneNumber, String memberNumber, String names, String cardSerial) {
+		// TODO Auto-generated method stub
+		RequestMapInteractive data = new RequestMapInteractive("ussd", "kenya");
+		String message = "";
+		List<Transaction> details = null;
+
+		try {
+			details = getMemberTransactionsMemberNumber(memberNumber, "", "kenya", 1, 5, "log_time desc");
+			} catch(IllegalArgumentException iae) {
+			  System.out.println("Just caught an IllegalArgumentException..." + iae.getMessage());
+			}
+
+		if(IsNullOrEmpty(details)){
+			message = "Dear Customer, no claim was found in our database";	
+		}else{
+			Transaction myObject = details.get(0);
+			for(Transaction trObject : details){
+			   //do someting to anObject...
+				message = message +" Date: "+trObject.getLogTime()+" Amount: Ksh"+trObject.getEncounterAmt()+" At: "+getProvider(trObject.getSkspKey())+", ";
+			}	
+		}
+
+
+		return message;
+	}
 
 
 
+	public String addUSSDCardSDL(String phoneNumber, String memberNumber, String names, String cardSerial) {
+		// TODO Auto-generated method stub
+		RequestMapInteractive data = new RequestMapInteractive("ussd", "kenya");
+		String id = "";
 
+		id = addUSSDCardServiceDBAccess(data.getDBParams(), id, phoneNumber, memberNumber, names, cardSerial, null, "DEACTIVATE");
+		return id;
+	}
+	
+	public List<Transaction> getMemberTransactionsMemberNumber(String memberno, String q, String country, int startindex, int maxresults, String orderby) {
 
+		transactions.clear();
+		RequestMapIntegstaging data = new RequestMapIntegstaging(q, memberno, country, startindex, maxresults, orderby);                                            
+		SearchTransactionsServiceDBAccess(data.getDBParams(), data.getMemberNo(), data.getQ(), data.getCountry(), data.getStartIndex(), data.getMaxResults(), data.getOrderBy());
+        List<Transaction> matchingTransactions = new ArrayList<Transaction>(transactions.values());
+		return matchingTransactions;
+	}
+	
+
+	
+	public static <T> boolean IsNullOrEmpty(Collection<T> list) {
+	    return list == null || list.isEmpty();
+	}
 
 
 

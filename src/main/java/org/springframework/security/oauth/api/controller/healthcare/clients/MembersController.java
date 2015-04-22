@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,7 @@ import org.springframework.security.oauth.api.model.healthcare.clients.MoneyRedu
 import org.springframework.security.oauth.api.model.healthcare.clients.MoneyReductionsWrapper;
 import org.springframework.security.oauth.api.model.healthcare.clients.Renewal;
 import org.springframework.security.oauth.api.model.healthcare.clients.RenewalsWrapper;
+import org.springframework.security.oauth.api.model.healthcare.clients.Transaction;
 import org.springframework.security.oauth.api.service.healthcare.clients.IMembersService;
 import org.springframework.security.oauth.api.utils.SpringMVCUtils;
 import org.springframework.stereotype.Controller;
@@ -48,6 +50,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
+
+
+
 
 
 
@@ -99,7 +104,21 @@ public class MembersController {
 	                           Start of MEMBERS
 	#####################################################################################################
 	 */
-		
+	
+	@RequestMapping(value = "/members/transaction", method = RequestMethod.GET)
+	public ModelAndView getMemberTransactions(
+			@RequestParam(value = "memberno", defaultValue = "0") String memberno,
+			@RequestParam(value = "q", defaultValue = "") String q,
+			@RequestParam(value = "country") String country,
+			@RequestParam(value = "startindex", defaultValue = "1") int startindex,
+			@RequestParam(value = "maxresults", defaultValue = "2") int maxresults,
+			@RequestParam(value = "orderby", defaultValue = "log_time desc") String orderby
+			) {
+
+		List<Transaction> details = membersService.getMemberTransactionsMemberNumber(memberno, q, country, startindex, maxresults, orderby);
+		return SpringMVCUtils.getOutputModel(details);
+	}
+	
 	@RequestMapping(value = "/members/balance", method = RequestMethod.GET)
 	public ModelAndView getMemberBalance(
 			@RequestParam(value = "text_code", defaultValue = "0") String text_code,
@@ -107,7 +126,18 @@ public class MembersController {
 			@RequestParam(value = "memberno", defaultValue = "0") String memberno
 			) {
 
-		Balance details = membersService.getMemberBalance(text_code, phoneno, memberno);
+		Balance details = membersService.getMemberBalanceMemberNumber(text_code, phoneno, memberno);
+		return SpringMVCUtils.getOutputModel(details);
+	}
+		
+	@RequestMapping(value = "/members/balance/phone", method = RequestMethod.GET)
+	public ModelAndView getMemberBalancePhoneNumber(
+			@RequestParam(value = "text_code", defaultValue = "0") String text_code,
+			@RequestParam(value = "phoneno", defaultValue = "0") String phoneno,
+			@RequestParam(value = "memberno", defaultValue = "0") String memberno
+			) {
+
+		Balance details = membersService.getMemberBalancePhoneNumber(text_code, phoneno, memberno);
 		return SpringMVCUtils.getOutputModel(details);
 	}
 	

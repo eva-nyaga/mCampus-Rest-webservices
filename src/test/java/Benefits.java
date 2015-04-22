@@ -80,6 +80,15 @@ public class Benefits {
 			  hm.put("INSURER_ID", "INSURER_ID");
 			  hm.put("LAYERED_IND", "LAYERED_IND");
 			  
+			  
+			  hm.put("LAYER1_TYPE", "LAYER1_TYPE");
+			  hm.put("LAYER1_VALUE", "LAYER1_VALUE");
+			  hm.put("LAYER2_TYPE", "LAYER2_TYPE");
+			  hm.put("LAYER2_VALUE", "LAYER2_VALUE");
+			  hm.put("LAYER3_TYPE", "LAYER3_TYPE");
+			  hm.put("LAYER3_VALUE", "LAYER3_VALUE");
+
+			  
 	      
 	      // Get a set of the entries
 	      Set set = hm.entrySet();
@@ -155,7 +164,7 @@ public class Benefits {
 			Connection dbConnection = null;
 
 			final String DB_DRIVER = "oracle.jdbc.driver.OracleDriver";
-			final String DB_CONNECTION = "jdbc:oracle:thin:@192.168.1.27:1521/integstaging";
+			final String DB_CONNECTION = "jdbc:oracle:thin:@192.168.1.228:1521/integstaging";
 			final String DB_USER = "INTEG_USER";
 			final String DB_PASSWORD = "integ_123";
 	 

@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.security.oauth.api.data.healthcare.clients.DBConnection;
-import org.springframework.security.oauth.api.data.healthcare.clients.RequestMap;
+import org.springframework.security.oauth.api.data.healthcare.clients.RequestMapIntegstaging;
 import org.springframework.security.oauth.api.model.healthcare.clients.Member;
 import org.springframework.security.oauth.api.model.healthcare.clients.Scheme;
 import org.springframework.security.oauth.api.model.healthcare.clients.Person;
@@ -97,6 +97,8 @@ public class SchemesService implements ISchemesService {
 	       System.out.println("AFTER "+MEMBERS_MAP.get("POL_NAME"));
 		// TODO Auto-generated method stub
 			Connection dbMemberConnection = null;
+			Connection dbSchemeConnection = null;
+			
 			//Connection dbConnection = null;
 			PreparedStatement preparedStatement = null;
 	 
@@ -244,6 +246,68 @@ public class SchemesService implements ISchemesService {
 				}
 	 
 			}
+			
+			
+			String insertTableSchemesSQL = "INSERT INTO AAR_OWNER.MAP_AAR_COMPANIES"
+					+ "(" +
+					" CLN_CODE," +
+					" COMPANY_NAME," +
+					" POL_ID," +
+					" STATUS," +
+					" SMART_CODE2," +
+					" ALPHACOUNT," +
+					" CLN_POL_CODE," +
+					" CLN_POL_CODE_CLIENT" +
+					")" +
+					" VALUES"
+					+ "( ?, ?, ?, ?, ?, ?, ?, ? )";
+
+			System.out.println(insertTableSchemesSQL);
+
+			try {
+
+				dbSchemeConnection = DBConnection.getConnection(DBParams);
+				preparedStatement = dbSchemeConnection.prepareStatement(insertTableSchemesSQL);
+				preparedStatement.setString(1, scheme.getClnCode());
+				preparedStatement.setString(2, scheme.getCompanyName());
+				preparedStatement.setString(3, scheme.getClnPolId());
+				preparedStatement.setString(4, scheme.getPolicyStatus());
+				preparedStatement.setString(5, scheme.getSmartCode());
+				preparedStatement.setString(6, "");
+				preparedStatement.setString(7, scheme.getClnPolCode());
+				preparedStatement.setString(8, scheme.getClnPolCodeClient());
+				
+				// execute insert SQL stetement
+				preparedStatement .executeUpdate();
+
+				System.out.println("Record is inserted into DBUSER table!");
+				
+			} catch (SQLException e) {
+	 
+				System.out.println(e.getMessage());
+				throw new IllegalArgumentException(e.getMessage());
+	 
+			} finally {
+	 
+				if (preparedStatement != null) {
+					try {
+						preparedStatement.close();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+	 
+				if (dbSchemeConnection != null) {
+					try {
+						dbSchemeConnection.close();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+	 
+			}
 
 		return id;	
 	}
@@ -268,45 +332,30 @@ public class SchemesService implements ISchemesService {
 	 
 		//	"":"COMPANY_NAME","":"STATUS","":"ALPHACOUNT","":"CLN_POL_CODE","":"SMART_CODE2","":"CLN_CODE","":"POL_ID"}
 	
-			String insertTableSQL = "INSERT INTO "+SMART[4]+"."+SMART[20]+""
+
+			  
+			//"+SMART[4]+"."+SMART[20]+"
+			  
+			String insertTableSQL = "INSERT INTO AAR_OWNER.STG_AAR_POLICY_ANNIV"
 					+ "(" +
-					" "+MEMBERS_MAP.get("CUT_OFF_IND")+"," +
-					" "+MEMBERS_MAP.get("CUT_OFF_AGE")+"," +
-					" "+MEMBERS_MAP.get("INVOICE_PT")+"," +
-					" "+MEMBERS_MAP.get("INVOICE_CONTACT")+"," +
-					" "+MEMBERS_MAP.get("INV_CONTACT_EMAIL")+"," +
-					" "+MEMBERS_MAP.get("INV_PTCONTACT_TEL")+"," +
-					" "+MEMBERS_MAP.get("DELIVERY_POINT")+"," +
-					" "+MEMBERS_MAP.get("DEL_CONTACT")+"," +
-					" "+MEMBERS_MAP.get("DEL_CONTACT_EMAIL")+"," +
-					" "+MEMBERS_MAP.get("DEL_PTCONTACT_TEL")+"," +
-					" "+MEMBERS_MAP.get("POLICY_CURRENCY_ID")+"," +
-					" "+MEMBERS_MAP.get("CAPITATION_IND")+"," +
-					" "+MEMBERS_MAP.get("CAPITATION_AMOUNT")+"," +
-					" "+MEMBERS_MAP.get("CAP_FREQOF_USE")+"," +
-					" "+MEMBERS_MAP.get("CAP_WITHIN_DURATION")+"," +
-					" "+MEMBERS_MAP.get("CAP_CONSEQ_IND")+"," +
-					" "+MEMBERS_MAP.get("POL_TYPE_ID")+"," +
-					" "+MEMBERS_MAP.get("USER_ID")+"," +
-					" "+MEMBERS_MAP.get("CLAIM_GRACE_PERIOD")+"," +
-					" "+MEMBERS_MAP.get("SPEND_THRESPCT")+"," +
-					" "+MEMBERS_MAP.get("POLICY_STATUS")+"," +
-					" "+MEMBERS_MAP.get("MODIFICATION_DATE")+"," +
-					" "+MEMBERS_MAP.get("CLN_CODE")+"," +
-					" "+MEMBERS_MAP.get("AUTO_REPLENISH_IND")+"," +
-					" "+MEMBERS_MAP.get("CLN_POL_TYPE")+"," +
-					" "+MEMBERS_MAP.get("CLN_POL_CODE")+"," +
-					" "+MEMBERS_MAP.get("CLN_POL_ID")+"," +
-					" "+MEMBERS_MAP.get("POLICY_NUMBER")+"," +
-					" "+MEMBERS_MAP.get("POL_NAME")+"," +
-					" "+MEMBERS_MAP.get("START_DATE")+"," +
-					" "+MEMBERS_MAP.get("END_DATE")+"," +
-					" "+MEMBERS_MAP.get("COM_ID")+"," +
-					" "+MEMBERS_MAP.get("REC_ID")+"," +
-					" "+MEMBERS_MAP.get("SMART_CODE")+" " +
+					" START_DATE," +
+					" END_DATE," +
+					" POLICY_CURRENCY_ID," +
+					" POLICY_CONV_RATE," +
+					" USER_ID," +
+					" POLICY_STATUS," +
+					" CORP_ID," +
+					" REC_ID," +
+					" ANNIV," +
+					" PICK_STATUS," +
+					" MODIFICATION_DATE," +
+					" ACTIONED_DATE," +
+					" TRANS_STATUS," +
+					" TRANS_STATUS_CODE," +
+					" INSURER_ID" +
 					")" +
 					" VALUES"
-					+ "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+					+ "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			
 			System.out.println(insertTableSQL);
 			
@@ -320,41 +369,21 @@ public class SchemesService implements ISchemesService {
 			    
 				dbMemberConnection = DBConnection.getConnection(DBParams);
 				preparedStatement = dbMemberConnection.prepareStatement(insertTableSQL);
-				preparedStatement.setString(1, schemeRenewal.getCutOffInd());
-				preparedStatement.setString(2, schemeRenewal.getCutOffAge());
-				preparedStatement.setString(3, schemeRenewal.getInvoicePt());
-				preparedStatement.setString(4, schemeRenewal.getInvoiceContact());
-				preparedStatement.setString(5, schemeRenewal.getInvContactEmail());
-				preparedStatement.setString(6, schemeRenewal.getInvPtcontactTel());
-				preparedStatement.setString(7, schemeRenewal.getDeliveryPoint());
-				preparedStatement.setString(8, schemeRenewal.getDelContact());
-				preparedStatement.setString(9, schemeRenewal.getDelContactEmail());
-				preparedStatement.setString(10, schemeRenewal.getDelPtcontactTel());				
-				preparedStatement.setString(11, schemeRenewal.getPolicyCurrencyId());
-				preparedStatement.setString(12, schemeRenewal.getCapitationInd());
-				preparedStatement.setString(13, schemeRenewal.getCapitationAmount());
-				preparedStatement.setString(14, schemeRenewal.getCapFreqofUse());
-				preparedStatement.setString(15, schemeRenewal.getCapWithinDuration());				
-				preparedStatement.setString(16, schemeRenewal.getCapConseqInd());
-				preparedStatement.setString(17, schemeRenewal.getPolTypeId());
-				preparedStatement.setString(18, schemeRenewal.getUserId());
-				preparedStatement.setString(19, schemeRenewal.getClaimGracePeriod());
-				preparedStatement.setString(20, schemeRenewal.getSpendThrespct());				
-				preparedStatement.setString(21, "0");
-				preparedStatement.setDate(22, schemeRenewal.getModificationDate());
-				preparedStatement.setString(23, schemeRenewal.getClnComCode());
-				preparedStatement.setString(24, schemeRenewal.getAutoReplenishInd());				
-				preparedStatement.setString(25, schemeRenewal.getClnPolType());
-				preparedStatement.setString(26, schemeRenewal.getClnPolCode());
-				preparedStatement.setString(27, schemeRenewal.getClnPolId());
-				preparedStatement.setString(28, schemeRenewal.getPolicyNumber());
-				preparedStatement.setString(29, schemeRenewal.getPolName());
-				preparedStatement.setDate(30, schemeRenewal.getStartDate());
-				preparedStatement.setDate(31, schemeRenewal.getEndDate());
-				preparedStatement.setString(32, id);
-				preparedStatement.setString(33, recid);
-				preparedStatement.setString(34, schemeRenewal.getSmartCode());
-
+				preparedStatement.setDate(1, schemeRenewal.getStartDate());
+				preparedStatement.setDate(2, schemeRenewal.getEndDate());
+				preparedStatement.setString(3, schemeRenewal.getPolicyCurrencyId());
+				preparedStatement.setString(4, schemeRenewal.getPolicyConvRate());
+				preparedStatement.setString(5, schemeRenewal.getUserId());
+				preparedStatement.setString(6, schemeRenewal.getPolicyStatus());
+				preparedStatement.setString(7, schemeRenewal.getClnPolCode());
+				preparedStatement.setString(8, recid);
+				preparedStatement.setString(9, schemeRenewal.getAnniv());
+				preparedStatement.setString(10, "0");
+				preparedStatement.setDate(11, getCurrentTimeStamp());
+				preparedStatement.setDate(12, getCurrentTimeStamp());
+				preparedStatement.setString(13, "Renewal");
+				preparedStatement.setString(14, "3");
+				preparedStatement.setString(15, schemeRenewal.getInsurerId());				
 
 				// execute insert SQL stetement
 
@@ -1063,7 +1092,7 @@ public class SchemesService implements ISchemesService {
 		String customertable = "";
 		String customercountry = "";
 		schemes.clear();
-		RequestMap data = new RequestMap(customerid, country, startindex, maxresults, status, restrict,  orderby);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country, startindex, maxresults, status, restrict,  orderby);
 		SchemesServiceDBAccess(data.getDBParams(), customerid, customercountry, startindex, maxresults, status, restrict, orderby);
 		List<Scheme> allschemes = new ArrayList<Scheme>(schemes.values());
 
@@ -1093,7 +1122,7 @@ public class SchemesService implements ISchemesService {
 	public List<Scheme> getSearchSchemes(String q, String customerid, String country, int startindex, int maxresults, int status, String restrict,  String orderby) {
 
 		schemes.clear();
-		RequestMap data = new RequestMap(q, customerid, country, startindex, maxresults, status, restrict,  orderby);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(q, customerid, country, startindex, maxresults, status, restrict,  orderby);
 		SearchSchemesServiceDBAccess(data.getDBParams(), data.getQ(), data.getCustomerId(), data.getCountry(), data.getStartIndex(), data.getMaxResults(), data.getStatus(), data.getRestrict(), data.getOrderBy());
         List<Scheme> matchingSchemes = new ArrayList<Scheme>(schemes.values());
 		return matchingSchemes;
@@ -1104,7 +1133,7 @@ public class SchemesService implements ISchemesService {
 	public Scheme getScheme(String id, String customerid, String country) throws IllegalArgumentException {
 		
 		schemes.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		SinglePolicySchemesServiceDBAccess(data.getDBParams(), id, customerid, country);
 		//CONNECT TO THE DB PULL DATA AND PUT IT INT THE VIEW
 		Scheme p = schemes.get(id);
@@ -1118,7 +1147,7 @@ public class SchemesService implements ISchemesService {
 	public String addScheme(Scheme scheme, String customerid, String country) throws IllegalArgumentException {
 
 		schemes.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		SingleSchemesServiceDBAccess(data.getDBParams(), scheme.getClnCode(), customerid, country);
 		
 		if(schemes.containsValue(scheme)){
@@ -1143,7 +1172,7 @@ public class SchemesService implements ISchemesService {
 		}
 		
 		//schemes.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		String id = "";
 		
 		schemes.put(id, scheme);
@@ -1167,7 +1196,7 @@ public class SchemesService implements ISchemesService {
 	public void updateScheme(String id, String customerid, String country) throws IllegalArgumentException {
 		
 		schemes.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		SingleSchemesServiceDBAccess(data.getDBParams(), id, customerid, country);
 		//CONNECT TO THE DB, PULL DATA AND PUT IT INTO THE VIEW
 		if(!schemes.containsKey(id)){
@@ -1184,7 +1213,7 @@ public class SchemesService implements ISchemesService {
 	public String updateRenewalsScheme(String polid, SchemeRenewal schemeRenewal, String customerid, String country) throws IllegalArgumentException {
 
 		schemeRenewals.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		//SingleSchemesServiceDBAccess(data.getDBParams(), polid, customerid, country);
 		
 		if(schemeRenewals.containsValue(schemeRenewal)){
@@ -1203,7 +1232,7 @@ public class SchemesService implements ISchemesService {
 	public void updateSwitchedScheme(String id, String customerid, String country) throws IllegalArgumentException {
 	    
 		//schemes.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		SingleSchemesServiceDBAccess(data.getDBParams(), id, customerid, country);
 		//CONNECT TO THE DB, PULL DATA AND PUT IT INTO THE VIEW
 		if(!schemes.containsKey(id)){
@@ -1217,7 +1246,7 @@ public class SchemesService implements ISchemesService {
 	public void deleteScheme(String id, String customerid, String country) throws IllegalArgumentException {
 		
 		schemes.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		SingleSchemesServiceDBAccess(data.getDBParams(), id, customerid, country);
 		if(!schemes.containsKey(id)){
 			throw new IllegalArgumentException("Unable to find scheme with id "+id);
@@ -1233,7 +1262,7 @@ public class SchemesService implements ISchemesService {
 	public String updateActivationsScheme(String polid, Scheme schemeActivation, String customerid, String country) throws IllegalArgumentException {
 
 		schemeActivations.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		//SingleSchemesServiceDBAccess(data.getDBParams(), polid, customerid, country);
 		
 		if(schemeActivations.containsValue(schemeActivation)){
@@ -1252,7 +1281,7 @@ public class SchemesService implements ISchemesService {
 	public String updateDeactivationsScheme(String polid, Scheme schemeDeactivation, String customerid, String country) throws IllegalArgumentException {
 
 		schemeDeactivations.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		//SingleSchemesServiceDBAccess(data.getDBParams(), polid, customerid, country);
 		
 		if(schemeDeactivations.containsValue(schemeDeactivation)){
@@ -1276,5 +1305,15 @@ public class SchemesService implements ISchemesService {
 		  long current= System.currentTimeMillis();
 	    return current++;
 	    }
+	
+	private  java.sql.Date getCurrentTimeStamp() {
+	     java.util.Date utilDate = new java.util.Date();
+	     java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+	     System.out.println("utilDate:" + utilDate);
+	     System.out.println("sqlDate:" + sqlDate); 
+	     return sqlDate;
+	}
+
+
 
  }

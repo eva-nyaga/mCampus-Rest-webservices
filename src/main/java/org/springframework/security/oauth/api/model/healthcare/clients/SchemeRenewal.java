@@ -48,6 +48,9 @@ public class SchemeRenewal {
 	private Date endDate;
 	private String comId;
 	private String smartCode;
+	private String policyConvRate;
+	private String anniv;
+	private String insurerId;
     
     
 	public SchemeRenewal() {
@@ -285,7 +288,30 @@ public class SchemeRenewal {
 	public void setSmartCode(String smartCode) {
 		this.smartCode = smartCode;
 	}
+	public String getPolicyConvRate() {
+		return policyConvRate;
+	}
+	public void setPolicyConvRate(String policyConvRate) {
+		this.policyConvRate = policyConvRate;
+	}
+	public String getAnniv() {
+		return anniv;
+	}
+	public void setAnniv(String anniv) {
+		this.anniv = anniv;
+	}
+	public String getInsurerId() {
+		return insurerId;
+	}
+	public void setInsurerId(String insurerId) {
+		this.insurerId = insurerId;
+	}
+	
+	
+	
 
+	
+	
 	
 
 
@@ -323,7 +349,10 @@ public class SchemeRenewal {
 			Date startDate,
 			Date endDate,
 			String comId,
-			String smartCode	
+			String smartCode,
+			String policyConvRate,
+			String anniv,
+			String insurerId
 			){
 		this.cutOffInd = cutOffInd;
 		this.cutOffAge = cutOffAge;
@@ -359,6 +388,9 @@ public class SchemeRenewal {
 		this.endDate = endDate;
 		this.comId = comId;
 		this.smartCode = smartCode;
+		this.policyConvRate = policyConvRate;
+		this.anniv = anniv;
+		this.insurerId = insurerId;
 	}
 
 	@Override

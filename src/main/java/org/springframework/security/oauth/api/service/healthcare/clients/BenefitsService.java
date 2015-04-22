@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.security.oauth.api.data.healthcare.clients.DBConnection;
-import org.springframework.security.oauth.api.data.healthcare.clients.RequestMap;
+import org.springframework.security.oauth.api.data.healthcare.clients.RequestMapIntegstaging;
 import org.springframework.security.oauth.api.model.healthcare.clients.Benefit;
 import org.springframework.security.oauth.api.model.healthcare.clients.Person;
 import org.springframework.stereotype.Service;
@@ -164,11 +164,17 @@ public class BenefitsService implements IBenefitsService {
                    	benefits_resultSet.getString("CUT_OFF_IND"),
                    	benefits_resultSet.getString("CUT_OFF_AGE"),
                    	benefits_resultSet.getString("INSURER_ID"),
-                   	benefits_resultSet.getString("LAYERED_IND")
+                   	benefits_resultSet.getString("LAYERED_IND"),
+                   	benefits_resultSet.getString("LAYER1_TYPE"),
+                   	benefits_resultSet.getString("LAYER1_VALUE"),
+                   	benefits_resultSet.getString("LAYER2_TYPE"),
+                   	benefits_resultSet.getString("LAYER2_VALUE"),
+                   	benefits_resultSet.getString("LAYER3_TYPE"),
+                   	benefits_resultSet.getString("LAYER3_VALUE")
                          ), stg_benefit_id);
 
                   // System.out.println("first benefit"+benefits_resultSet.getString("member_name"));
-                      
+
                          
 				}
 			} catch (SQLException e) {
@@ -271,6 +277,12 @@ public class BenefitsService implements IBenefitsService {
                  	"",
                  	"",
                  	"",
+                 	"",
+                 	"",
+                 	"",
+                 	"",
+                 	"",
+                 	"",
                  	""
                        ), smart_benefit_id);
         
@@ -356,7 +368,13 @@ public class BenefitsService implements IBenefitsService {
                            	benefits_resultSet.getString("CUT_OFF_IND"),
                            	benefits_resultSet.getString("CUT_OFF_AGE"),
                            	benefits_resultSet.getString("INSURER_ID"),
-                           	benefits_resultSet.getString("LAYERED_IND")
+                           	benefits_resultSet.getString("LAYERED_IND"),
+                           	benefits_resultSet.getString("LAYER1_TYPE"),
+                           	benefits_resultSet.getString("LAYER1_VALUE"),
+                           	benefits_resultSet.getString("LAYER2_TYPE"),
+                           	benefits_resultSet.getString("LAYER2_VALUE"),
+                           	benefits_resultSet.getString("LAYER3_TYPE"),
+                           	benefits_resultSet.getString("LAYER3_VALUE")
                        ), stg_benefit_id);
 
              
@@ -438,13 +456,20 @@ public class BenefitsService implements IBenefitsService {
 					" "+MEMBERS_MAP.get("CUT_OFF_IND")+", " +
 					" "+MEMBERS_MAP.get("CUT_OFF_AGE")+", " +
 					" "+MEMBERS_MAP.get("INSURER_ID")+", " +
-					" "+MEMBERS_MAP.get("LAYERED_IND")+" " +
+					" "+MEMBERS_MAP.get("LAYERED_IND")+", " +
+					" "+MEMBERS_MAP.get("LAYER1_TYPE")+", " +
+					" "+MEMBERS_MAP.get("LAYER1_VALUE")+", " +
+					" "+MEMBERS_MAP.get("LAYER2_TYPE")+", " +
+					" "+MEMBERS_MAP.get("LAYER2_VALUE")+", " +
+					" "+MEMBERS_MAP.get("LAYER3_TYPE")+", " +
+					" "+MEMBERS_MAP.get("LAYER3_VALUE")+" " +
 					")" +
 					" VALUES"
-					+ "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+					+ "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			
 			try {
-				
+
+               	
 				dbMemberConnection = DBConnection.getConnection(DBParams);
 				preparedStatement = dbMemberConnection.prepareStatement(insertTableSQL);
 				preparedStatement.setString(1, benefit.getClnPolId());
@@ -488,6 +513,12 @@ public class BenefitsService implements IBenefitsService {
 				preparedStatement.setString(39, benefit.getCutOffAge());
 				preparedStatement.setString(40, benefit.getInsurerId());
 				preparedStatement.setString(41, benefit.getLayeredInd());
+				preparedStatement.setString(42, benefit.getLayered1Type());
+				preparedStatement.setString(43, benefit.getLayered1Value());
+				preparedStatement.setString(44, benefit.getLayered2Type());
+				preparedStatement.setString(45, benefit.getLayered2Value());
+				preparedStatement.setString(46, benefit.getLayered3Type());
+				preparedStatement.setString(47, benefit.getLayered3Value());
 				// execute insert SQL stetement
 				preparedStatement.executeUpdate();
 
@@ -690,7 +721,13 @@ public class BenefitsService implements IBenefitsService {
                    	benefits_resultSet.getString("CUT_OFF_IND"),
                    	benefits_resultSet.getString("CUT_OFF_AGE"),
                    	benefits_resultSet.getString("INSURER_ID"),
-                   	benefits_resultSet.getString("LAYERED_IND")
+                   	benefits_resultSet.getString("LAYERED_IND"),
+                   	benefits_resultSet.getString("LAYER1_TYPE"),
+                   	benefits_resultSet.getString("LAYER1_VALUE"),
+                   	benefits_resultSet.getString("LAYER2_TYPE"),
+                   	benefits_resultSet.getString("LAYER2_VALUE"),
+                   	benefits_resultSet.getString("LAYER3_TYPE"),
+                   	benefits_resultSet.getString("LAYER3_VALUE")
                        ), stg_benefit_id);
 
 				}
@@ -759,7 +796,7 @@ public class BenefitsService implements IBenefitsService {
 		String customertable = "";
 		String customercountry = "";
 		benefits.clear();
-		RequestMap data = new RequestMap(customerid, country, startindex, maxresults, status, restrict,  orderby);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country, startindex, maxresults, status, restrict,  orderby);
 		BenefitsServiceDBAccess(data.getDBParams(), customerid, customercountry, startindex, maxresults, status, restrict, orderby);
 		List<Benefit> allbenefits = new ArrayList<Benefit>(benefits.values());
 
@@ -775,7 +812,7 @@ public class BenefitsService implements IBenefitsService {
 		String customertable = "";
 		String customercountry = "";
 		benefits.clear();
-		RequestMap data = new RequestMap(customerid, country, startindex, maxresults, status, restrict,  orderby);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country, startindex, maxresults, status, restrict,  orderby);
 		BenefitsServiceDefaultDBAccess(data.getDBParams(), customerid, customercountry, startindex, maxresults, status, restrict, orderby);
 		List<Benefit> allbenefits = new ArrayList<Benefit>(benefits.values());
 
@@ -805,7 +842,7 @@ public class BenefitsService implements IBenefitsService {
 	public List<Benefit> getSearchBenefits(String q, String customerid, String country, int startindex, int maxresults, int status, String restrict,  String orderby) {
 
 		benefits.clear();
-		RequestMap data = new RequestMap(q, customerid, country, startindex, maxresults, status, restrict,  orderby);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(q, customerid, country, startindex, maxresults, status, restrict,  orderby);
 		SearchBenefitsServiceDBAccess(data.getDBParams(), data.getQ(), data.getCustomerId(), data.getCountry(), data.getStartIndex(), data.getMaxResults(), data.getStatus(), data.getRestrict(), data.getOrderBy());
         List<Benefit> matchingBenefits = new ArrayList<Benefit>(benefits.values());
 		return matchingBenefits;
@@ -816,7 +853,7 @@ public class BenefitsService implements IBenefitsService {
 	public Benefit getBenefit(String id, String customerid, String country) throws IllegalArgumentException {
 		
 		benefits.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		SingleBenefitsServiceDBAccess(data.getDBParams(), id, customerid, country);
 		//CONNECT TO THE DB PULL DATA AND PUT IT INT THE VIEW
 		Benefit p = benefits.get(id);
@@ -830,7 +867,7 @@ public class BenefitsService implements IBenefitsService {
 	public String addBenefit(Benefit benefit, String customerid, String country) throws IllegalArgumentException {
 
 		benefits.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		if(benefits.containsValue(benefit)){
 			throw new IllegalArgumentException("Benefit "+benefit+" already exists.");
 		}
@@ -852,7 +889,7 @@ public class BenefitsService implements IBenefitsService {
 		}
 		
 		//benefits.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		
 		//int id = idGen.incrementAndGet();
 		String id = "";
@@ -877,7 +914,7 @@ public class BenefitsService implements IBenefitsService {
 	public void updateBenefit(String id, String customerid, String country) throws IllegalArgumentException {
 		
 		//benefits.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		//SingleBenefitsServiceDBAccess(data.getDBParams(), id, customerid, country);
 		//CONNECT TO THE DB, PULL DATA AND PUT IT INTO THE VIEW
 		if(!benefits.containsKey(id)){
@@ -893,7 +930,7 @@ public class BenefitsService implements IBenefitsService {
 	public void updateSwitchedBenefit(String id, String customerid, String country) throws IllegalArgumentException {
 	    
 		//benefits.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		//SingleBenefitsServiceDBAccess(data.getDBParams(), id, customerid, country);
 		//CONNECT TO THE DB, PULL DATA AND PUT IT INTO THE VIEW
 		if(!benefits.containsKey(id)){
@@ -907,7 +944,7 @@ public class BenefitsService implements IBenefitsService {
 	public void deleteBenefit(String id, String customerid, String country) throws IllegalArgumentException {
 		
 		//benefits.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		//SingleBenefitsServiceDBAccess(data.getDBParams(), id, customerid, country);
 		if(!benefits.containsKey(id)){
 			throw new IllegalArgumentException("Unable to find benefit with id "+id);

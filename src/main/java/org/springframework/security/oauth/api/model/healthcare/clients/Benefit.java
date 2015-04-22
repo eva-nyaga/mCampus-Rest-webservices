@@ -57,8 +57,12 @@ public class Benefit {
     private String cutOffAge;
     private String insurerId;
     private String layeredInd;
-
- 
+    private String layered1Type;
+    private String layered1Value;
+    private String layered2Type;
+    private String layered2Value;
+    private String layered3Type;
+    private String layered3Value;
     
 	public Benefit() {
 		
@@ -325,6 +329,42 @@ public class Benefit {
 	public void setInsurerId(String insurerId) {
 		this.insurerId = insurerId;
 	}
+	public String getLayered1Type() {
+		return layered1Type;
+	}
+	public void setLayered1Type(String layered1Type) {
+		this.layered1Type = layered1Type;
+	}
+	public String getLayered1Value() {
+		return layered1Value;
+	}
+	public void setLayered1Value(String layered1Value) {
+		this.layered1Value = layered1Value;
+	}
+	public String getLayered2Type() {
+		return layered2Type;
+	}
+	public void setLayered2Type(String layered2Type) {
+		this.layered2Type = layered2Type;
+	}
+	public String getLayered2Value() {
+		return layered2Value;
+	}
+	public void setLayered2Value(String layered2Value) {
+		this.layered2Value = layered2Value;
+	}
+	public String getLayered3Type() {
+		return layered3Type;
+	}
+	public void setLayered3Type(String layered3Type) {
+		this.layered3Type = layered3Type;
+	}
+	public String getLayered3Value() {
+		return layered3Value;
+	}
+	public void setLayered3Value(String layered3Value) {
+		this.layered3Value = layered3Value;
+	}
 
 
 	public Benefit(
@@ -368,7 +408,13 @@ public class Benefit {
 			String cutOffInd,
 			String cutOffAge,
 			String insurerId,
-			String layeredInd
+			String layeredInd,
+		    String layered1Type,
+		    String layered1Value,
+		    String layered2Type,
+		    String layered2Value,
+		    String layered3Type,
+		    String layered3Value
 			){
 		this.smartBenId = smartBenId;
 		this.benefitDesc = benefitDesc;
@@ -414,6 +460,12 @@ public class Benefit {
 		this.cutOffAge = cutOffAge;
 		this.insurerId = insurerId;
 		this.layeredInd = layeredInd;
+	    this.layered1Type = layered1Type;
+	    this.layered1Value = layered1Value;
+	    this.layered2Type = layered2Type;
+	    this.layered2Value = layered2Value;
+	    this.layered3Type = layered3Type;
+	    this.layered3Value = layered3Value;
 	}
 
 

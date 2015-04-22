@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.security.oauth.api.data.healthcare.clients.DBConnection;
-import org.springframework.security.oauth.api.data.healthcare.clients.RequestMap;
+import org.springframework.security.oauth.api.data.healthcare.clients.RequestMapIntegstaging;
 
 import org.springframework.security.oauth.api.model.healthcare.clients.Person;
 import org.springframework.security.oauth.api.model.healthcare.clients.Scheme;
@@ -602,7 +602,7 @@ public class ProvidersService implements IProvidersService {
 		String customertable = "";
 		String customercountry = "";
 		providers.clear();
-		RequestMap data = new RequestMap(customerid, country, startindex, maxresults, status, restrict,  orderby);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country, startindex, maxresults, status, restrict,  orderby);
 		ProvidersServiceDBAccess(data.getDBParams(), customerid, customercountry, startindex, maxresults, status, restrict, orderby);
 		List<Provider> allproviders = new ArrayList<Provider>(providers.values());
 
@@ -615,7 +615,7 @@ public class ProvidersService implements IProvidersService {
 		String customertable = "";
 		String customercountry = "";
 		providers.clear();
-		RequestMap data = new RequestMap(customerid, country, startindex, maxresults, status, restrict,  orderby);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country, startindex, maxresults, status, restrict,  orderby);
 		ProvidersServiceDefaultDBAccess(data.getDBParams(), customerid, customercountry, startindex, maxresults, status, restrict, orderby);
 		List<Provider> allproviders = new ArrayList<Provider>(providers.values());
 
@@ -643,7 +643,7 @@ public class ProvidersService implements IProvidersService {
 	public List<Provider> getSearchProviders(String q, String customerid, String country, int startindex, int maxresults, int status, String restrict,  String orderby) {
 
 		providers.clear();
-		RequestMap data = new RequestMap(q, customerid, country, startindex, maxresults, status, restrict,  orderby);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(q, customerid, country, startindex, maxresults, status, restrict,  orderby);
 		SearchProvidersServiceDBAccess(data.getDBParams(), data.getQ(), data.getCustomerId(), data.getCountry(), data.getStartIndex(), data.getMaxResults(), data.getStatus(), data.getRestrict(), data.getOrderBy());
         List<Provider> matchingProviders = new ArrayList<Provider>(providers.values());
 		return matchingProviders;
@@ -654,7 +654,7 @@ public class ProvidersService implements IProvidersService {
 	public Provider getProvider(String id, String customerid, String country) throws IllegalArgumentException {
 		
 		providers.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		SingleProvidersServiceDBAccess(data.getDBParams(), id, customerid, country);
 		//CONNECT TO THE DB PULL DATA AND PUT IT INT THE VIEW
 		Provider p = providers.get(id);
@@ -668,7 +668,7 @@ public class ProvidersService implements IProvidersService {
 	public String addProvider(Provider provider, String customerid, String country) throws IllegalArgumentException {
 		
 		providers.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		SingleProvidersServiceDBAccess(data.getDBParams(), provider.getClnProvCode(), customerid, country);
 		
 		if(providers.containsValue(provider)){
@@ -694,7 +694,7 @@ public class ProvidersService implements IProvidersService {
 		}
 		
 		//providers.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		//int id = idGen.incrementAndGet();
 		
 		//providers.put(id, provider);
@@ -721,7 +721,7 @@ public class ProvidersService implements IProvidersService {
 	public void updateProvider(String id, String customerid, String country) throws IllegalArgumentException {
 		
 		//providers.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		SingleProvidersServiceDBAccess(data.getDBParams(), id, customerid, country);
 		//CONNECT TO THE DB, PULL DATA AND PUT IT INTO THE VIEW
 		if(!providers.containsKey(id)){
@@ -737,7 +737,7 @@ public class ProvidersService implements IProvidersService {
 	public void updateSwitchedProvider(String id, String customerid, String country) throws IllegalArgumentException {
 	    
 		//providers.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		SingleProvidersServiceDBAccess(data.getDBParams(), id, customerid, country);
 		//CONNECT TO THE DB, PULL DATA AND PUT IT INTO THE VIEW
 		if(!providers.containsKey(id)){
@@ -751,7 +751,7 @@ public class ProvidersService implements IProvidersService {
 	public void deleteProvider(String id, String customerid, String country) throws IllegalArgumentException {
 		
 		//providers.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		SingleProvidersServiceDBAccess(data.getDBParams(), id, customerid, country);
 		if(!providers.containsKey(id)){
 			throw new IllegalArgumentException("Unable to find provider with id "+id);

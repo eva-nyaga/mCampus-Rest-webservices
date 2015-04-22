@@ -189,7 +189,7 @@ public class SchemesController {
 		String id = "";
 		id = schemesService.updateRenewalsScheme(polid, schemeRenewal, customerid, country);
 
-		return SpringMVCUtils.getOutputModel(new ApiMessage("Scheme with id "+id+" successfully renewed."));
+		return SpringMVCUtils.getOutputModel(new ApiMessage("Renewal request for Scheme with id "+id+" successfully received."));
 	}
 	
 	

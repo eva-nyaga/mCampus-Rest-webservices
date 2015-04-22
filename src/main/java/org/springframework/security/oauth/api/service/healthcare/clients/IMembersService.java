@@ -14,6 +14,7 @@ import org.springframework.security.oauth.api.model.healthcare.clients.Member;
 import org.springframework.security.oauth.api.model.healthcare.clients.MoneyAddition;
 import org.springframework.security.oauth.api.model.healthcare.clients.MoneyReduction;
 import org.springframework.security.oauth.api.model.healthcare.clients.Renewal;
+import org.springframework.security.oauth.api.model.healthcare.clients.Transaction;
 
 
 
@@ -30,7 +31,8 @@ public interface IMembersService {
 	public void updateMember(String id, String customerid, String country);
 	public String deleteMember(String id, String customerid, String country);
 	public void updateSwitchedMember(String id, String customerid, String country);
-	public Balance getMemberBalance(String text_code, String phonenos, String memnos);
+	public Balance getMemberBalancePhoneNumber(String text_code, String phonenos, String memnos);
+	public Balance getMemberBalanceMemberNumber(String text_code, String phonenos, String memnos);
 	
 	
 	
@@ -70,6 +72,7 @@ public interface IMembersService {
 	public Balance updateMemberActivate(String phoneno);
 	public Balance updateMembeReject(String phoneno);
 	public Balance updateMembeDeactivate(String phoneno);
+	public List<Transaction> getMemberTransactionsMemberNumber(String memberno, String q, String country, int startindex, int maxresults, String orderby);
 
 
 	

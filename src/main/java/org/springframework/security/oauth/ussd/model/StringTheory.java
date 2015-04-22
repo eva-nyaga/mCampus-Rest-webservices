@@ -474,8 +474,9 @@ public class StringTheory {
 					
 					if(StringUtils.isNotEmpty(accesslevels.get(2))){
 
-						Balance x = membersService.getMemberBalance("NO NEED HERE", PhoneNumber, "NO NEED HERE");
+						Balance x = membersService.getMemberBalancePhoneNumber(null, PhoneNumber, null);
 
+						
                     if(StringUtils.isNotEmpty(x.getStatus())&&(x.getStatus().equals("200"))){  
 
 						if(StringUtils.isNotEmpty(x.getUserStatus())){ 
@@ -498,8 +499,8 @@ public class StringTheory {
 					            
 
 								if(x.getPinNo().equals(accesslevels.get(2)) || x.getPinNo().equals(accesslevels.get(3)) || x.getPinNo().equals(accesslevels.get(4))){ 
-									
-									message = "END Current balance as at "+getCurrentSMSTimeStamp()+" is";
+
+									message = "CON Name: "+x.getNames()+", Member No: "+x.getMemberNumber()+", Cover period from "+x.getStartDate()+" to "+x.getEndDate()+". Balance as at "+getCurrentSMSTimeStamp()+" is";
 									  for(Integer key: select_map.keySet()){
 
 										  if((select_map.get(key).equals("1"))  ){
@@ -519,6 +520,8 @@ public class StringTheory {
 										  } 
 										  
 								     }
+									  
+									  message=message+"\n0  -  Main Menu \n99 -  Exit";
 								     
 								}else{
 									
@@ -546,7 +549,11 @@ public class StringTheory {
                     }else{
                     	message = "END Dear customer, Service is currently down. Please contact our call centre +254733320660, +254718222200 for any assistance.";
                     }
-						
+						      
+                         if(((accesslevels.get(3) != null)&&(accesslevels.get(3).equals("99"))) || ((accesslevels.get(4) != null)&&(accesslevels.get(4).equals("99")) || ((accesslevels.get(5) != null)&&(accesslevels.get(5).equals("99"))))){ 
+                        	 message = "END Dear customer, Thank you for using the Smart Mobile Service."; 
+                         }
+
 
 					
 											
@@ -1296,32 +1303,40 @@ public class StringTheory {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
 		else if((accesslevels.get(0) != null)&&(accesslevels.get(0).equals("2"))){
 		    //////////////////////////////////////////////////
-			Balance x = membersService.getMemberBalance("NO NEED HERE", PhoneNumber, "NO NEED HERE");
-		
-			message = "CON Dear Customer, The following card is in your account. Name: "+x.getNames()+", Member No: "+x.getMemberNumber()+", Card Serial: "+x.getCardSerial()+". Do you want to reprint the above card? 1. Accept, 2. Reject";
+			message = "CON Please enter your Smart Mobile Service Pin No.";
 			
-			if((accesslevels.get(1) != null)&&(accesslevels.get(1).equals("1"))){
+			if(StringUtils.isNotEmpty(accesslevels.get(1))){
 			
-				message = "CON Please enter your payment receipt no.";
+				Balance x = membersService.getMemberBalancePhoneNumber(null, PhoneNumber, null);
 				
-				if(StringUtils.isNotEmpty(accesslevels.get(2))){
+				if(x.getPinNo().equals(accesslevels.get(1)) || x.getPinNo().equals(accesslevels.get(2)) || x.getPinNo().equals(accesslevels.get(3))){
 					
-					message = "CON Please enter your Smart Mobile Service Pin No.";
-				
-				      if(StringUtils.isNotEmpty(accesslevels.get(3))){
+					 String memberstatus = "";
+					 if((x.getUserStatus()).equals("1") || (x.getUserStatus()).equals("5")){
+						 memberstatus = "Active";
+					 }else {
+						 memberstatus = "Inactive";
+					 }
+					 message = "CON Dear Customer, Name: "+x.getNames()+", Member No: "+x.getMemberNumber()+", Card serial: "+x.getCardSerial()+", Member status: "+memberstatus+".\n0  -  Main Menu \n99 -  Exit";
 
-							if(x.getPinNo().equals(accesslevels.get(3)) || x.getPinNo().equals(accesslevels.get(4)) || x.getPinNo().equals(accesslevels.get(5))){
-								
-								 message = "END Your request has been received successfully. Please contact your scheme administrator or our call centre +254733320660, +254718222200 for any assistance.";
-								 
-							}else{
-								
-								message="CON You entered an invalid Pin No, Please try again!";
-								if(StringUtils.isNotEmpty(accesslevels.get(6))){ 
-									   message="END You have already tried 3 times. Please contact your scheme administrator or our call centre +254733320660, +254718222200 for any assistance.";
-								}
-								
-							}
+				}else{
+					
+					message="CON You entered an invalid Pin No, Please try again!";
+					if(StringUtils.isNotEmpty(accesslevels.get(4))){ 
+						   message="END You have already tried 3 times. Please contact your scheme administrator or our call centre +254733320660, +254718222200 for any assistance.";
+					}
+					
+				}
+				
+				
+				
+				if(("LEVEL2").equals("1")){
+					
+					
+				
+				      if(("LEVEL3").equals("1")){
+
+
 				    	  
 		
 				            if(("LEVEL4").equals("1")){
@@ -1464,11 +1479,13 @@ public class StringTheory {
 			
 			if(StringUtils.isNotEmpty(accesslevels.get(1))){
 				
-				Balance x = membersService.getMemberBalance("NO NEED HERE", PhoneNumber, "NO NEED HERE");
+				Balance x = membersService.getMemberBalancePhoneNumber(null, PhoneNumber, null);
 				
 				if(x.getPinNo().equals(accesslevels.get(1)) || x.getPinNo().equals(accesslevels.get(2)) || x.getPinNo().equals(accesslevels.get(3))){ 
 					
-					message = "END The following is  list of services from your last health center visit.";
+
+					String smartreceipt= membersService.addUSSDHealthCareCenters(PhoneNumber, x.getMemberNumber(), x.getNames(), x.getCardSerial());
+					message = "CON "+smartreceipt+"\n0  -  Main Menu \n99 -  Exit";
 				     
 				}else{
 					
@@ -2577,394 +2594,30 @@ public class StringTheory {
 
 		else if ((accesslevels.get(0) != null) && (accesslevels.get(0).equals("4"))) {
 			// ////////////////////////////////////////////////
-			Balance x = membersService.getMemberBalance("NO NEED HERE", PhoneNumber, "NO NEED HERE");
+			message = "CON Please enter your Smart Mobile Service Pin No.";
 
-			message = "CON Dear Customer, The following card is in your account. Name: "+x.getNames()+", Member No: "+x.getMemberNumber()+", Card Serial: "+x.getCardSerial()+". Do you want to deactivate the above card? 1. Accept, 2. Decline";
-
-			if ((accesslevels.get(1) != null) && (accesslevels.get(1).equals("1"))) {
+			if(StringUtils.isNotEmpty(accesslevels.get(1))){
 				
-				message = "CON Please enter your Smart Mobile Service Pin No.";
+				Balance x = membersService.getSchemeBalancePhoneNumber(null, PhoneNumber, null);
+				
+				if(x.getPinNo().equals(accesslevels.get(1)) || x.getPinNo().equals(accesslevels.get(2)) || x.getPinNo().equals(accesslevels.get(3))){
 
-				if(StringUtils.isNotEmpty(accesslevels.get(2))){
+					 String memberstatus = "";
+					 if((x.getUserStatus()).equals("1") || (x.getUserStatus()).equals("5")){
+						 memberstatus = "Active";
+					 }else {
+						 memberstatus = "Inactive";
+					 }
+
+					 message = "CON Scheme Name: "+x.getNames()+", Insurer Code: "+x.getSmartCode()+", Start Date: "+x.getStartDate()+", End Date: "+x.getEndDate()+", Scheme Status: "+memberstatus+".\n0  -  Main Menu \n99 -  Exit";
+
+				}else{
 					
-					if(x.getPinNo().equals(accesslevels.get(2)) || x.getPinNo().equals(accesslevels.get(3)) || x.getPinNo().equals(accesslevels.get(4))){ 
-						
-						message = "END Your request has been received successfully. You will be notified when your card is deactivated.";
-					     
-					}else{
-						
-						message="CON You have entered the wrong PIN. Please try again";
-						
-						if(StringUtils.isNotEmpty(accesslevels.get(5))){ 
-							   message="END You have already tried 3 times. Please contact your scheme administrator or our call centre +254733320660, +254718222200 for any assistance.";
-						}
-						
+					message="CON You entered an invalid Pin No, Please try again!";
+					if(StringUtils.isNotEmpty(accesslevels.get(4))){ 
+						   message="END You have already tried 3 times. Please contact your scheme administrator or our call centre +254733320660, +254718222200 for any assistance.";
 					}
 					
-
-					
-					
-					if (("LEVEL3").equals("1")) {
-
-						if (("LEVEL4").equals("1")) {
-
-							if (("LEVEL5").equals("1")) {
-
-							} else if (("LEVEL5").equals("2")) {
-
-							} else if (("LEVEL5").equals("3")) {
-
-							} else {
-							}
-
-						} else if (("LEVEL4").equals("2")) {
-
-							if (("LEVEL5").equals("1")) {
-
-							} else if (("LEVEL5").equals("2")) {
-
-							} else if (("LEVEL5").equals("3")) {
-
-							} else {
-							}
-
-						} else if (("LEVEL4").equals("3")) {
-
-							if (("LEVEL5").equals("1")) {
-
-							} else if (("LEVEL5").equals("2")) {
-
-							} else if (("LEVEL5").equals("3")) {
-
-							} else {
-							}
-
-						} else {
-						}
-
-					}
-					if (("LEVEL3").equals("2")) {
-
-						if (("LEVEL4").equals("1")) {
-
-							if (("LEVEL5").equals("1")) {
-
-							} else if (("LEVEL5").equals("2")) {
-
-							} else if (("LEVEL5").equals("3")) {
-
-							} else {
-							}
-
-						} else if (("LEVEL4").equals("2")) {
-
-							if (("LEVEL5").equals("1")) {
-
-							} else if (("LEVEL5").equals("2")) {
-
-							} else if (("LEVEL5").equals("3")) {
-
-							} else {
-							}
-
-						} else if (("LEVEL4").equals("3")) {
-
-							if (("LEVEL5").equals("1")) {
-
-							} else if (("LEVEL5").equals("2")) {
-
-							} else if (("LEVEL5").equals("3")) {
-
-							} else {
-							}
-
-						} else {
-						}
-
-					} else if (("LEVEL3").equals("3")) {
-
-						if (("LEVEL4").equals("1")) {
-
-							if (("LEVEL5").equals("1")) {
-
-							} else if (("LEVEL5").equals("2")) {
-
-							} else if (("LEVEL5").equals("3")) {
-
-							} else {
-							}
-
-						} else if (("LEVEL4").equals("2")) {
-
-							if (("LEVEL5").equals("1")) {
-
-							} else if (("LEVEL5").equals("2")) {
-
-							} else if (("LEVEL5").equals("3")) {
-
-							} else {
-							}
-
-						} else if (("LEVEL4").equals("3")) {
-
-							if (("LEVEL5").equals("1")) {
-
-							} else if (("LEVEL5").equals("2")) {
-
-							} else if (("LEVEL5").equals("3")) {
-
-							} else {
-							}
-
-						} else {
-						}
-
-					} else {
-					}
-
-				} else if ((accesslevels.get(2) != null)
-						&& (accesslevels.get(2).equals("2"))) {
-
-					if (("LEVEL3").equals("1")) {
-
-						if (("LEVEL4").equals("1")) {
-
-							if (("LEVEL5").equals("1")) {
-
-							} else if (("LEVEL5").equals("2")) {
-
-							} else if (("LEVEL5").equals("3")) {
-
-							} else {
-							}
-
-						} else if (("LEVEL4").equals("2")) {
-
-							if (("LEVEL5").equals("1")) {
-
-							} else if (("LEVEL5").equals("2")) {
-
-							} else if (("LEVEL5").equals("3")) {
-
-							} else {
-							}
-
-						} else if (("LEVEL4").equals("3")) {
-
-							if (("LEVEL5").equals("1")) {
-
-							} else if (("LEVEL5").equals("2")) {
-
-							} else if (("LEVEL5").equals("3")) {
-
-							} else {
-							}
-
-						} else {
-						}
-
-					}
-					if (("LEVEL3").equals("2")) {
-
-						if (("LEVEL4").equals("1")) {
-
-							if (("LEVEL5").equals("1")) {
-
-							} else if (("LEVEL5").equals("2")) {
-
-							} else if (("LEVEL5").equals("3")) {
-
-							} else {
-							}
-
-						} else if (("LEVEL4").equals("2")) {
-
-							if (("LEVEL5").equals("1")) {
-
-							} else if (("LEVEL5").equals("2")) {
-
-							} else if (("LEVEL5").equals("3")) {
-
-							} else {
-							}
-
-						} else if (("LEVEL4").equals("3")) {
-
-							if (("LEVEL5").equals("1")) {
-
-							} else if (("LEVEL5").equals("2")) {
-
-							} else if (("LEVEL5").equals("3")) {
-
-							} else {
-							}
-
-						} else {
-						}
-
-					} else if (("LEVEL3").equals("3")) {
-
-						if (("LEVEL4").equals("1")) {
-
-							if (("LEVEL5").equals("1")) {
-
-							} else if (("LEVEL5").equals("2")) {
-
-							} else if (("LEVEL5").equals("3")) {
-
-							} else {
-							}
-
-						} else if (("LEVEL4").equals("2")) {
-
-							if (("LEVEL5").equals("1")) {
-
-							} else if (("LEVEL5").equals("2")) {
-
-							} else if (("LEVEL5").equals("3")) {
-
-							} else {
-							}
-
-						} else if (("LEVEL4").equals("3")) {
-
-							if (("LEVEL5").equals("1")) {
-
-							} else if (("LEVEL5").equals("2")) {
-
-							} else if (("LEVEL5").equals("3")) {
-
-							} else {
-							}
-
-						} else {
-						}
-
-					} else {
-					}
-
-				} else if ((accesslevels.get(2) != null)
-						&& (accesslevels.get(2).equals("3"))) {
-
-					if (("LEVEL3").equals("1")) {
-
-						if (("LEVEL4").equals("1")) {
-
-							if (("LEVEL5").equals("1")) {
-
-							} else if (("LEVEL5").equals("2")) {
-
-							} else if (("LEVEL5").equals("3")) {
-
-							} else {
-							}
-
-						} else if (("LEVEL4").equals("2")) {
-
-							if (("LEVEL5").equals("1")) {
-
-							} else if (("LEVEL5").equals("2")) {
-
-							} else if (("LEVEL5").equals("3")) {
-
-							} else {
-							}
-
-						} else if (("LEVEL4").equals("3")) {
-
-							if (("LEVEL5").equals("1")) {
-
-							} else if (("LEVEL5").equals("2")) {
-
-							} else if (("LEVEL5").equals("3")) {
-
-							} else {
-							}
-
-						} else {
-						}
-
-					}
-					if (("LEVEL3").equals("2")) {
-
-						if (("LEVEL4").equals("1")) {
-
-							if (("LEVEL5").equals("1")) {
-
-							} else if (("LEVEL5").equals("2")) {
-
-							} else if (("LEVEL5").equals("3")) {
-
-							} else {
-							}
-
-						} else if (("LEVEL4").equals("2")) {
-
-							if (("LEVEL5").equals("1")) {
-
-							} else if (("LEVEL5").equals("2")) {
-
-							} else if (("LEVEL5").equals("3")) {
-
-							} else {
-							}
-
-						} else if (("LEVEL4").equals("3")) {
-
-							if (("LEVEL5").equals("1")) {
-
-							} else if (("LEVEL5").equals("2")) {
-
-							} else if (("LEVEL5").equals("3")) {
-
-							} else {
-							}
-
-						} else {
-						}
-
-					} else if (("LEVEL3").equals("3")) {
-
-						if (("LEVEL4").equals("1")) {
-
-							if (("LEVEL5").equals("1")) {
-
-							} else if (("LEVEL5").equals("2")) {
-
-							} else if (("LEVEL5").equals("3")) {
-
-							} else {
-							}
-
-						} else if (("LEVEL4").equals("2")) {
-
-							if (("LEVEL5").equals("1")) {
-
-							} else if (("LEVEL5").equals("2")) {
-
-							} else if (("LEVEL5").equals("3")) {
-
-							} else {
-							}
-
-						} else if (("LEVEL4").equals("3")) {
-
-							if (("LEVEL5").equals("1")) {
-
-							} else if (("LEVEL5").equals("2")) {
-
-							} else if (("LEVEL5").equals("3")) {
-
-							} else {
-							}
-
-						} else {
-						}
-
-					} else {
-					}
-
-				} else {
 				}
 
 			} else if ((accesslevels.get(1) != null) && (accesslevels.get(1).equals("2"))) {
@@ -3718,6 +3371,374 @@ public class StringTheory {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+		
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
+else if((accesslevels.get(0) != null)&&(accesslevels.get(0).equals("5"))){
+//////////////////////////////////////////////////
+Balance x = membersService.getMemberBalancePhoneNumber(null, PhoneNumber, null);
+
+message = "CON Name: "+x.getNames()+", Member No: "+x.getMemberNumber()+". Change details on this account? 1. Accept, 2. Reject";
+
+if((accesslevels.get(1) != null)&&(accesslevels.get(1).equals("1"))){
+
+message = "CON Please select an option.\n1. Change Pin Number";
+
+if((accesslevels.get(2) != null)&&(accesslevels.get(2).equals("1"))){
+
+message = "CON Please enter your Current Pin Number";
+
+if(StringUtils.isNotEmpty(accesslevels.get(3))){
+
+if(x.getPinNo().equals(accesslevels.get(3)) || x.getPinNo().equals(accesslevels.get(4)) || x.getPinNo().equals(accesslevels.get(5))){
+
+	message = "CON Please enter your New Pin Number";
+	
+	int counter = 0;
+	if (x.getPinNo().equals(accesslevels.get(5))) {
+	    counter = 6;
+	} else if (x.getPinNo().equals(accesslevels.get(4))) {
+		counter = 5;
+	} else if (x.getPinNo().equals(accesslevels.get(3))) {
+		counter = 4;
+	}
+	
+	if((accesslevels.get(counter) != null)&&(counter != 0)){
+		
+		String smartpinno= membersService.ChangeSmartPinNo(PhoneNumber, x.getMemberNumber(), x.getNames(), x.getCardSerial(), accesslevels.get(counter));
+		if(smartpinno == null){
+		message = "END Request failed! Please contact our call centre +254733320660, +254718222200 for any assistance.";
+		}else{
+		message="CON  Your Pin Number has been changed successfully \n0  -  Main Menu \n99 -  Exit";
+		}
+		
+	}
+
+}else{
+
+message="CON You entered an invalid Pin No, Please try again!";
+
+if(StringUtils.isNotEmpty(accesslevels.get(6))){ 
+message="END You have already tried 3 times. Please contact your scheme administrator or our call centre +254733320660, +254718222200 for any assistance.";
+}
+
+}
+
+
+if(("LEVEL4").equals("1")){
+
+if(("LEVEL5").equals("1")){
+
+}else if(("LEVEL5").equals("2")){
+
+}else if(("LEVEL5").equals("3")){
+
+}else{
+}
+
+}else if(("LEVEL4").equals("2")){
+
+if(("LEVEL5").equals("1")){
+
+}else if(("LEVEL5").equals("2")){
+
+}else if(("LEVEL5").equals("3")){
+
+}else{
+}
+
+}else if(("LEVEL4").equals("3")){
+
+if(("LEVEL5").equals("1")){
+
+}else if(("LEVEL5").equals("2")){
+
+}else if(("LEVEL5").equals("3")){
+
+}else{
+}
+
+}else{
+}
+
+}if(("LEVEL3").equals("2")){
+
+if(("LEVEL4").equals("1")){
+
+if(("LEVEL5").equals("1")){
+
+}else if(("LEVEL5").equals("2")){
+
+}else if(("LEVEL5").equals("3")){
+
+}else{
+}
+
+}else if(("LEVEL4").equals("2")){
+
+if(("LEVEL5").equals("1")){
+
+}else if(("LEVEL5").equals("2")){
+
+}else if(("LEVEL5").equals("3")){
+
+}else{
+}
+
+}else if(("LEVEL4").equals("3")){
+
+if(("LEVEL5").equals("1")){
+
+}else if(("LEVEL5").equals("2")){
+
+}else if(("LEVEL5").equals("3")){
+
+}else{
+}
+
+}else{
+}
+
+}else if(("LEVEL3").equals("3")){
+
+if(("LEVEL4").equals("1")){
+
+if(("LEVEL5").equals("1")){
+
+}else if(("LEVEL5").equals("2")){
+
+}else if(("LEVEL5").equals("3")){
+
+}else{
+}
+
+}else if(("LEVEL4").equals("2")){
+
+if(("LEVEL5").equals("1")){
+
+}else if(("LEVEL5").equals("2")){
+
+}else if(("LEVEL5").equals("3")){
+
+}else{
+}
+
+}else if(("LEVEL4").equals("3")){
+
+if(("LEVEL5").equals("1")){
+
+}else if(("LEVEL5").equals("2")){
+
+}else if(("LEVEL5").equals("3")){
+
+}else{
+}
+
+}else{
+}
+
+}else{
+}
+
+}
+
+}else if((accesslevels.get(1) != null)&&(accesslevels.get(1).equals("2"))){	
+message = "END Thank you for using the Smart Mobile Service.";
+}
+
+////////////////////////////////////////////////////////	
+
+}
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		
+		
+		
+		
+		
+		
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
+else if((accesslevels.get(0) != null)&&(accesslevels.get(0).equals("6"))){
+//////////////////////////////////////////////////
+Balance x = membersService.getMemberBalancePhoneNumber(null, PhoneNumber, null);
+
+message = "CON Dear Customer, Name: "+x.getNames()+", Member No: "+x.getMemberNumber()+". Do you want to change details on this account? 1. Accept, 2. Reject";
+
+if((accesslevels.get(1) != null)&&(accesslevels.get(1).equals("1"))){
+
+message = "CON Please enter your payment receipt no.";
+
+if(StringUtils.isNotEmpty(accesslevels.get(2))){
+
+message = "CON Please enter your Smart Mobile Service Pin No.";
+
+if(StringUtils.isNotEmpty(accesslevels.get(3))){
+
+if(x.getPinNo().equals(accesslevels.get(3)) || x.getPinNo().equals(accesslevels.get(4)) || x.getPinNo().equals(accesslevels.get(5))){
+
+String smartreceipt= membersService.addUSSDCardReprint(PhoneNumber, x.getMemberNumber(), x.getNames(), x.getCardSerial(), accesslevels.get(2));
+if(smartreceipt == null){
+message = "END Request failed! Please contact our call centre +254733320660, +254718222200 for any assistance.";
+}else{
+message = "END Request received successfully. Please contact our call centre +254733320660, +254718222200 for any assistance."; 
+}
+
+
+
+}else{
+
+message="CON You entered an invalid Pin No, Please try again!";
+if(StringUtils.isNotEmpty(accesslevels.get(6))){ 
+message="END You have already tried 3 times. Please contact your scheme administrator or our call centre +254733320660, +254718222200 for any assistance.";
+}
+
+}
+
+
+if(("LEVEL4").equals("1")){
+
+if(("LEVEL5").equals("1")){
+
+}else if(("LEVEL5").equals("2")){
+
+}else if(("LEVEL5").equals("3")){
+
+}else{
+}
+
+}else if(("LEVEL4").equals("2")){
+
+if(("LEVEL5").equals("1")){
+
+}else if(("LEVEL5").equals("2")){
+
+}else if(("LEVEL5").equals("3")){
+
+}else{
+}
+
+}else if(("LEVEL4").equals("3")){
+
+if(("LEVEL5").equals("1")){
+
+}else if(("LEVEL5").equals("2")){
+
+}else if(("LEVEL5").equals("3")){
+
+}else{
+}
+
+}else{
+}
+
+}if(("LEVEL3").equals("2")){
+
+if(("LEVEL4").equals("1")){
+
+if(("LEVEL5").equals("1")){
+
+}else if(("LEVEL5").equals("2")){
+
+}else if(("LEVEL5").equals("3")){
+
+}else{
+}
+
+}else if(("LEVEL4").equals("2")){
+
+if(("LEVEL5").equals("1")){
+
+}else if(("LEVEL5").equals("2")){
+
+}else if(("LEVEL5").equals("3")){
+
+}else{
+}
+
+}else if(("LEVEL4").equals("3")){
+
+if(("LEVEL5").equals("1")){
+
+}else if(("LEVEL5").equals("2")){
+
+}else if(("LEVEL5").equals("3")){
+
+}else{
+}
+
+}else{
+}
+
+}else if(("LEVEL3").equals("3")){
+
+if(("LEVEL4").equals("1")){
+
+if(("LEVEL5").equals("1")){
+
+}else if(("LEVEL5").equals("2")){
+
+}else if(("LEVEL5").equals("3")){
+
+}else{
+}
+
+}else if(("LEVEL4").equals("2")){
+
+if(("LEVEL5").equals("1")){
+
+}else if(("LEVEL5").equals("2")){
+
+}else if(("LEVEL5").equals("3")){
+
+}else{
+}
+
+}else if(("LEVEL4").equals("3")){
+
+if(("LEVEL5").equals("1")){
+
+}else if(("LEVEL5").equals("2")){
+
+}else if(("LEVEL5").equals("3")){
+
+}else{
+}
+
+}else{
+}
+
+}else{
+}
+
+}
+
+}else if((accesslevels.get(1) != null)&&(accesslevels.get(1).equals("2"))){	
+message = "END Thank you for using the Smart Mobile Service.";
+}
+
+////////////////////////////////////////////////////////
+
+}
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 		else{
 			}
 		

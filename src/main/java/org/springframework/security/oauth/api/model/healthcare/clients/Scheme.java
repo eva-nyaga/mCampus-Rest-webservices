@@ -521,7 +521,7 @@ public class Scheme {
 
 	@Override
 	public String toString() {
-		return String.format("client code=%s,company name=%s", this.clnCode, this.companyName);
+		return String.format("client code=%s,company name=%s had already been sent to Smart. Cannot duplicate. REJECTED", this.clnCode, this.companyName);
 	}
 
 	@Override

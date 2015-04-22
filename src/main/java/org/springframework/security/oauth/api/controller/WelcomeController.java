@@ -112,6 +112,7 @@ public class WelcomeController {
 			String message = peopleService.processUssd(ussdrequest);
 			//return message+" - "+ussdrequest.getMSISDN();
 			return message;
+			
 	}
 
 	/*

@@ -37,6 +37,7 @@ public class BlackHole {
 		texts  = texts.replaceAll("\\#","");
 		texts  = texts.replaceAll("9111","");
 		firstletter = texts.substring(0, 1);
+
 		
 		if(firstletter.equals("*")){
 			while (true) {
@@ -89,7 +90,7 @@ public class BlackHole {
 		//String texts = "1,2,3,4,5#";
 		//String texts = ",9111,657567,2,3,4,5#";
 		//String texts = ",91 11,1,2  ,3,v  jg  hj,5#";
-		
+
 		texts  = texts.replaceAll("\\s+","");
 		texts  = texts.replaceAll("\\#","");
 		texts  = texts.replaceAll("9111","");

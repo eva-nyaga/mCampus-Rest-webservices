@@ -2,6 +2,7 @@ C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\spring
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\controller\WelcomeController.java
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\ussd\model\BlackHole.java
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\providers\ProvidersWrapper.java
+C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\RequestMapBO.java
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\service\healthcare\clients\BenefitsService.java
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\Codefile.java
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\providers\ApiMessage.java
@@ -30,6 +31,7 @@ C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\spring
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\ussd\model\dbAccess.java
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\Benefit.java
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\StatusesWrapper.java
+C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\Transaction.java
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\service\healthcare\clients\MembersService.java
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\service\healthcare\clients\PeopleService.java
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\controller\healthcare\clients\MembersController.java
@@ -44,8 +46,9 @@ C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\spring
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\ussd\model\Quantum.java
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\MoneyReductionsWrapper.java
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\Balance.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\ussd\model\UssdRequest.java
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\MembersWrapper.java
+C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\ussd\model\UssdRequest.java
+C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\RequestMapIntegstaging.java
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\service\healthcare\clients\SchemesService.java
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\Status.java
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\service\healthcare\clients\ClaimServicesService.java
@@ -68,6 +71,7 @@ C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\spring
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\examples\sparklr\impl\PhotoServiceImpl.java
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\MoneyAddition.java
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\Deactivation.java
+C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\DBConDistribution.java
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\controller\healthcare\clients\ClientsController.java
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\DBConnection.java
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\Categorychange.java
@@ -84,8 +88,9 @@ C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\spring
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\Scheme.java
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\SchemesWrapper.java
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\controller\healthcare\clients\SchemesController.java
+C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\RequestMapInteractive.java
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\BenefitsWrapper.java
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\service\healthcare\clients\IClaimServicesService.java
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\controller\healthcare\providers\PeopleController.java
+C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\DBConInteractive.java
 C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\MoneyAdditionsWrapper.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\RequestMap.java

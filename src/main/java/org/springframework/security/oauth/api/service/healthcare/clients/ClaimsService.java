@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.security.oauth.api.data.healthcare.clients.DBConnection;
-import org.springframework.security.oauth.api.data.healthcare.clients.RequestMap;
+import org.springframework.security.oauth.api.data.healthcare.clients.RequestMapIntegstaging;
 import org.springframework.security.oauth.api.model.healthcare.clients.Claim;
 import org.springframework.security.oauth.api.model.healthcare.clients.Person;
 import org.springframework.stereotype.Service;
@@ -402,7 +402,7 @@ public class ClaimsService implements IClaimsService {
 		String customertable = "";
 		String customercountry = "";
 		
-		RequestMap data = new RequestMap(customerid, country, startindex, maxresults, status, restrict,  orderby);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country, startindex, maxresults, status, restrict,  orderby);
 		ClaimsServiceDBAccess(data.getDBParams(), customerid, customercountry, startindex, maxresults, status, restrict, orderby);
 		List<Claim> allclaims = new ArrayList<Claim>(claims.values());
 
@@ -432,7 +432,7 @@ public class ClaimsService implements IClaimsService {
 	public List<Claim> getSearchClaims(String q, String customerid, String country, int startindex, int maxresults, int status, String restrict,  String orderby) {
 
 		claims.clear();
-		RequestMap data = new RequestMap(q, customerid, country, startindex, maxresults, status, restrict,  orderby);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(q, customerid, country, startindex, maxresults, status, restrict,  orderby);
 		SearchClaimsServiceDBAccess(data.getDBParams(), data.getQ(), data.getCustomerId(), data.getCountry(), data.getStartIndex(), data.getMaxResults(), data.getStatus(), data.getRestrict(), data.getOrderBy());
         List<Claim> matchingClaims = new ArrayList<Claim>(claims.values());
 		return matchingClaims;
@@ -443,7 +443,7 @@ public class ClaimsService implements IClaimsService {
 	public Claim getClaim(String id, String customerid, String country) throws IllegalArgumentException {
 		
 		claims.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		SingleClaimsServiceDBAccess(data.getDBParams(), id, customerid, country);
 		//CONNECT TO THE DB PULL DATA AND PUT IT INT THE VIEW
 		Claim p = claims.get(id);
@@ -462,7 +462,7 @@ public class ClaimsService implements IClaimsService {
 		}
 		*/
 		//claims.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		int id = idGen.incrementAndGet();
 		//claims.put(id, claim);
 		
@@ -479,7 +479,7 @@ public class ClaimsService implements IClaimsService {
 		}
 		
 		//claims.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		int id = idGen.incrementAndGet();
 		//claims.put(id, claim);
 		
@@ -505,7 +505,7 @@ public class ClaimsService implements IClaimsService {
 	public void updateClaim(String id, String customerid, String country) throws IllegalArgumentException {
 		
 		//claims.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		SingleClaimsServiceDBAccess(data.getDBParams(), id, customerid, country);
 		//CONNECT TO THE DB, PULL DATA AND PUT IT INTO THE VIEW
 		if(!claims.containsKey(id)){
@@ -521,7 +521,7 @@ public class ClaimsService implements IClaimsService {
 	public String updateSwitchedClaim(String id, String customerid, String country) throws IllegalArgumentException {
 	    
 		claims.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		SingleClaimsServiceDBAccess(data.getDBParams(), id, customerid, country);
 		//CONNECT TO THE DB, PULL DATA AND PUT IT INTO THE VIEW
 		if(!claims.containsKey(id)){
@@ -544,7 +544,7 @@ public class ClaimsService implements IClaimsService {
 	public String updateSwitchedClaims(String ids, String customerid, String country) throws IllegalArgumentException {
 	    
 		claims.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		String[] IDsArrays = ids.replaceAll("\\s+","").split(",");
 		for (int i = 0; i < IDsArrays.length; i++) {
 			System.out.println("|"+IDsArrays[i]+"|");
@@ -573,7 +573,7 @@ public class ClaimsService implements IClaimsService {
 	public void deleteClaim(String id, String customerid, String country) throws IllegalArgumentException {
 		
 		//claims.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		SingleClaimsServiceDBAccess(data.getDBParams(), id, customerid, country);
 		if(!claims.containsKey(id)){
 			throw new IllegalArgumentException("Unable to find claim with id "+id);

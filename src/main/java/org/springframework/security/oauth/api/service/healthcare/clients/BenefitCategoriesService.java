@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.security.oauth.api.data.healthcare.clients.DBConnection;
-import org.springframework.security.oauth.api.data.healthcare.clients.RequestMap;
+import org.springframework.security.oauth.api.data.healthcare.clients.RequestMapIntegstaging;
 import org.springframework.security.oauth.api.model.healthcare.clients.BenefitCategory;
 import org.springframework.security.oauth.api.model.healthcare.clients.Member;
 import org.springframework.security.oauth.api.model.healthcare.clients.Person;
@@ -538,7 +538,7 @@ public class BenefitCategoriesService implements IBenefit_CategoriesService {
 		String customertable = "";
 		String customercountry = "";
 		benefit_categories.clear();
-		RequestMap data = new RequestMap(customerid, country, startindex, maxresults, status, restrict,  orderby);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country, startindex, maxresults, status, restrict,  orderby);
 		Benefit_CategoriesServiceDBAccess(data.getDBParams(), customerid, customercountry, startindex, maxresults, status, restrict, orderby);
 		List<BenefitCategory> allbenefit_categories = new ArrayList<BenefitCategory>(benefit_categories.values());
 
@@ -568,7 +568,7 @@ public class BenefitCategoriesService implements IBenefit_CategoriesService {
 	public List<BenefitCategory> getSearchBenefit_Categories(String q, String customerid, String country, int startindex, int maxresults, int status, String restrict,  String orderby) {
 
 		benefit_categories.clear();
-		RequestMap data = new RequestMap(q, customerid, country, startindex, maxresults, status, restrict,  orderby);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(q, customerid, country, startindex, maxresults, status, restrict,  orderby);
 		SearchBenefit_CategoriesServiceDBAccess(data.getDBParams(), data.getQ(), data.getCustomerId(), data.getCountry(), data.getStartIndex(), data.getMaxResults(), data.getStatus(), data.getRestrict(), data.getOrderBy());
         List<BenefitCategory> matchingBenefit_Categories = new ArrayList<BenefitCategory>(benefit_categories.values());
 		return matchingBenefit_Categories;
@@ -579,7 +579,7 @@ public class BenefitCategoriesService implements IBenefit_CategoriesService {
 	public BenefitCategory getBenefit_Category(String id, String customerid, String country) throws IllegalArgumentException {
 		
 		benefit_categories.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		SingleBenefit_CategoriesServiceDBAccess(data.getDBParams(), id, customerid, country);
 		//CONNECT TO THE DB PULL DATA AND PUT IT INT THE VIEW
 		BenefitCategory p = benefit_categories.get(id);
@@ -597,7 +597,7 @@ public class BenefitCategoriesService implements IBenefit_CategoriesService {
 			throw new IllegalArgumentException("Benefit category "+benefit_category+" already exists.");
 		}
 		//members.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		String id = "";
 
 		id = addBenefit_categoriesServiceDBAccess(data.getDBParams(), id, benefit_category, customerid, country);
@@ -615,7 +615,7 @@ public class BenefitCategoriesService implements IBenefit_CategoriesService {
 		}
 		
 		//benefit_categories.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		int id = idGen.incrementAndGet();
 		String test = "";
 		benefit_categories.put(test, benefit_category);
@@ -640,7 +640,7 @@ public class BenefitCategoriesService implements IBenefit_CategoriesService {
 	public void updateBenefit_Category(String id, String customerid, String country) throws IllegalArgumentException {
 		
 		//benefit_categories.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		//SingleBenefit_CategoriesServiceDBAccess(data.getDBParams(), id, customerid, country);
 		//CONNECT TO THE DB, PULL DATA AND PUT IT INTO THE VIEW
 		if(!benefit_categories.containsKey(id)){
@@ -656,7 +656,7 @@ public class BenefitCategoriesService implements IBenefit_CategoriesService {
 	public void updateSwitchedBenefit_Category(String id, String customerid, String country) throws IllegalArgumentException {
 	    
 		//benefit_categories.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		//SingleBenefit_CategoriesServiceDBAccess(data.getDBParams(), id, customerid, country);
 		//CONNECT TO THE DB, PULL DATA AND PUT IT INTO THE VIEW
 		if(!benefit_categories.containsKey(id)){
@@ -670,7 +670,7 @@ public class BenefitCategoriesService implements IBenefit_CategoriesService {
 	public void deleteBenefit_Category(String id, String customerid, String country) throws IllegalArgumentException {
 		
 		//benefit_categories.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		//SingleBenefit_CategoriesServiceDBAccess(data.getDBParams(), id, customerid, country);
 		if(!benefit_categories.containsKey(id)){
 			throw new IllegalArgumentException("Unable to find benefit_category with id "+id);

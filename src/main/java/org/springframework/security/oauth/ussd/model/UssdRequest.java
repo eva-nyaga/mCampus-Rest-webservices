@@ -33,7 +33,7 @@ public class UssdRequest {
     	this.service_code = service_code;
     	this.MSISDN = MSISDN;
     	this.ussd_string = ussd_string;
-    	
+
 	}
 
     /**
@@ -161,7 +161,24 @@ public class UssdRequest {
      * @param ussd_string the ussd_string to set
      */
     public void setussd_string(String ussd_string) {
-	this.ussd_string = ussd_string;
+
+    	String texts =null;
+		int endIndex = ussd_string.length();
+		int cursor = 0;
+    	if(ussd_string.lastIndexOf("*0")!=-1){
+    		//ussd_string = ussd_string.replace("*0", "*0*");
+    		int startIndex = ussd_string.lastIndexOf("*0");
+    		cursor = startIndex+1;
+    		System.out.println("INITIAL"+ussd_string);
+			texts = ussd_string.substring(cursor, endIndex);	
+			System.out.println("FINAL"+texts);
+    	}else if(ussd_string.lastIndexOf("*99")!=-1){
+    		texts = "99";
+    	}else{
+    		texts = ussd_string;
+    	}	
+
+	this.ussd_string = texts;
     }
     
 	@Override

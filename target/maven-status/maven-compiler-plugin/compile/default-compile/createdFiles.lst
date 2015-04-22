@@ -67,11 +67,14 @@ org\springframework\security\oauth\api\service\healthcare\clients\MembersService
 org\springframework\security\oauth\api\model\healthcare\clients\BenefitCategory.class
 org\springframework\security\oauth\api\data\healthcare\clients\DbCon.class
 org\springframework\security\oauth\examples\sparklr\PhotoInfo.class
+org\springframework\security\oauth\api\data\healthcare\clients\DBConInteractive.class
+org\springframework\security\oauth\api\data\healthcare\clients\DBConDistribution.class
 org\springframework\security\oauth\ussd\model\Quantum.class
 org\springframework\security\oauth\api\model\healthcare\clients\Cardreprint.class
 org\springframework\security\oauth\api\service\healthcare\clients\SchemesService$5.class
 org\springframework\security\oauth\examples\sparklr\PhotoServiceUser.class
 org\springframework\security\oauth\api\service\healthcare\clients\ISchemesService.class
+org\springframework\security\oauth\api\model\healthcare\clients\Transaction.class
 org\springframework\security\oauth\api\model\healthcare\clients\SchemeRenewal.class
 org\springframework\security\oauth\api\service\healthcare\clients\ClaimsService$4.class
 org\springframework\security\oauth\api\service\healthcare\clients\BenefitCategoriesService$4.class
@@ -84,7 +87,6 @@ org\springframework\security\oauth\api\model\healthcare\clients\Renewal.class
 org\springframework\security\oauth\api\service\healthcare\clients\IStatusesService.class
 org\springframework\security\oauth\api\model\healthcare\providers\ApiMessage.class
 org\springframework\security\oauth\api\model\healthcare\clients\Balance.class
-org\springframework\security\oauth\api\data\healthcare\clients\RequestMap.class
 org\springframework\security\oauth\api\service\healthcare\clients\IFingerprintsService.class
 org\springframework\security\oauth\api\service\healthcare\clients\BenefitsService$3.class
 org\springframework\security\oauth\api\controller\healthcare\clients\StatusesController.class
@@ -105,6 +107,7 @@ org\springframework\security\oauth\api\service\healthcare\clients\MembersService
 org\springframework\security\oauth\api\service\healthcare\clients\IMembersService.class
 org\springframework\security\oauth\ussd\model\StringTheory.class
 org\springframework\security\oauth\api\service\healthcare\clients\SchemesService$3.class
+org\springframework\security\oauth\api\data\healthcare\clients\RequestMapInteractive.class
 org\springframework\security\oauth\api\model\healthcare\clients\MoneyReductionsWrapper.class
 org\springframework\security\oauth\api\controller\healthcare\clients\BenefitsController.class
 org\springframework\security\oauth\api\service\healthcare\clients\SchemesService$8.class
@@ -113,6 +116,7 @@ org\springframework\security\oauth\api\service\healthcare\providers\ProvidersSer
 org\springframework\security\oauth\api\service\healthcare\clients\MembersService$20.class
 org\springframework\security\oauth\api\service\healthcare\clients\ClaimsService$3.class
 org\springframework\security\oauth\api\model\healthcare\clients\StatusesWrapper.class
+org\springframework\security\oauth\api\data\healthcare\clients\RequestMapIntegstaging.class
 org\springframework\security\oauth\api\model\healthcare\clients\MoneyReduction.class
 org\springframework\security\oauth\api\model\healthcare\clients\Activation.class
 org\springframework\security\oauth\api\service\healthcare\clients\SchemesService.class
@@ -132,6 +136,7 @@ org\springframework\security\oauth\api\service\healthcare\clients\BenefitsServic
 org\springframework\security\oauth\api\controller\healthcare\clients\MembersController.class
 org\springframework\security\oauth\api\service\healthcare\clients\ClaimServicesService$1.class
 org\springframework\security\oauth\api\service\healthcare\clients\BenefitCategoriesService$1.class
+org\springframework\security\oauth\api\data\healthcare\clients\RequestMapBO.class
 org\springframework\security\oauth\api\service\healthcare\clients\BenefitsService.class
 org\springframework\security\oauth\api\service\healthcare\clients\BenefitCategoriesService$3.class
 org\springframework\security\oauth\api\model\healthcare\clients\BenefitCategoriesWrapper.class

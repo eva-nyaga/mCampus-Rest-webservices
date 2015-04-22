@@ -1,6 +1,7 @@
 package org.springframework.security.oauth.api.model.healthcare.clients;
 
 
+import java.sql.Date;
 import java.util.HashMap;
 
 public class Balance implements java.io.Serializable {
@@ -70,6 +71,7 @@ public class Balance implements java.io.Serializable {
 	 private String OFFLINE_BILLING_BENEFIT;
 	 private String NHIF;
 	 private String NHIF2;
+	 private String Reason;
 	 
    	private String pinNo;
 	//@NotNull
@@ -80,8 +82,12 @@ public class Balance implements java.io.Serializable {
     private String userStatus;
     private String status;
     private String message;
-    
     private String cardSerial;
+    
+    private String startDate;
+    private String endDate;
+    private String smartCode;
+    private String schemeName;
 
     
 
@@ -90,10 +96,7 @@ public class Balance implements java.io.Serializable {
 	public Balance() {
 		
 	}
-	
 
-
-   
    
 	public int getId() {
 		return id;
@@ -500,7 +503,31 @@ public class Balance implements java.io.Serializable {
 	public void setCardSerial(String cardSerial) {
 		this.cardSerial = cardSerial;
 	}
-		
+	public String getReason() {
+		return Reason;
+	}
+	public void setReason(String Reason) {
+		this.Reason = Reason;
+	}
+	public String getStartDate() {
+		return startDate;
+	}
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+	public String getEndDate() {
+		return endDate;
+	}
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+	public String getSmartCode() {
+		return smartCode;
+	}
+	public void setSmartCode(String smartCode) {
+		this.smartCode = smartCode;
+	}
+	
 
 	public Balance(String string, String string2, String string3,
 			String string4, String string5, String string6, String string7,
@@ -516,7 +543,7 @@ public class Balance implements java.io.Serializable {
 			String string44, String string45, String string46, String string47,
 			String string48, String string49, String string50, String string51,
 			String string52, String string53, String string54, String string55, String string56, String string57, String string58, String string59, String string60, String string61,
-			String string62, String string63, String string64, String string65, String string66, String string67) {
+			String string62, String string63, String string64, String string65, String string66, String string67, String string68, String string69, String string70, String string71) {
 		
 		// TODO Auto-generated constructor stub
 		this.OUT_PATIENT_OVERALL = string;
@@ -587,6 +614,10 @@ public class Balance implements java.io.Serializable {
 	    this.status =  string65;
 	    this.pinNo = string66;
 	    this.cardSerial = string67; 
+	    this.Reason = string68; 
+		this.startDate = string69;
+		this.endDate = string70;
+		this.smartCode = string71;
 		
 	}
 

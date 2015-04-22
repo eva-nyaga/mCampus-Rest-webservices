@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.security.oauth.api.data.healthcare.clients.DBConnection;
-import org.springframework.security.oauth.api.data.healthcare.clients.RequestMap;
+import org.springframework.security.oauth.api.data.healthcare.clients.RequestMapIntegstaging;
 import org.springframework.security.oauth.api.model.healthcare.clients.Status;
 import org.springframework.security.oauth.api.model.healthcare.clients.Person;
 import org.springframework.stereotype.Service;
@@ -357,7 +357,7 @@ public class StatusesService implements IStatusesService {
 		String customertable = "";
 		String customercountry = "";
 		//statuses.clear();
-		RequestMap data = new RequestMap(customerid, country, startindex, maxresults, status, restrict,  orderby);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country, startindex, maxresults, status, restrict,  orderby);
 		StatusesServiceDBAccess(data.getDBParams(), customertable, customercountry, startindex, maxresults, status, restrict, orderby);
 		List<Status> allstatuses = new ArrayList<Status>(statuses.values());
 
@@ -387,7 +387,7 @@ public class StatusesService implements IStatusesService {
 	public List<Status> getSearchStatuses(String q, String customerid, String country, int startindex, int maxresults, int status, String restrict,  String orderby) {
 
 		statuses.clear();
-		RequestMap data = new RequestMap(q, customerid, country, startindex, maxresults, status, restrict,  orderby);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(q, customerid, country, startindex, maxresults, status, restrict,  orderby);
 		SearchStatusesServiceDBAccess(data.getDBParams(), data.getQ(), data.getCustomerId(), data.getCountry(), data.getStartIndex(), data.getMaxResults(), data.getStatus(), data.getRestrict(), data.getOrderBy());
         List<Status> matchingStatuses = new ArrayList<Status>(statuses.values());
 		return matchingStatuses;
@@ -398,7 +398,7 @@ public class StatusesService implements IStatusesService {
 	public Status getStatus(int id, String customerid, String country) throws IllegalArgumentException {
 		
 		statuses.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		SingleStatusesServiceDBAccess(data.getDBParams(), id, customerid, country);
 		//CONNECT TO THE DB PULL DATA AND PUT IT INT THE VIEW
 		Status p = statuses.get(id);
@@ -417,7 +417,7 @@ public class StatusesService implements IStatusesService {
 		}
 		
 		//statuses.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		int id = idGen.incrementAndGet();
 		statuses.put(id, status);
 		
@@ -433,7 +433,7 @@ public class StatusesService implements IStatusesService {
 		}
 		
 		//statuses.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		int id = idGen.incrementAndGet();
 		statuses.put(id, status);
 		
@@ -456,7 +456,7 @@ public class StatusesService implements IStatusesService {
 	public void updateStatus(int id, String customerid, String country) throws IllegalArgumentException {
 		
 		//statuses.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		SingleStatusesServiceDBAccess(data.getDBParams(), id, customerid, country);
 		//CONNECT TO THE DB, PULL DATA AND PUT IT INTO THE VIEW
 		if(!statuses.containsKey(id)){
@@ -472,7 +472,7 @@ public class StatusesService implements IStatusesService {
 	public void updateSwitchedStatus(int id, String customerid, String country) throws IllegalArgumentException {
 	    
 		//statuses.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		SingleStatusesServiceDBAccess(data.getDBParams(), id, customerid, country);
 		//CONNECT TO THE DB, PULL DATA AND PUT IT INTO THE VIEW
 		if(!statuses.containsKey(id)){
@@ -486,7 +486,7 @@ public class StatusesService implements IStatusesService {
 	public void deleteStatus(int id, String customerid, String country) throws IllegalArgumentException {
 		
 		//statuses.clear();
-		RequestMap data = new RequestMap(customerid, country);
+		RequestMapIntegstaging data = new RequestMapIntegstaging(customerid, country);
 		SingleStatusesServiceDBAccess(data.getDBParams(), id, customerid, country);
 		if(!statuses.containsKey(id)){
 			throw new IllegalArgumentException("Unable to find status with id "+id);
