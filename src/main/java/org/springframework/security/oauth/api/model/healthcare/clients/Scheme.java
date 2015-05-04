@@ -518,6 +518,18 @@ public class Scheme {
 	this.transStatusCode = transStatusCode;
 	this.insurerId = insurerId;
 	}
+	
+	
+	
+	public Scheme(
+			String clnCode,
+			String polId, 
+			String smartCode
+			){
+	this.clnCode = clnCode;
+	this.polId =  polId;
+	this.smartCode =  smartCode;
+	}
 
 	@Override
 	public String toString() {

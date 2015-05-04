@@ -68,8 +68,14 @@ public class Member {
     private String email;
     private String insurerId;
     private String roamingEnabled;
-    private String roamingCountries;
+    private String roamingCountries; 
+    private String memId;
+    private String reason;
+    private String smsStatus;
+    private String smartCode;
+    
 
+	 
 	public Member() {
 		
 	}
@@ -343,6 +349,13 @@ public class Member {
 	public void setTitle(String title) {
 		this.title = title;
 	}
+	
+	public String getSmartCode() {
+		return smartCode;
+	}
+	public void setSmartCode(String smartCode) {
+		this.smartCode = smartCode;
+	}
 
 	public Date getPrintDate() {
 		return printDate;
@@ -379,6 +392,7 @@ public class Member {
 	public String getRoamingEnabled() {
 		return roamingEnabled;
 	}
+	
 	public String getRoamingCountries() {
 		return roamingCountries;
 	}
@@ -386,6 +400,15 @@ public class Member {
 	public void setPrintCard(String printCard) {
 		this.printCard = printCard;
 	}
+	
+	public String getSmsStatus() {
+		return smsStatus;
+	}
+	public void setSmsStatus(String smsStatus) {
+		this.smsStatus = smsStatus;
+	}
+	
+	
 	public void setCutOffExemption(String cutOffExemption) {
 		this.cutOffExemption = cutOffExemption;
 	}
@@ -406,6 +429,26 @@ public class Member {
 	}
 	public void setRoamingCountries(String roamingCountries) {
 		this.roamingCountries = roamingCountries;
+	}
+	
+	public Member(
+			 String memId,
+			 String membershipNumber,
+			 long memStatus,
+			 String reason,
+			 String phoneNo,
+			 String smsStatus,
+			 String smartCode,
+			 String cardSerialNumber
+			){
+		this.memId =  memId;
+		this.membershipNumber = membershipNumber;
+		this.memStatus = memStatus;
+		this.reason = reason;
+		this.phoneNo = phoneNo;
+		this.smsStatus = smsStatus;
+		this.smartCode = smartCode;
+		this.cardSerialNumber = cardSerialNumber;
 	}
 	
 	public Member(
@@ -520,7 +563,6 @@ public class Member {
 		this.roamingEnabled = roamingEnabled;
 		this.roamingCountries = roamingCountries;
 	}
-
 
 	@Override
 	public String toString() {

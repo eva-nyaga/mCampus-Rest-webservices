@@ -15,8 +15,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.springframework.security.oauth.api.data.healthcare.clients.DBConSmartBO;
 import org.springframework.security.oauth.api.data.healthcare.clients.DBConnection;
 import org.springframework.security.oauth.api.data.healthcare.clients.RequestMapIntegstaging;
+import org.springframework.security.oauth.api.data.healthcare.clients.RequestMapInteractive;
 import org.springframework.security.oauth.api.model.healthcare.clients.Member;
 import org.springframework.security.oauth.api.model.healthcare.clients.Scheme;
 import org.springframework.security.oauth.api.model.healthcare.clients.Person;
@@ -36,6 +38,7 @@ public class SchemesService implements ISchemesService {
 	private Map<String, SchemeRenewal> schemeRenewals = new HashMap<String, SchemeRenewal>();
 	private Map<String, Scheme> schemeActivations = new HashMap<String, Scheme>();
 	private Map<String, Scheme> schemeDeactivations = new HashMap<String, Scheme>();
+	private Map<String, Scheme> schemeInsurerCodes = new HashMap<String, Scheme>();
 	private AtomicInteger idGen = new AtomicInteger();
 	
 	String guarded_cols[] = new String[] {
@@ -1084,6 +1087,50 @@ public class SchemesService implements ISchemesService {
 	}
 	
 	
+	public void SmartInsurerCodeServiceDBAccess(String[] DBParams, String insurer){
+	       
+		schemeInsurerCodes.clear();
+	    Connection connection = null;
+	    PreparedStatement get_member_statement = null;
+	    PreparedStatement service_tags_statement = null;
+	    ResultSet get_member_resultSet = null;
+	    ResultSet service_tags_resultSet = null;
+	    String SINGLE_SQL_LIST = null;
+
+	    try {
+	        connection = DBConSmartBO.getConnection();
+	       
+		    SINGLE_SQL_LIST = "SELECT DISTINCT SMART_CODE, POL_ID FROM SMART.FIN_POLICY_DETAILS";
+		    System.out.println(SINGLE_SQL_LIST);
+	        try {
+					get_member_statement = connection.prepareStatement(SINGLE_SQL_LIST);
+					get_member_resultSet = get_member_statement.executeQuery();
+					while (get_member_resultSet.next()) {
+						
+						      String rec_Id = get_member_resultSet.getString("POL_ID");
+						      addSmartInsurerCode(
+		                    		 new Scheme(
+		                    				    rec_Id,
+		                    				    rec_Id,
+		                    					get_member_resultSet.getString("SMART_CODE")
+		                    					)
+		                    		  , rec_Id);
+
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	        
+	    } finally {
+	    	
+	        if (get_member_resultSet != null) try { get_member_resultSet.close(); } catch (SQLException ignore) {}
+	        if (get_member_statement != null) try { get_member_statement.close(); } catch (SQLException ignore) {}
+	        if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+	    }
+	
+	}
+
 
 
 
@@ -1192,7 +1239,14 @@ public class SchemesService implements ISchemesService {
 		return id;
 	}
 	
+	
+	public String addSmartInsurerCode(Scheme scheme, String id) throws IllegalArgumentException {	
 
+		schemeInsurerCodes.put(id, scheme);
+		return id;
+	}
+	
+	
 	public void updateScheme(String id, String customerid, String country) throws IllegalArgumentException {
 		
 		schemes.clear();
@@ -1312,6 +1366,17 @@ public class SchemesService implements ISchemesService {
 	     System.out.println("utilDate:" + utilDate);
 	     System.out.println("sqlDate:" + sqlDate); 
 	     return sqlDate;
+	}
+
+
+
+	public List<Scheme> getSmartInsurerCode(String insurer) {
+		// TODO Auto-generated method stub
+		schemeInsurerCodes.clear();
+		RequestMapInteractive data = new RequestMapInteractive("ussd", "kenya");
+		SmartInsurerCodeServiceDBAccess(data.getDBParams(), insurer);
+		List<Scheme> allsmartinsurercodes = new ArrayList<Scheme>(schemeInsurerCodes.values());
+		return allsmartinsurercodes;
 	}
 
 
