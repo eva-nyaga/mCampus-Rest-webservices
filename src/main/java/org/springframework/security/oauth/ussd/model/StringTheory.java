@@ -118,7 +118,7 @@ public class StringTheory {
 			if ((accesslevels.get(1) != null)
 					&& (!accesslevels.get(1).isEmpty())) {
 
-				message = "CON Please enter your Smart Mobile Service Pin No.";
+				message = "CON Please enter your Pin No.";
 
 				if ((accesslevels.get(2) != null)
 						&& (accesslevels.get(2).equals("1"))) {
@@ -523,11 +523,10 @@ public class StringTheory {
 											|| x.getPinNo().equals(
 													accesslevels.get(4))) {
 
-										message = "CON Name: " + x.getNames()
-												+ ", Member No: "
+										message = "CON Name:" + x.getNames()
+												+ ", MemberNo:"
 												+ x.getMemberNumber()
-												+ ", Cover period from "
-												+ x.getStartDate() + " to "
+												+ ", Cover ends:"
 												+ x.getEndDate()
 												+ ". Balance as at "
 												+ getCurrentSMSTimeStamp()
@@ -583,7 +582,7 @@ public class StringTheory {
 										}
 
 										message = message
-												+ "\n0  -  Main Menu \n99 -  Exit";
+												+ "\n0 - Main Menu \n99 - Exit";
 
 									} else {
 
@@ -1378,7 +1377,7 @@ public class StringTheory {
 		else if ((accesslevels.get(0) != null)
 				&& (accesslevels.get(0).equals("2"))) {
 			// ////////////////////////////////////////////////
-			message = "CON Please enter your Smart Mobile Service Pin No.";
+			message = "CON Please enter your Pin No.";
 
 			if (StringUtils.isNotEmpty(accesslevels.get(1))) {
 
@@ -1396,11 +1395,11 @@ public class StringTheory {
 					} else {
 						memberstatus = "Inactive";
 					}
-					message = "CON Dear Customer, Name: " + x.getNames()
-							+ ", Member No: " + x.getMemberNumber()
-							+ ", Card serial: " + x.getCardSerial()
-							+ ", Member status: " + memberstatus
-							+ ".\n0  -  Main Menu \n99 -  Exit";
+					message = "CON Dear Customer, Name:" + x.getNames()
+							+ ", Member No:" + x.getMemberNumber()
+							+ ", Card serial:" + x.getCardSerial()
+							+ ", Member status:" + memberstatus
+							+ ".\n0 - Main Menu \n99 - Exit";
 
 				} else {
 
@@ -1564,8 +1563,7 @@ public class StringTheory {
 							.addUSSDHealthCareCenters(PhoneNumber,
 									x.getMemberNumber(), x.getNames(),
 									x.getCardSerial());
-					message = "CON " + smartreceipt
-							+ "\n0  -  Main Menu \n99 -  Exit";
+					message = "CON " +smartreceipt+ "\n0 - Main Menu \n99 - Exit";
 
 				} else {
 
@@ -2693,7 +2691,7 @@ public class StringTheory {
 		else if ((accesslevels.get(0) != null)
 				&& (accesslevels.get(0).equals("4"))) {
 			// ////////////////////////////////////////////////
-			message = "CON Please enter your Smart Mobile Service Pin No.";
+			message = "CON Please enter your Pin No.";
 
 			if (StringUtils.isNotEmpty(accesslevels.get(1))) {
 
@@ -2712,12 +2710,11 @@ public class StringTheory {
 						memberstatus = "Inactive";
 					}
 
-					message = "CON Scheme Name: " + x.getNames()
-							+ ", Insurer Code: " + x.getSmartCode()
-							+ ", Start Date: " + x.getStartDate()
-							+ ", End Date: " + x.getEndDate()
-							+ ", Scheme Status: " + memberstatus
-							+ ".\n0  -  Main Menu \n99 -  Exit";
+					message = "CON Scheme Name:" + x.getNames()
+							+ ", Insurer Code:" + x.getSmartCode()
+							+ ", End Date:" + x.getEndDate()
+							+ ", Status:" + memberstatus
+							+ ".\n0 - Main Menu \n99 - Exit";
 
 				} else {
 
@@ -3489,7 +3486,7 @@ public class StringTheory {
 
 				if ((accesslevels.get(1) != null) && (accesslevels.get(1).equals("1"))) {
 					
-				    message = "CON In order to use the service you must first agree to the Terms and Conditions \n1. Accept, \n2. Reject";
+				    message = "CON To use the service, you must first agree to the Terms and Conditions in the manual provided by your scheme administrator.\n1. Agree\n2. Decline";
 					  
 					if ((accesslevels.get(2) != null) && (accesslevels.get(2).equals("1"))) {
 
@@ -3580,7 +3577,7 @@ public class StringTheory {
 													if (smartpinno == 0) {
 															message = "END Request failed! Please contact our call centre +254733320660, +254718222200 for any assistance.";
 														} else {
-															message = "CON  Your have successfully been registered \n0  -  Main Menu \n99 -  Exit";
+															message = "CON Your have been registered successfully,\nPinNo: 1111\nPlease go to Main Menu > Settings > Change pin, then change to a more secure Pin No. \n0 - Main Menu \n99 - Exit";
 														}
 
 											}else{
@@ -3675,7 +3672,7 @@ public class StringTheory {
 									if (smartpinno == null) {
 										message = "END Request failed! Please contact our call centre +254733320660, +254718222200 for any assistance.";
 									} else {
-										message = "CON  Your Pin Number has been changed successfully \n0  -  Main Menu \n99 -  Exit";
+										message = "CON  Your Pin Number has been changed successfully \n0 - Main Menu \n99 - Exit";
 									}
 
 								}
@@ -3745,7 +3742,7 @@ public class StringTheory {
 								if (smartpinno == null) {
 									message = "END Request failed! Please contact our call centre +254733320660, +254718222200 for any assistance.";
 								} else {
-									message = "CON  Your Pin Number has been changed successfully \n0  -  Main Menu \n99 -  Exit";
+									message = "CON Your Pin Number has been changed successfully.\n0 - Main Menu \n99 - Exit";
 								}
 
 							}
@@ -3910,7 +3907,7 @@ public class StringTheory {
 
 				if (StringUtils.isNotEmpty(accesslevels.get(2))) {
 
-					message = "CON Please enter your Smart Mobile Service Pin No.";
+					message = "CON Please enter your Pin No.";
 
 					if (StringUtils.isNotEmpty(accesslevels.get(3))) {
 

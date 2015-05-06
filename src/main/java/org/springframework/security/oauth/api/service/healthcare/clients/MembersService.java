@@ -5544,7 +5544,7 @@ public class MembersService implements IMembersService {
 			Transaction myObject = details.get(0);
 			for(Transaction trObject : details){
 			   //do someting to anObject...
-				message = message +" Date: "+trObject.getLogTime()+" Amount: Ksh"+trObject.getEncounterAmt()+" At: "+getProvider(trObject.getSkspKey())+", ";
+				message = message +" Date:"+trObject.getLogTime()+" Amount:Ksh"+trObject.getEncounterAmt()+" At:"+getProvider(trObject.getSkspKey())+",";
 			}	
 		}
 
