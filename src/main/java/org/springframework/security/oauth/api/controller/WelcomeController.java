@@ -109,11 +109,48 @@ public class WelcomeController {
 	@RequestMapping(value = "/ussd", method = RequestMethod.GET, produces = "text/plain;charset=UTF-8")
 	public @ResponseBody String processUSSD(UssdRequest ussdrequest) {
 		
+  		System.out.println("#@#@##############@#@#@#@#@######################@#@#@#@############@");
+  		System.out.println("#@#@##############@#@#@#@#@"+ussdrequest.getSERVICE_CODE());
+  		System.out.println("#@#@##############@#@#@#@#@"+ussdrequest.getMSISDN());
+  		System.out.println("#@#@##############@#@#@#@#@"+ussdrequest.getSESSION_ID());
+  		System.out.println("#@#@##############@#@#@#@#@"+ussdrequest.getUSSD_STRING());
+  		System.out.println("#@#@##############@#@#@#@#@######################@#@#@#@############@");
+  		
+  		
+  		    //String message =  "";
 			String message = peopleService.processUssd(ussdrequest);
 			//return message+" - "+ussdrequest.getMSISDN();
 			return message;
 			
 	}
+	
+	
+	/*
+	//
+	@RequestMapping(value = "/ussd", method = RequestMethod.GET)
+	public @ResponseBody String processUSSD(
+			//@RequestParam(value = "SERVICE_CODE") String SERVICE_CODE,
+			@RequestParam(value = "MSISDN") String MSISDN,
+			@RequestParam(value = "SESSION_ID") String SESSION_ID,
+			@RequestParam(value = "USSD_STRING") String USSD_STRING,
+			HttpServletRequest request
+			) {
+		
+  		System.out.println("#@#@##############@#@#@#@#@######################@#@#@#@############@");
+  		//System.out.println("#@#@##############@#@#@#@#@"+SERVICE_CODE);
+  		System.out.println("#@#@##############@#@#@#@#@"+MSISDN);
+  		System.out.println("#@#@##############@#@#@#@#@"+SESSION_ID);
+  		System.out.println("#@#@##############@#@#@#@#@"+USSD_STRING);
+  		System.out.println("#@#@##############@#@#@#@#@######################@#@#@#@############@");
+  		
+  		
+  		    String message =  "";
+			//String message = peopleService.processUssd(ussdrequest);
+			//return message+" - "+ussdrequest.getMSISDN();
+			return message;
+			
+	}
+	*/
 
 	/*
 	######################################################################################################

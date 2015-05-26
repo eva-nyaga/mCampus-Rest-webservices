@@ -29,10 +29,10 @@ public class PROVIDERS {
 		dbConnection = getDBConnection();
 		 Statement stmt = dbConnection.createStatement();
 		    ResultSet rset = stmt
-		        .executeQuery("select COLUMN_NAME from ALL_TAB_COLUMNS where TABLE_NAME='STG_KRA_PROVIDERS' AND OWNER = 'APITEST_OWNER'");
+		        .executeQuery("select COLUMN_NAME from ALL_TAB_COLUMNS where TABLE_NAME='STG_CIC_PROVIDERs' AND OWNER = 'CIC_OWNER'");
 		    while (rset.next())
 		      System.out.println( rset.getString(1));
-		     // System.out.println(rset.getString(1).toLowerCase());
+		      //System.out.println(rset.getString(1).toLowerCase());
 
 
 			 // Create a hash map
@@ -40,17 +40,17 @@ public class PROVIDERS {
 		      // Put elements to the map
 
 		      hm.put("REC_ID", "REC_ID");
-		      hm.put("CLN_PROV_CODE", "CLN_PROV_CODE");
-		      hm.put("CLN_DESCRIPTION", "CLN_DESCRIPTION");
+		      hm.put("CLN_PROV_CODE", "TQ_PROV_CODE");
+		      hm.put("CLN_DESCRIPTION", "TQ_PROV_NAME");
 		      hm.put("SMART_PROV_CODE", "SMART_PROV_CODE");
 		      hm.put("SMART_DESCRIPTION", "SMART_DESCRIPTION");
 		      hm.put("PROVIDER_STATUS", "PROVIDER_STATUS");
-		      hm.put("TOWN", "TOWN");
+		      hm.put("TOWN", "PROV_LOCATION");
 		      hm.put("BUILDING", "BUILDING");
 		      hm.put("STREET", "STREET");
 		      hm.put("POSTAL_NR", "POSTAL_NR");
 		      hm.put("TEL_NR", "TEL_NR");
-		      hm.put("INSERT_DATE", "INSERT_DATE");
+		      hm.put("INSERT_DATE", "DATE_ADDED");
 		      hm.put("PICKED_STATUS", "PICKED_STATUS");
 		      hm.put("PICKED_DATE", "PICKED_DATE");
 		      hm.put("FAX_NR", "FAX_NR");
@@ -67,8 +67,8 @@ public class PROVIDERS {
 	      // Display elements
 	      while(i.hasNext()) {
 	         Map.Entry me = (Map.Entry)i.next();
-	         //System.out.print(me.getKey() + ": ");
-	         //System.out.println(me.getValue());
+	        // System.out.print(me.getKey() + ": ");
+	       //  System.out.println(me.getValue());
 	      }
   	
     
@@ -98,13 +98,13 @@ public class PROVIDERS {
 				+ " SET PROVIDERS_MAP = '"+serializedMap+"' ";
 
 
-         System.out.println(updateTableSQL);
+        // System.out.println(updateTableSQL);
 		
 		try {
 			dbConnection = getDBConnection();
 			statement = dbConnection.createStatement();
 			//System.out.println(updateTableSQL);
-			statement.execute(updateTableSQL);
+			//statement.execute(updateTableSQL);
 
 		} catch (SQLException e) {
 
@@ -136,7 +136,7 @@ public class PROVIDERS {
 			Connection dbConnection = null;
 
 			final String DB_DRIVER = "oracle.jdbc.driver.OracleDriver";
-			final String DB_CONNECTION = "jdbc:oracle:thin:@192.168.1.27:1521/integstaging";
+			final String DB_CONNECTION = "jdbc:oracle:thin:@192.180.3.14:1521/integstaging";
 			final String DB_USER = "INTEG_USER";
 			final String DB_PASSWORD = "integ_123";
 	 

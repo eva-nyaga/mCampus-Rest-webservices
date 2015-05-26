@@ -9,15 +9,15 @@ package org.springframework.security.oauth.ussd.model;
  */
 public class UssdRequest {
 
-    private String session_id;
+    private String SESSION_ID;
     private String Type;
     private String message;
     private String network;
     private Integer Sequence;
     private String ClientState;
-    private String service_code;
+    private String SERVICE_CODE;
     private String MSISDN;
-    private String ussd_string;
+    private String USSD_STRING;
     
     /**
      * 
@@ -26,28 +26,28 @@ public class UssdRequest {
     	
     }
 
-    public UssdRequest(String session_id, String service_code,
-			String MSISDN, String ussd_string) {
+    public UssdRequest(String SESSION_ID, String SERVICE_CODE,
+			String MSISDN, String USSD_STRING) {
 		// TODO Auto-generated constructor stub
-    	this.session_id = session_id;
-    	this.service_code = service_code;
+    	this.SESSION_ID = SESSION_ID;
+    	this.SERVICE_CODE = SERVICE_CODE;
     	this.MSISDN = MSISDN;
-    	this.ussd_string = ussd_string;
-
+    	this.USSD_STRING = USSD_STRING;
 	}
 
     /**
      * @return the session_id
      */
-    public String getsession_id() {
-        return session_id;
+    public String getSESSION_ID() {
+        return SESSION_ID;
     }
+
 
     /**
      * @param session_id the session_id to set
      */
-    public void setsession_id(String session_id) {
-        this.session_id = session_id;
+    public void setSESSION_ID(String SESSION_ID) {
+        this.SESSION_ID = SESSION_ID;
     }
 
     /**
@@ -123,62 +123,65 @@ public class UssdRequest {
     /**
      * @return the service_code
      */
-    public String getservice_code() {
-	return service_code;
-    }
+    
+      public String getSERVICE_CODE() {
+    	  return SERVICE_CODE;
+      }
+    
 
     /**
      * @param service_code the service_code to set
      */
-    public void setservice_code(String service_code) {
-	this.service_code = service_code;
-    }
+    
+      public void setSERVICE_CODE(String SERVICE_CODE) {
+    	  this.SERVICE_CODE = SERVICE_CODE;	  
+      }
 
     
     /**
      * @return the MSISDN
      */
     public String getMSISDN() {
-	return MSISDN;
+	    return MSISDN;
     }
 
     /**
      * @param MSISDN the MSISDN to set
      */
     public void setMSISDN(String MSISDN) {
-	this.MSISDN = MSISDN;
+    	this.MSISDN = MSISDN;
     }
     
     
     /**
      * @return the MSISDN
      */
-    public String getussd_string() {
-	return ussd_string;
+    public String getUSSD_STRING() {
+    	return USSD_STRING;
     }
 
     /**
-     * @param ussd_string the ussd_string to set
+     * @param USSD_STRING the USSD_STRING to set
      */
-    public void setussd_string(String ussd_string) {
+    public void setUSSD_STRING(String USSD_STRING) {
 
     	String texts =null;
-		int endIndex = ussd_string.length();
+		int endIndex = USSD_STRING.length();
 		int cursor = 0;
-    	if(ussd_string.lastIndexOf("*0")!=-1){
-    		//ussd_string = ussd_string.replace("*0", "*0*");
-    		int startIndex = ussd_string.lastIndexOf("*0");
+    	if(USSD_STRING.lastIndexOf("*0")!=-1){
+    		//USSD_STRING = USSD_STRING.replace("*0", "*0*");
+    		int startIndex = USSD_STRING.lastIndexOf("*0");
     		cursor = startIndex+1;
-    		System.out.println("INITIAL"+ussd_string);
-			texts = ussd_string.substring(cursor, endIndex);	
+    		System.out.println("INITIAL"+USSD_STRING);
+			texts = USSD_STRING.substring(cursor, endIndex);	
 			System.out.println("FINAL"+texts);
-    	}else if(ussd_string.lastIndexOf("*99")!=-1){
+    	}else if(USSD_STRING.lastIndexOf("*99")!=-1){
     		texts = "99";
     	}else{
-    		texts = ussd_string;
+    		texts = USSD_STRING;
     	}	
 
-	this.ussd_string = texts;
+	this.USSD_STRING = texts;
     }
     
 	@Override
@@ -193,9 +196,9 @@ public class UssdRequest {
 	@Override
 	public String toString() {
 		return String
-				.format("UssdRequest [Mobile=%s, session_id=%s, Type=%s, message=%s, network=%s, Sequence=%s, ClientState=%s, service_code=%s, MSISDN=%s, ussd_string=%s]",
+				.format("UssdRequest [Mobile=%s, session_id=%s, Type=%s, message=%s, network=%s, Sequence=%s, ClientState=%s, service_code=%s, MSISDN=%s, USSD_STRING=%s]",
 						Mobile, session_id, Type, message, network, Sequence,
-						ClientState, service_code, MSISDN, ussd_string);
+						ClientState, service_code, MSISDN, USSD_STRING);
 	}
 	*/
 

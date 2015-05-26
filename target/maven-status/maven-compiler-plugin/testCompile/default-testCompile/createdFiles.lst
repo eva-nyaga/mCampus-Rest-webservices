@@ -2,15 +2,18 @@ Members$1.class
 STATUS.class
 POLICY.class
 BenefitsCATG$1.class
+M_COMPANIES.class
 Claims$1.class
 Claims.class
 INPATIENT_NOTIFY.class
 REPRINTS.class
+M_COMPANIES_MAP.class
 Members.class
 MEM_CATG_CHANGE.class
 ClaimsRETURNS.class
 INPATIENT_NOTIFY$1.class
 ConnectMSSQL.class
+M_COMPANIES_MAP$1.class
 MEM_CATG_CHANGE$1.class
 POLICY$1.class
 ClaimsRETURNS$1.class
@@ -23,5 +26,6 @@ PROVIDERS.class
 PROVIDERS$1.class
 Benefits$1.class
 FingerRMVL.class
+M_COMPANIES$1.class
 Benefits.class
 MEM_CANCEL$1.class

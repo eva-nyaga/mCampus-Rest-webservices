@@ -36,17 +36,15 @@ public class PeopleService implements IPeopleService {
 		// TODO Auto-generated method stub
 		// Set the output character encoding
 		
-
+		
 		try{
-			
 			// Process the Ussd request
-			if(StringUtils.isNotEmpty(ussdRequest.getsession_id())){
+			if(StringUtils.isNotEmpty(ussdRequest.getSESSION_ID())){
 
-				System.out.println("THE STRING INSERT DATA ='"+ussdRequest.getussd_string()+"'");
 				// check the various request type
-				if(StringUtils.isEmpty(ussdRequest.getussd_string().substring(1)) || (ussdRequest.getussd_string().equals("0")) || (ussdRequest.getussd_string().equals("0*")) || (ussdRequest.getussd_string().equals("*0")) || (ussdRequest.getussd_string().equals("*")) || (ussdRequest.getussd_string().equals("")) || (ussdRequest.getussd_string().equals(" "))){
+				if(StringUtils.isEmpty(ussdRequest.getUSSD_STRING()) || (ussdRequest.getUSSD_STRING().equals("0")) || (ussdRequest.getUSSD_STRING().equals("0*")) || (ussdRequest.getUSSD_STRING().equals("*0")) || (ussdRequest.getUSSD_STRING().equals("*")) || (ussdRequest.getUSSD_STRING().equals("")) || (ussdRequest.getUSSD_STRING().equals(" "))){
 					
-					System.out.println(ussdRequest.getussd_string());
+					System.out.println(ussdRequest.getUSSD_STRING());
 					accesslevels.put(0, null);//checkbalance//payaccess/paycardaccess
 					accesslevels.put(1, null);//OP//IP/DEBTAL//
 					accesslevels.put(2, null);
@@ -56,16 +54,16 @@ public class PeopleService implements IPeopleService {
 					
 					// Set the ussd response
 			          addUssdResponse(new UssdResponse(
-			        		  ussdRequest.getsession_id(),
+			        		  ussdRequest.getSESSION_ID(),
 			        		  null,
 			        		  "CON Welcome to Smart Applications Mobile Service.\n1. Check balance\n2. Member status\n3. Query for statement\n4. Scheme status\n5. Settings",
 			        		  "Response",
 			        		  accesslevels
-			                 ), ussdRequest.getsession_id());
+			                 ), ussdRequest.getSESSION_ID());
 				}else{
 
 					// response case studies
-					if(StringUtils.isNotEmpty(ussdRequest.getussd_string().substring(1))){
+					if(StringUtils.isNotEmpty(ussdRequest.getUSSD_STRING())){
 						
 						//String texts = "**9111#";
 						//String texts = "*9111*1#";
@@ -76,32 +74,32 @@ public class PeopleService implements IPeopleService {
 						//String texts = "*91 11*1*2  *3*v  jg  hj*5#";
 						//String texts = "*91 11*1*2  *3*v  jg  hj*5#";
 						
-						if(ussdRequest.getussd_string().equals("99")){
+						if(ussdRequest.getUSSD_STRING().equals("99")){
 							
 							String message = "END Dear customer, Thank you for using the Smart Mobile Service."; 
 			                 addUssdResponse(new UssdResponse(
-			                           ussdRequest.getsession_id(),
+			                           ussdRequest.getSESSION_ID(),
 			                           null,
 			                           message,
 			                           "Release",
 			                           accesslevels
-			                        ), ussdRequest.getsession_id());
+			                        ), ussdRequest.getSESSION_ID());
 						}else{
 
 							BlackHole hole = new BlackHole();
 							System.out.println("THE BEGINNING");
-							HashMap<Integer, String> accesslevels = hole.BlackHole(ussdRequest.getussd_string().substring(1));
+							HashMap<Integer, String> accesslevels = hole.BlackHole(ussdRequest.getUSSD_STRING());
 							System.out.println("THE END");
 							StringTheory stringtheory = new StringTheory();
 							String message = stringtheory.StringTheory(accesslevels, ussdRequest.getMSISDN());
 
 			                 addUssdResponse(new UssdResponse(
-			                           ussdRequest.getsession_id(),
+			                           ussdRequest.getSESSION_ID(),
 			                           null,
 			                           message,
 			                           "Release",
 			                           accesslevels
-			                        ), ussdRequest.getsession_id());
+			                        ), ussdRequest.getSESSION_ID());
 						}
 						
 
@@ -115,12 +113,12 @@ public class PeopleService implements IPeopleService {
 						accesslevels.put(5, null);
 						
                  addUssdResponse(new UssdResponse(
-                           ussdRequest.getsession_id(),
+                           ussdRequest.getSESSION_ID(),
                            null,
                            "Invalid option.",
                            "Release",
                            accesslevels
-                        ), ussdRequest.getsession_id());
+                        ), ussdRequest.getSESSION_ID());
      				}
 					
 				}
@@ -173,10 +171,10 @@ public class PeopleService implements IPeopleService {
 		}	
 		
 		
-		if(StringUtils.isNotEmpty(ussdRequest.getsession_id())){
+		if(StringUtils.isNotEmpty(ussdRequest.getSESSION_ID())){
 			
-			System.out.println(ussdRequest.getsession_id());
-			UssdResponse ussdResponse =ussdresponse.get(ussdRequest.getsession_id()); 
+			System.out.println(ussdRequest.getSESSION_ID());
+			UssdResponse ussdResponse =ussdresponse.get(ussdRequest.getSESSION_ID()); 
 			if(ussdResponse == null)
 			{
 				return "END Service is currently down 'Null', Please try again later.";
