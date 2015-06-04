@@ -22,7 +22,7 @@ public class DBConSmartBO {
 	public static Connection getConnection() {
 		
 		String SID = "smart";
-		String jdbcUrl = "jdbc:oracle:thin:@192.168.1.27:1521:"+SID;
+		String jdbcUrl = "jdbc:oracle:thin:@192.180.3.14:1520:"+SID;
 		String jdbcUser = "gfsmart";
 		String jdbcPassword = "gfusersmart";
 
