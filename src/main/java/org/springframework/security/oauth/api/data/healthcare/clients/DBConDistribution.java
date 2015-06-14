@@ -21,8 +21,8 @@ public class DBConDistribution {
 	
 	public static Connection getConnection() {
 		
-		String SID = "distribution";
-		String jdbcUrl = "jdbc:oracle:thin:@192.180.3.14:1521:"+SID;
+		String SID = "smart";
+		String jdbcUrl = "jdbc:oracle:thin:@192.180.3.14:1520:"+SID;
 		String jdbcUser = "DISTRIBUTION";
 		String jdbcPassword = "YesoObuye2012";
 

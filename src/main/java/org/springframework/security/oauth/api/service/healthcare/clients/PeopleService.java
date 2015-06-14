@@ -56,7 +56,7 @@ public class PeopleService implements IPeopleService {
 			          addUssdResponse(new UssdResponse(
 			        		  ussdRequest.getSESSION_ID(),
 			        		  null,
-			        		  "CON Welcome to Smart Applications Mobile Service.\n1. Check balance\n2. Member status\n3. Query for statement\n4. Scheme status\n5. Settings",
+			        		  "CON Welcome to Smart Mobile Service.\n1. Registration\n2. Check balance\n3. Check member status\n4. Request medical statement\n5. Check scheme status\n6. Settings",
 			        		  "Response",
 			        		  accesslevels
 			                 ), ussdRequest.getSESSION_ID());

@@ -28,33 +28,35 @@ public class Claims {
 		dbConnection = getDBConnection();
 		 Statement stmt = dbConnection.createStatement();
 		    ResultSet rset = stmt
-		        .executeQuery("select COLUMN_NAME from ALL_TAB_COLUMNS where TABLE_NAME='STG_KRA_CLAIMS'");
+		        .executeQuery("select COLUMN_NAME from ALL_TAB_COLUMNS where TABLE_NAME='STG_AAR_CLAIMS'");
 		    while (rset.next())
-		      System.out.println(rset.getString(1));
+		      System.out.println("hm.put("+rset.getString(1)+", "+rset.getString(1)+")");
 		 
 
 	
 			 // Create a hash map
 		      HashMap hm = new HashMap();
 		      // Put elements to the map
-		      hm.put("CLN_UNIQUE_MEM_NUMBER", "TQ_UNIQUE_MEM_NUMBER");
+		      hm.put("POLICY_NUMBER", "POLICY_NUMBER");
+		      hm.put("CLN_BEN_CLAUSE_CODE", "CLN_BEN_CLAUSE_CODE");
+		      hm.put("ERROR_DESCRIPTION", "ERROR_DESCRIPTION");
+		      hm.put("CLN_UNIQUE_MEM_NUMBER", "CLN_UNIQUE_MEM_NUMBER");
 		      hm.put("ADMIT_ID", "ADMIT_ID");
-		      hm.put("STATUS", "STATUS");
+		      hm.put("PICKED_STATUS", "PICKED_STATUS");
 		      hm.put("SMART_INVOICE_NR", "SMART_INVOICE_NR");
 		      hm.put("PROVIDER_CLAIM_ID", "PROVIDER_CLAIM_ID");
 		      hm.put("DATE_RECEIVED", "DATE_RECEIVED");
-		      hm.put("AMOUNT", "INVOICED_AMOUNT");
+		      hm.put("AMOUNT", "AMOUNT");
 		      hm.put("BENEFIT_CODE", "BENEFIT_CODE");
 		      hm.put("SERVICE_DESCRIPTION", "SERVICE_DESCRIPTION");
-		      hm.put("TRANSACTION_DATE", "INVOICE_DATE");
+		      hm.put("TRANSACTION_DATE", "TRANSACTION_DATE");
 		      hm.put("CARD_SERIAL", "CARD_SERIAL");
 		      hm.put("MEMBER_NAME", "MEMBER_NAME");
-			  hm.put("ERROR_DESCRIPTION", "ERROR_DESCRIPTION");
 		      hm.put("MEMBERSHIP_NUMBER", "MEMBERSHIP_NUMBER");
 		      hm.put("PROVIDER_CODE", "PROVIDER_CODE");
-		      hm.put("POLICY_NUMBER", "POLICY_NUMBER");
-		      hm.put("CLN_BEN_CLAUSE_CODE", "CLN_BEN_CLAUSE_CODE");
-	      
+		      hm.put("CLAIM_ID", "CLAIM_ID");
+		      hm.put("INSURER_ID", "INSURER_ID");
+		      hm.put("INSERT_DATE", "INSERT_DATE");
 	      // Get a set of the entries
 	      Set set = hm.entrySet();
 	      // Get an iterator
@@ -62,8 +64,8 @@ public class Claims {
 	      // Display elements
 	      while(i.hasNext()) {
 	         Map.Entry me = (Map.Entry)i.next();
-	         //System.out.print(me.getKey() + ": ");
-	         //System.out.println(me.getValue());
+	         System.out.print(me.getKey() + ": ");
+	         System.out.println(me.getValue());
 	      }
   	
 	   Gson gson = new Gson();
@@ -90,9 +92,10 @@ public class Claims {
 
 		String updateTableSQL = "UPDATE INTEG_USER.SMARTAPI_FIN_CLIENT_MAP"
 				+ " SET CLAIMS_MAP = '"+serializedMap+"' ";
+	
 // WHERE ID = 14564789
 
-
+          System.out.println(updateTableSQL);
 		try {
 			dbConnection = getDBConnection();
 			statement = dbConnection.createStatement();
@@ -128,7 +131,7 @@ public class Claims {
 			Connection dbConnection = null;
 
 			final String DB_DRIVER = "oracle.jdbc.driver.OracleDriver";
-			final String DB_CONNECTION = "jdbc:oracle:thin:@192.168.1.27:1521/integstaging";
+			final String DB_CONNECTION = "jdbc:oracle:thin:@192.168.1.228:1521/integstaging";
 			final String DB_USER = "INTEG_USER";
 			final String DB_PASSWORD = "integ_123";
 	 

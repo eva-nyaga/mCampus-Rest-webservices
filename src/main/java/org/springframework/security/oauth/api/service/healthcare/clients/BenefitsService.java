@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.security.oauth.api.data.healthcare.clients.DBConnection;
 import org.springframework.security.oauth.api.data.healthcare.clients.RequestMapIntegstaging;
 import org.springframework.security.oauth.api.model.healthcare.clients.Benefit;
@@ -404,16 +405,13 @@ public class BenefitsService implements IBenefitsService {
 	       Gson gson = new Gson();
 	       String key = "";
 	       HashMap MEMBERS_MAP =  gson.fromJson(SMART[27], new TypeToken<HashMap<String, String>>(){}.getType());
-
+	       String recid = "";
+	       String itemId = "";
 		// TODO Auto-generated method stub
 			Connection dbMemberConnection = null;
 			PreparedStatement preparedStatement = null;
 			Connection dbBenefitConnection = null;
 			PreparedStatement preparedBenefitStatement = null;
-			String itemId = Long.toString(get());
-		    String recid = itemId.substring(itemId.length() - 7);
-			
-	 
 			String insertTableSQL = "INSERT INTO "+SMART[4]+"."+SMART[10]+""
 					+ "(" +
 					" "+MEMBERS_MAP.get("CLN_POL_ID")+"," +
@@ -467,91 +465,6 @@ public class BenefitsService implements IBenefitsService {
 					" VALUES"
 					+ "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			
-			try {
-
-               	
-				dbMemberConnection = DBConnection.getConnection(DBParams);
-				preparedStatement = dbMemberConnection.prepareStatement(insertTableSQL);
-				preparedStatement.setString(1, benefit.getClnPolId());
-				preparedStatement.setString(2, benefit.getClnPolCode());
-				preparedStatement.setString(3, benefit.getAutoGrowthPct());
-				preparedStatement.setString(4, benefit.getAutoGrowthInd());
-				preparedStatement.setString(5, benefit.getBenLinked2Tqcode());
-				preparedStatement.setString(6, benefit.getBenTypDesc());
-				preparedStatement.setString(7, benefit.getClnBenCode());
-				preparedStatement.setString(8, benefit.getClnBenClauseCode());
-				preparedStatement.setString(9, benefit.getUserId());
-				preparedStatement.setDate(10, benefit.getBenEndDate());
-				preparedStatement.setString(11, benefit.getAutoReplenishInd());
-				preparedStatement.setString(12, benefit.getSpendThrespct());
-				preparedStatement.setString(13, benefit.getSpendThreshold());
-				preparedStatement.setString(14, benefit.getMemAssignedBenefit());
-				preparedStatement.setString(15, benefit.getServiceType());
-				preparedStatement.setDate(16, benefit.getEffectiveDate());
-				preparedStatement.setString(17, benefit.getWaitingPeriod());
-				preparedStatement.setString(18, benefit.getGenderApplicability().toUpperCase());
-				preparedStatement.setString(19, benefit.getLimitAmt());
-				preparedStatement.setString(20, benefit.getSubLimitAmt());
-				preparedStatement.setString(21, benefit.getBenLinked2Id());
-				preparedStatement.setString(22, benefit.getCoPayPercent());
-				preparedStatement.setString(23, benefit.getCoPayAmt());
-				preparedStatement.setString(24, benefit.getBenTypeId());
-				preparedStatement.setString(25, benefit.getCatCode());
-				preparedStatement.setString(26, benefit.getPolicyNumber());
-				preparedStatement.setString(27, benefit.getBenefitDesc());
-				preparedStatement.setDate(28, getCurrentTimeStamp());
-				preparedStatement.setString(29, recid);
-				preparedStatement.setString(30, "0");
-				preparedStatement.setString(31, benefit.getSmartBenId());
-				preparedStatement.setString(32, benefit.getCopayInd());
-				preparedStatement.setString(33, benefit.getAutoReplenishLimtype());
-				preparedStatement.setString(34, benefit.getAutoReplenishLimit());
-				preparedStatement.setString(35, benefit.getAutoGrowthRateInd());
-				preparedStatement.setString(36, benefit.getAutoGrowthRate());
-				preparedStatement.setString(37, benefit.getAutoGrowthCeiling());
-				preparedStatement.setString(38, benefit.getCutOffInd());
-				preparedStatement.setString(39, benefit.getCutOffAge());
-				preparedStatement.setString(40, benefit.getInsurerId());
-				preparedStatement.setString(41, benefit.getLayeredInd());
-				preparedStatement.setString(42, benefit.getLayered1Type());
-				preparedStatement.setString(43, benefit.getLayered1Value());
-				preparedStatement.setString(44, benefit.getLayered2Type());
-				preparedStatement.setString(45, benefit.getLayered2Value());
-				preparedStatement.setString(46, benefit.getLayered3Type());
-				preparedStatement.setString(47, benefit.getLayered3Value());
-				// execute insert SQL stetement
-				preparedStatement.executeUpdate();
-
-				System.out.println("Record is inserted into DBUSER table!");
-	 
-			} catch (SQLException e) {
-	 
-				System.out.println(e.getMessage());
-				throw new IllegalArgumentException(e.getMessage());
-	 
-			} finally {
-	 
-				if (preparedStatement != null) {
-					try {
-						preparedStatement.close();
-					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-	 
-				if (dbMemberConnection != null) {
-					try {
-						dbMemberConnection.close();
-					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-	 
-			}
-			
-			
 			String insertTableSQLMAPBENEFITS = "INSERT INTO "+SMART[4]+"."+SMART[46]+""
 					+ "(" +
 					" REC_ID," +
@@ -565,48 +478,524 @@ public class BenefitsService implements IBenefitsService {
 					")" +
 					" VALUES"
 					+ "( ?, ?, ?, ?, ?, ?, ?, ?)";
-			
-			
-			try {
-				dbBenefitConnection = DBConnection.getConnection(DBParams);
-				preparedBenefitStatement = dbBenefitConnection.prepareStatement(insertTableSQLMAPBENEFITS);
-				preparedBenefitStatement.setString(1, recid);
-				preparedBenefitStatement.setString(2, benefit.getClnBenCode());
-				preparedBenefitStatement.setString(3, benefit.getBenefitDesc());
-				preparedBenefitStatement.setString(4, benefit.getSmartBenId());
-				preparedBenefitStatement.setString(5, benefit.getBenTypDesc());
-				preparedBenefitStatement.setString(6, benefit.getInsurerId());				
-				preparedBenefitStatement.setString(7, "0");
-				preparedBenefitStatement.setDate(8, getCurrentTimeStamp());
 
-				// execute insert SQL stetement
-				preparedBenefitStatement.executeUpdate();
-		} catch (SQLException e) {
- 
-			System.out.println(e.getMessage());
-			throw new IllegalArgumentException(e.getMessage());
- 
-		} finally {
- 
-			if (preparedBenefitStatement != null) {
-				try {
-					preparedBenefitStatement.close();
+			if((StringUtils.equals(benefit.getLayeredInd(), "1"))&&(StringUtils.isNotEmpty(benefit.getLayered1Value()))&&(StringUtils.isNotEmpty(benefit.getLayered2Value()))&&(StringUtils.isNotEmpty(benefit.getLayered3Value()))){
+				
+				/*////////////////////////////////  PART ONE OF THE TIER////////////////////////////////////////// */
+				itemId = Long.toString(get());
+			    recid = itemId.substring(itemId.length() - 7);
+			
+				try {   	
+					dbMemberConnection = DBConnection.getConnection(DBParams);
+					preparedStatement = dbMemberConnection.prepareStatement(insertTableSQL);
+					preparedStatement.setString(1, benefit.getClnPolId());
+					preparedStatement.setString(2, benefit.getClnPolCode());
+					preparedStatement.setString(3, benefit.getAutoGrowthPct());
+					preparedStatement.setString(4, benefit.getAutoGrowthInd());
+					preparedStatement.setString(5, benefit.getBenLinked2Tqcode());
+					preparedStatement.setString(6, benefit.getBenTypDesc());
+					preparedStatement.setString(7, benefit.getClnBenCode()+"L1");
+					preparedStatement.setString(8, benefit.getClnBenClauseCode()+"L1");
+					preparedStatement.setString(9, benefit.getUserId());
+					preparedStatement.setDate(10, benefit.getBenEndDate());
+					preparedStatement.setString(11, benefit.getAutoReplenishInd());
+					preparedStatement.setString(12, benefit.getSpendThrespct());
+					preparedStatement.setString(13, benefit.getSpendThreshold());
+					preparedStatement.setString(14, benefit.getMemAssignedBenefit());
+					preparedStatement.setString(15, benefit.getServiceType());
+					preparedStatement.setDate(16, benefit.getEffectiveDate());
+					preparedStatement.setString(17, benefit.getWaitingPeriod());
+					preparedStatement.setString(18, benefit.getGenderApplicability().toUpperCase());
+					preparedStatement.setString(19, benefit.getLayered1Value());
+					preparedStatement.setString(20, benefit.getSubLimitAmt());
+					preparedStatement.setString(21, "0");
+					preparedStatement.setString(22, benefit.getCoPayPercent());
+					preparedStatement.setString(23, benefit.getCoPayAmt());
+					preparedStatement.setString(24, "801");
+					preparedStatement.setString(25, benefit.getCatCode());
+					preparedStatement.setString(26, benefit.getPolicyNumber());
+					preparedStatement.setString(27, benefit.getBenefitDesc());
+					preparedStatement.setDate(28, getCurrentTimeStamp());
+					preparedStatement.setString(29, recid);
+					preparedStatement.setString(30, "0");
+					preparedStatement.setString(31, "14");
+					preparedStatement.setString(32, benefit.getCopayInd());
+					preparedStatement.setString(33, benefit.getAutoReplenishLimtype());
+					preparedStatement.setString(34, benefit.getAutoReplenishLimit());
+					preparedStatement.setString(35, benefit.getAutoGrowthRateInd());
+					preparedStatement.setString(36, benefit.getAutoGrowthRate());
+					preparedStatement.setString(37, benefit.getAutoGrowthCeiling());
+					preparedStatement.setString(38, benefit.getCutOffInd());
+					preparedStatement.setString(39, benefit.getCutOffAge());
+					preparedStatement.setString(40, benefit.getInsurerId());
+					preparedStatement.setString(41, benefit.getLayeredInd());
+					preparedStatement.setString(42, benefit.getLayered1Type());
+					preparedStatement.setString(43, benefit.getLayered1Value());
+					preparedStatement.setString(44, benefit.getLayered2Type());
+					preparedStatement.setString(45, benefit.getLayered2Value());
+					preparedStatement.setString(46, benefit.getLayered3Type());
+					preparedStatement.setString(47, benefit.getLayered3Value());
+					// execute insert SQL stetement
+					preparedStatement.executeUpdate();
+
+					System.out.println("Record is inserted into DBUSER table!");
+		 
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+		 
+					System.out.println(e.getMessage());
+					throw new IllegalArgumentException(e.getMessage());
+		 
+				} finally {
+		 
+					if (preparedStatement != null) {
+						try {
+							preparedStatement.close();
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+		 
+					if (dbMemberConnection != null) {
+						try {
+							dbMemberConnection.close();
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+		 
 				}
-			}
- 
-			if (dbBenefitConnection != null) {
+
+				
 				try {
-					dbBenefitConnection.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					dbBenefitConnection = DBConnection.getConnection(DBParams);
+					preparedBenefitStatement = dbBenefitConnection.prepareStatement(insertTableSQLMAPBENEFITS);
+					preparedBenefitStatement.setString(1, recid);
+					preparedBenefitStatement.setString(2, benefit.getClnBenCode()+"L1");
+					preparedBenefitStatement.setString(3, benefit.getBenefitDesc());
+					preparedBenefitStatement.setString(4, "14");
+					preparedBenefitStatement.setString(5, "OUT PATIENT OVERALL TIER 1");
+					preparedBenefitStatement.setString(6, benefit.getInsurerId());				
+					preparedBenefitStatement.setString(7, "0");
+					preparedBenefitStatement.setDate(8, getCurrentTimeStamp());
+
+					// execute insert SQL stetement
+					preparedBenefitStatement.executeUpdate();
+			} catch (SQLException e) {
+	 
+				System.out.println(e.getMessage());
+				throw new IllegalArgumentException(e.getMessage());
+	 
+			} finally {
+	 
+				if (preparedBenefitStatement != null) {
+					try {
+						preparedBenefitStatement.close();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
+	 
+				if (dbBenefitConnection != null) {
+					try {
+						dbBenefitConnection.close();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+	 
 			}
- 
-		}
+				
+		 /*///////////////////////////////////////PART TWO OF THE TIER////////////////////////////////////////// */
+				
+				itemId = Long.toString(get());
+			    recid = itemId.substring(itemId.length() - 7);
+				try {   	
+					dbMemberConnection = DBConnection.getConnection(DBParams);
+					preparedStatement = dbMemberConnection.prepareStatement(insertTableSQL);
+					preparedStatement.setString(1, benefit.getClnPolId());
+					preparedStatement.setString(2, benefit.getClnPolCode());
+					preparedStatement.setString(3, benefit.getAutoGrowthPct());
+					preparedStatement.setString(4, benefit.getAutoGrowthInd());
+					preparedStatement.setString(5, benefit.getBenLinked2Tqcode());
+					preparedStatement.setString(6, benefit.getBenTypDesc());
+					preparedStatement.setString(7, benefit.getClnBenCode()+"L2");
+					preparedStatement.setString(8, benefit.getClnBenClauseCode()+"L2");
+					preparedStatement.setString(9, benefit.getUserId());
+					preparedStatement.setDate(10, benefit.getBenEndDate());
+					preparedStatement.setString(11, benefit.getAutoReplenishInd());
+					preparedStatement.setString(12, benefit.getSpendThrespct());
+					preparedStatement.setString(13, benefit.getSpendThreshold());
+					preparedStatement.setString(14, benefit.getMemAssignedBenefit());
+					preparedStatement.setString(15, benefit.getServiceType());
+					preparedStatement.setDate(16, benefit.getEffectiveDate());
+					preparedStatement.setString(17, benefit.getWaitingPeriod());
+					preparedStatement.setString(18, benefit.getGenderApplicability().toUpperCase());
+					preparedStatement.setString(19, benefit.getLayered2Value());
+					preparedStatement.setString(20, benefit.getSubLimitAmt());
+					preparedStatement.setString(21, "14");
+					preparedStatement.setString(22, benefit.getCoPayPercent());
+					preparedStatement.setString(23, benefit.getCoPayAmt());
+					preparedStatement.setString(24, "802");
+					preparedStatement.setString(25, benefit.getCatCode());
+					preparedStatement.setString(26, benefit.getPolicyNumber());
+					preparedStatement.setString(27, benefit.getBenefitDesc());
+					preparedStatement.setDate(28, getCurrentTimeStamp());
+					preparedStatement.setString(29, recid);
+					preparedStatement.setString(30, "0");
+					preparedStatement.setString(31, "16");
+					preparedStatement.setString(32, benefit.getCopayInd());
+					preparedStatement.setString(33, benefit.getAutoReplenishLimtype());
+					preparedStatement.setString(34, benefit.getAutoReplenishLimit());
+					preparedStatement.setString(35, benefit.getAutoGrowthRateInd());
+					preparedStatement.setString(36, benefit.getAutoGrowthRate());
+					preparedStatement.setString(37, benefit.getAutoGrowthCeiling());
+					preparedStatement.setString(38, benefit.getCutOffInd());
+					preparedStatement.setString(39, benefit.getCutOffAge());
+					preparedStatement.setString(40, benefit.getInsurerId());
+					preparedStatement.setString(41, benefit.getLayeredInd());
+					preparedStatement.setString(42, benefit.getLayered1Type());
+					preparedStatement.setString(43, benefit.getLayered1Value());
+					preparedStatement.setString(44, benefit.getLayered2Type());
+					preparedStatement.setString(45, benefit.getLayered2Value());
+					preparedStatement.setString(46, benefit.getLayered3Type());
+					preparedStatement.setString(47, benefit.getLayered3Value());
+					// execute insert SQL stetement
+					preparedStatement.executeUpdate();
+
+					System.out.println("Record is inserted into DBUSER table!");
+		 
+				} catch (SQLException e) {
+		 
+					System.out.println(e.getMessage());
+					throw new IllegalArgumentException(e.getMessage());
+		 
+				} finally {
+		 
+					if (preparedStatement != null) {
+						try {
+							preparedStatement.close();
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+		 
+					if (dbMemberConnection != null) {
+						try {
+							dbMemberConnection.close();
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+		 
+				}
+
+				
+				try {
+					dbBenefitConnection = DBConnection.getConnection(DBParams);
+					preparedBenefitStatement = dbBenefitConnection.prepareStatement(insertTableSQLMAPBENEFITS);
+					preparedBenefitStatement.setString(1, recid);
+					preparedBenefitStatement.setString(2, benefit.getClnBenCode()+"L2");
+					preparedBenefitStatement.setString(3, benefit.getBenefitDesc());
+					preparedBenefitStatement.setString(4, "16");
+					preparedBenefitStatement.setString(5, "OUT PATIENT OVERALL TIER 2");
+					preparedBenefitStatement.setString(6, benefit.getInsurerId());				
+					preparedBenefitStatement.setString(7, "0");
+					preparedBenefitStatement.setDate(8, getCurrentTimeStamp());
+
+					// execute insert SQL stetement
+					preparedBenefitStatement.executeUpdate();
+			} catch (SQLException e) {
+	 
+				System.out.println(e.getMessage());
+				throw new IllegalArgumentException(e.getMessage());
+	 
+			} finally {
+	 
+				if (preparedBenefitStatement != null) {
+					try {
+						preparedBenefitStatement.close();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+	 
+				if (dbBenefitConnection != null) {
+					try {
+						dbBenefitConnection.close();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+	 
+			}
+				
+			/*///////////////////////////////////////// PART THREE OF THE TIER ///////////////////////////////////////////// */
+				
+				itemId = Long.toString(get());
+			    recid = itemId.substring(itemId.length() - 7);
+				try {   	
+					dbMemberConnection = DBConnection.getConnection(DBParams);
+					preparedStatement = dbMemberConnection.prepareStatement(insertTableSQL);
+					preparedStatement.setString(1, benefit.getClnPolId());
+					preparedStatement.setString(2, benefit.getClnPolCode());
+					preparedStatement.setString(3, benefit.getAutoGrowthPct());
+					preparedStatement.setString(4, benefit.getAutoGrowthInd());
+					preparedStatement.setString(5, benefit.getBenLinked2Tqcode());
+					preparedStatement.setString(6, benefit.getBenTypDesc());
+					preparedStatement.setString(7, benefit.getClnBenCode()+"L3");
+					preparedStatement.setString(8, benefit.getClnBenClauseCode()+"L3");
+					preparedStatement.setString(9, benefit.getUserId());
+					preparedStatement.setDate(10, benefit.getBenEndDate());
+					preparedStatement.setString(11, benefit.getAutoReplenishInd());
+					preparedStatement.setString(12, benefit.getSpendThrespct());
+					preparedStatement.setString(13, benefit.getSpendThreshold());
+					preparedStatement.setString(14, benefit.getMemAssignedBenefit());
+					preparedStatement.setString(15, benefit.getServiceType());
+					preparedStatement.setDate(16, benefit.getEffectiveDate());
+					preparedStatement.setString(17, benefit.getWaitingPeriod());
+					preparedStatement.setString(18, benefit.getGenderApplicability().toUpperCase());
+					preparedStatement.setString(19, benefit.getLayered3Value());
+					preparedStatement.setString(20, benefit.getSubLimitAmt());
+					preparedStatement.setString(21, "16");
+					preparedStatement.setString(22, benefit.getCoPayPercent());
+					preparedStatement.setString(23, benefit.getCoPayAmt());
+					preparedStatement.setString(24, "803");
+					preparedStatement.setString(25, benefit.getCatCode());
+					preparedStatement.setString(26, benefit.getPolicyNumber());
+					preparedStatement.setString(27, benefit.getBenefitDesc());
+					preparedStatement.setDate(28, getCurrentTimeStamp());
+					preparedStatement.setString(29, recid);
+					preparedStatement.setString(30, "0");
+					preparedStatement.setString(31, "17");
+					preparedStatement.setString(32, benefit.getCopayInd());
+					preparedStatement.setString(33, benefit.getAutoReplenishLimtype());
+					preparedStatement.setString(34, benefit.getAutoReplenishLimit());
+					preparedStatement.setString(35, benefit.getAutoGrowthRateInd());
+					preparedStatement.setString(36, benefit.getAutoGrowthRate());
+					preparedStatement.setString(37, benefit.getAutoGrowthCeiling());
+					preparedStatement.setString(38, benefit.getCutOffInd());
+					preparedStatement.setString(39, benefit.getCutOffAge());
+					preparedStatement.setString(40, benefit.getInsurerId());
+					preparedStatement.setString(41, benefit.getLayeredInd());
+					preparedStatement.setString(42, benefit.getLayered1Type());
+					preparedStatement.setString(43, benefit.getLayered1Value());
+					preparedStatement.setString(44, benefit.getLayered2Type());
+					preparedStatement.setString(45, benefit.getLayered2Value());
+					preparedStatement.setString(46, benefit.getLayered3Type());
+					preparedStatement.setString(47, benefit.getLayered3Value());
+					// execute insert SQL stetement
+					preparedStatement.executeUpdate();
+
+					System.out.println("Record is inserted into DBUSER table!");
+		 
+				} catch (SQLException e) {
+		 
+					System.out.println(e.getMessage());
+					throw new IllegalArgumentException(e.getMessage());
+		 
+				} finally {
+		 
+					if (preparedStatement != null) {
+						try {
+							preparedStatement.close();
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+		 
+					if (dbMemberConnection != null) {
+						try {
+							dbMemberConnection.close();
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+		 
+				}
+
+				
+				try {
+					dbBenefitConnection = DBConnection.getConnection(DBParams);
+					preparedBenefitStatement = dbBenefitConnection.prepareStatement(insertTableSQLMAPBENEFITS);
+					preparedBenefitStatement.setString(1, recid);
+					preparedBenefitStatement.setString(2, benefit.getClnBenCode()+"L3");
+					preparedBenefitStatement.setString(3, benefit.getBenefitDesc());
+					preparedBenefitStatement.setString(4, "17");
+					preparedBenefitStatement.setString(5, "OUT PATIENT OVERALL TIER 3");
+					preparedBenefitStatement.setString(6, benefit.getInsurerId());				
+					preparedBenefitStatement.setString(7, "0");
+					preparedBenefitStatement.setDate(8, getCurrentTimeStamp());
+
+					// execute insert SQL stetement
+					preparedBenefitStatement.executeUpdate();
+			} catch (SQLException e) {
+	 
+				System.out.println(e.getMessage());
+				throw new IllegalArgumentException(e.getMessage());
+	 
+			} finally {
+	 
+				if (preparedBenefitStatement != null) {
+					try {
+						preparedBenefitStatement.close();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+	 
+				if (dbBenefitConnection != null) {
+					try {
+						dbBenefitConnection.close();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+	 
+			}
+			/*///////////////////////////////////////////////////////////////////////////////////////// */
+				
+				
+			}else{
+				
+				itemId = Long.toString(get());
+			    recid = itemId.substring(itemId.length() - 7);
+				try {   	
+					dbMemberConnection = DBConnection.getConnection(DBParams);
+					preparedStatement = dbMemberConnection.prepareStatement(insertTableSQL);
+					preparedStatement.setString(1, benefit.getClnPolId());
+					preparedStatement.setString(2, benefit.getClnPolCode());
+					preparedStatement.setString(3, benefit.getAutoGrowthPct());
+					preparedStatement.setString(4, benefit.getAutoGrowthInd());
+					preparedStatement.setString(5, benefit.getBenLinked2Tqcode());
+					preparedStatement.setString(6, benefit.getBenTypDesc());
+					preparedStatement.setString(7, benefit.getClnBenCode());
+					preparedStatement.setString(8, benefit.getClnBenClauseCode());
+					preparedStatement.setString(9, benefit.getUserId());
+					preparedStatement.setDate(10, benefit.getBenEndDate());
+					preparedStatement.setString(11, benefit.getAutoReplenishInd());
+					preparedStatement.setString(12, benefit.getSpendThrespct());
+					preparedStatement.setString(13, benefit.getSpendThreshold());
+					preparedStatement.setString(14, benefit.getMemAssignedBenefit());
+					preparedStatement.setString(15, benefit.getServiceType());
+					preparedStatement.setDate(16, benefit.getEffectiveDate());
+					preparedStatement.setString(17, benefit.getWaitingPeriod());
+					preparedStatement.setString(18, benefit.getGenderApplicability().toUpperCase());
+					preparedStatement.setString(19, benefit.getLimitAmt());
+					preparedStatement.setString(20, benefit.getSubLimitAmt());
+					preparedStatement.setString(21, benefit.getBenLinked2Id());
+					preparedStatement.setString(22, benefit.getCoPayPercent());
+					preparedStatement.setString(23, benefit.getCoPayAmt());
+					preparedStatement.setString(24, benefit.getBenTypeId());
+					preparedStatement.setString(25, benefit.getCatCode());
+					preparedStatement.setString(26, benefit.getPolicyNumber());
+					preparedStatement.setString(27, benefit.getBenefitDesc());
+					preparedStatement.setDate(28, getCurrentTimeStamp());
+					preparedStatement.setString(29, recid);
+					preparedStatement.setString(30, "0");
+					preparedStatement.setString(31, benefit.getSmartBenId());
+					preparedStatement.setString(32, benefit.getCopayInd());
+					preparedStatement.setString(33, benefit.getAutoReplenishLimtype());
+					preparedStatement.setString(34, benefit.getAutoReplenishLimit());
+					preparedStatement.setString(35, benefit.getAutoGrowthRateInd());
+					preparedStatement.setString(36, benefit.getAutoGrowthRate());
+					preparedStatement.setString(37, benefit.getAutoGrowthCeiling());
+					preparedStatement.setString(38, benefit.getCutOffInd());
+					preparedStatement.setString(39, benefit.getCutOffAge());
+					preparedStatement.setString(40, benefit.getInsurerId());
+					preparedStatement.setString(41, benefit.getLayeredInd());
+					preparedStatement.setString(42, benefit.getLayered1Type());
+					preparedStatement.setString(43, benefit.getLayered1Value());
+					preparedStatement.setString(44, benefit.getLayered2Type());
+					preparedStatement.setString(45, benefit.getLayered2Value());
+					preparedStatement.setString(46, benefit.getLayered3Type());
+					preparedStatement.setString(47, benefit.getLayered3Value());
+					// execute insert SQL stetement
+					preparedStatement.executeUpdate();
+
+					System.out.println("Record is inserted into DBUSER table!");
+		 
+				} catch (SQLException e) {
+		 
+					System.out.println(e.getMessage());
+					throw new IllegalArgumentException(e.getMessage());
+		 
+				} finally {
+		 
+					if (preparedStatement != null) {
+						try {
+							preparedStatement.close();
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+		 
+					if (dbMemberConnection != null) {
+						try {
+							dbMemberConnection.close();
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+		 
+				}
+
+				
+				try {
+					dbBenefitConnection = DBConnection.getConnection(DBParams);
+					preparedBenefitStatement = dbBenefitConnection.prepareStatement(insertTableSQLMAPBENEFITS);
+					preparedBenefitStatement.setString(1, recid);
+					preparedBenefitStatement.setString(2, benefit.getClnBenCode());
+					preparedBenefitStatement.setString(3, benefit.getBenefitDesc());
+					preparedBenefitStatement.setString(4, benefit.getSmartBenId());
+					preparedBenefitStatement.setString(5, benefit.getBenTypDesc());
+					preparedBenefitStatement.setString(6, benefit.getInsurerId());				
+					preparedBenefitStatement.setString(7, "0");
+					preparedBenefitStatement.setDate(8, getCurrentTimeStamp());
+
+					// execute insert SQL stetement
+					preparedBenefitStatement.executeUpdate();
+			} catch (SQLException e) {
+	 
+				System.out.println(e.getMessage());
+				throw new IllegalArgumentException(e.getMessage());
+	 
+			} finally {
+	 
+				if (preparedBenefitStatement != null) {
+					try {
+						preparedBenefitStatement.close();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+	 
+				if (dbBenefitConnection != null) {
+					try {
+						dbBenefitConnection.close();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+	 
+			}
+
+			}
 
 		return recid;	
 	}
@@ -626,16 +1015,6 @@ public class BenefitsService implements IBenefitsService {
        Gson gson = new Gson();
        HashMap BENEFITS_MAP =  gson.fromJson(SMART[26], new TypeToken<HashMap<String, String>>(){}.getType());
 
-       
-       
-       
-       
-       
-       
-       
-       
-   
-     
         final String SEARCH_SQL_LIST = " SELECT outer.*  FROM ( "+
         		" SELECT ROWNUM rn, inner.*  FROM ( "+  
         		" SELECT e.*  FROM "+SMART[1]+"."+SMART[2]+" e "+  

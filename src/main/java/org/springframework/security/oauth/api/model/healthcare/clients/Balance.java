@@ -88,6 +88,7 @@ public class Balance implements java.io.Serializable {
     private String endDate;
     private String smartCode;
     private String schemeName;
+    private String smsStatus;
 
     
 
@@ -527,6 +528,12 @@ public class Balance implements java.io.Serializable {
 	public void setSmartCode(String smartCode) {
 		this.smartCode = smartCode;
 	}
+	public String getSmsStatus() {
+		return smsStatus;
+	}
+	public void setSmsStatus(String smsStatus) {
+		this.smsStatus = smsStatus;
+	}
 	
 
 	public Balance(String string, String string2, String string3,
@@ -543,7 +550,7 @@ public class Balance implements java.io.Serializable {
 			String string44, String string45, String string46, String string47,
 			String string48, String string49, String string50, String string51,
 			String string52, String string53, String string54, String string55, String string56, String string57, String string58, String string59, String string60, String string61,
-			String string62, String string63, String string64, String string65, String string66, String string67, String string68, String string69, String string70, String string71) {
+			String string62, String string63, String string64, String string65, String string66, String string67, String string68, String string69, String string70, String string71, String string72) {
 		
 		// TODO Auto-generated constructor stub
 		this.OUT_PATIENT_OVERALL = string;
@@ -618,6 +625,7 @@ public class Balance implements java.io.Serializable {
 		this.startDate = string69;
 		this.endDate = string70;
 		this.smartCode = string71;
+		this.smsStatus = string72;
 		
 	}
 

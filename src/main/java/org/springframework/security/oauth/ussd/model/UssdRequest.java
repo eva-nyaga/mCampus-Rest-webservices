@@ -171,9 +171,9 @@ public class UssdRequest {
     	if(USSD_STRING.lastIndexOf("*0")!=-1){
     		//USSD_STRING = USSD_STRING.replace("*0", "*0*");
     		int startIndex = USSD_STRING.lastIndexOf("*0");
-    		cursor = startIndex+1;
+    		cursor = startIndex+2;
     		System.out.println("INITIAL"+USSD_STRING);
-			texts = USSD_STRING.substring(cursor, endIndex);	
+			texts = USSD_STRING.substring(cursor, endIndex);
 			System.out.println("FINAL"+texts);
     	}else if(USSD_STRING.lastIndexOf("*99")!=-1){
     		texts = "99";

@@ -29,37 +29,37 @@ public class PROVIDERS {
 		dbConnection = getDBConnection();
 		 Statement stmt = dbConnection.createStatement();
 		    ResultSet rset = stmt
-		        .executeQuery("select COLUMN_NAME from ALL_TAB_COLUMNS where TABLE_NAME='STG_CIC_PROVIDERs' AND OWNER = 'CIC_OWNER'");
+		        .executeQuery("select COLUMN_NAME from ALL_TAB_COLUMNS where TABLE_NAME='MAP_AAR_PROVIDER' AND OWNER = 'AAR_OWNER'");
 		    while (rset.next())
-		      System.out.println( rset.getString(1));
-		      //System.out.println(rset.getString(1).toLowerCase());
+		    //	System.out.println();
+		   //   System.out.println( rset.getString(1));
+		     // System.out.println(rset.getString(1));
+		    System.out.println("hm.put("+rset.getString(1)+", "+rset.getString(1)+");");
 
 
 			 // Create a hash map
 		      HashMap hm = new HashMap();
 		      // Put elements to the map
-
+		      
+		      hm.put("INSURER_ID", "INSURER_ID");
 		      hm.put("REC_ID", "REC_ID");
-		      hm.put("CLN_PROV_CODE", "TQ_PROV_CODE");
-		      hm.put("CLN_DESCRIPTION", "TQ_PROV_NAME");
+		      hm.put("USER_NAME", "USER_NAME");
+		      hm.put("CLN_PROV_CODE", "CLN_PROV_CODE");
+		      hm.put("CLN_DESCRIPTION", "CLN_DESCRIPTION");
 		      hm.put("SMART_PROV_CODE", "SMART_PROV_CODE");
-		      hm.put("SMART_DESCRIPTION", "SMART_DESCRIPTION");
-		      hm.put("PROVIDER_STATUS", "PROVIDER_STATUS");
-		      hm.put("TOWN", "PROV_LOCATION");
+		      hm.put("STATUS", "STATUS");
+		      hm.put("TOWN", "TOWN");
 		      hm.put("BUILDING", "BUILDING");
 		      hm.put("STREET", "STREET");
 		      hm.put("POSTAL_NR", "POSTAL_NR");
 		      hm.put("TEL_NR", "TEL_NR");
-		      hm.put("INSERT_DATE", "DATE_ADDED");
-		      hm.put("PICKED_STATUS", "PICKED_STATUS");
-		      hm.put("PICKED_DATE", "PICKED_DATE");
+		      hm.put("INSERT_DATE", "INSERT_DATE");
 		      hm.put("FAX_NR", "FAX_NR");
 		      hm.put("EMAIL_ADDRESS", "EMAIL_ADDRESS");
 		      hm.put("CONTACT_PERSON", "CONTACT_PERSON");
 		      hm.put("SATELITE_PROV", "SATELITE_PROV");
-		      hm.put("EMAIL_ALERT", "EMAIL_ALERT");
-		      hm.put("COUNTRY_CODE", "COUNTRY_CODE");
-	      
+		      hm.put("SMART_DESCRIPTION", "SMART_DESCRIPTION");
+		      hm.put("COUNTRY_CODE", "COUNTRY_CODE");      
 	      // Get a set of the entries
 	      Set set = hm.entrySet();
 	      // Get an iterator
@@ -67,16 +67,16 @@ public class PROVIDERS {
 	      // Display elements
 	      while(i.hasNext()) {
 	         Map.Entry me = (Map.Entry)i.next();
-	        // System.out.print(me.getKey() + ": ");
-	       //  System.out.println(me.getValue());
+	         System.out.print(me.getKey() + ": ");
+	         System.out.println(me.getValue());
 	      }
   	
     
 	   Gson gson = new Gson();
 	   String serializedMap = gson.toJson(hm);
 	   
-	  // System.out.println(hm);
-	  // System.out.println(serializedMap);
+	   System.out.println(hm);
+	   System.out.println(serializedMap);
 		    
 	   HashMap MIMI = new HashMap();
 	   MIMI = gson.fromJson(serializedMap, new TypeToken<HashMap<String, String>>(){}.getType());
@@ -88,17 +88,17 @@ public class PROVIDERS {
 	      // Display elements
 	      while(i2.hasNext()) {
 	         Map.Entry me2 = (Map.Entry)i2.next();
-	           //System.out.print(me2.getKey() + ":");
-	           //System.out.println(me2.getValue());
+	           System.out.print(me2.getKey() + ":");
+	           System.out.println(me2.getValue());
 	      }
 	      Object value = MIMI.get("CLN_POL_CODE");
 	      //System.out.println(value);
 
-		String updateTableSQL = "UPDATE INTEG_USER.SMARTAPI_FIN_CLIENT_MAP"
+		String updateTableSQL = "UPDATE INTERACTIVE.SMARTAPI_FIN_CLIENT_MAP"
 				+ " SET PROVIDERS_MAP = '"+serializedMap+"' ";
 
 
-        // System.out.println(updateTableSQL);
+         System.out.println(updateTableSQL);
 		
 		try {
 			dbConnection = getDBConnection();

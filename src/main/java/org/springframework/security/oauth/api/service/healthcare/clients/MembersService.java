@@ -27,6 +27,7 @@ import org.springframework.security.oauth.api.data.healthcare.clients.DBConDistr
 import org.springframework.security.oauth.api.data.healthcare.clients.DBConSmartBO;
 import org.springframework.security.oauth.api.data.healthcare.clients.DBConSmart;
 import org.springframework.security.oauth.api.data.healthcare.clients.DBConnection;
+import org.springframework.security.oauth.api.data.healthcare.clients.DBMyConDistribution;
 import org.springframework.security.oauth.api.data.healthcare.clients.RequestMapIntegstaging;
 import org.springframework.security.oauth.api.data.healthcare.clients.RequestMapInteractive;
 import org.springframework.security.oauth.api.model.healthcare.clients.Activation;
@@ -828,6 +829,122 @@ public class MembersService implements IMembersService {
 	}
 
 	
+	public Boolean checkPhoneSMSUSSDVerificationServiceDBAccess(String[] DBParams, String phoneNumber){
+
+	    Connection connection = null;
+	    PreparedStatement get_member_statement = null;
+	    PreparedStatement service_tags_statement = null;
+	    ResultSet get_member_resultSet = null;
+	    ResultSet service_tags_resultSet = null;
+	    String SINGLE_SQL_LIST = null;
+	    String member_rec = null;
+
+	    try {
+	        connection = DBConSmartBO.getConnection();
+	       
+		    SINGLE_SQL_LIST = "SELECT MD.MEMBERSHIP_NUMBER from SMART.FIN_MEMBER_DETAILS MD where  MD.PHONE_NO ='"+phoneNumber+"' ";
+		    System.out.println(SINGLE_SQL_LIST);
+	        try {
+					get_member_statement = connection.prepareStatement(SINGLE_SQL_LIST);
+					get_member_resultSet = get_member_statement.executeQuery();
+					while (get_member_resultSet.next()) {	
+						      member_rec = get_member_resultSet.getString("MEMBERSHIP_NUMBER");
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+	        
+	        if(StringUtils.equals(member_rec, null) || StringUtils.isBlank(member_rec)){
+	        	
+			    SINGLE_SQL_LIST = "SELECT MD.MEMBER_NUMBER  from SMART.FIN_MEMBER_DEP_DETAILS MD where MD.PHONE_NO ='"+phoneNumber+"'";
+			    System.out.println(SINGLE_SQL_LIST);
+		        try {
+						get_member_statement = connection.prepareStatement(SINGLE_SQL_LIST);
+						get_member_resultSet = get_member_statement.executeQuery();
+						while (get_member_resultSet.next()) {
+							     member_rec = get_member_resultSet.getString("MEMBER_NUMBER");
+						}
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		        
+	        }
+	        
+  
+	    } finally {
+	    	
+	        if (get_member_resultSet != null) try { get_member_resultSet.close(); } catch (SQLException ignore) {}
+	        if (get_member_statement != null) try { get_member_statement.close(); } catch (SQLException ignore) {}
+	        if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+	    }
+	    	    
+	    if(StringUtils.equals(member_rec, null) || StringUtils.isBlank(member_rec)){
+	    	return false;
+	    }else{
+	    	return true;	
+	    }
+
+	}
+	
+	public String checkPhoneSMSUSSDStatusServiceDBAccess(String[] DBParams, String phoneNumber){
+
+	    Connection connection = null;
+	    PreparedStatement get_member_statement = null;
+	    PreparedStatement service_tags_statement = null;
+	    ResultSet get_member_resultSet = null;
+	    ResultSet service_tags_resultSet = null;
+	    String SINGLE_SQL_LIST = null;
+	    String sms_status = null;
+	    String member_rec = null;
+
+	    try {
+	        connection = DBConSmartBO.getConnection();
+	       
+		    SINGLE_SQL_LIST = "SELECT MD.MEMBERSHIP_NUMBER, MD.SMS_STATUS from SMART.FIN_MEMBER_DETAILS MD where  MD.PHONE_NO ='"+phoneNumber+"' ";
+		    System.out.println(SINGLE_SQL_LIST);
+	        try {
+					get_member_statement = connection.prepareStatement(SINGLE_SQL_LIST);
+					get_member_resultSet = get_member_statement.executeQuery();
+					while (get_member_resultSet.next()) {
+						   member_rec = get_member_resultSet.getString("MEMBERSHIP_NUMBER");
+						   sms_status = get_member_resultSet.getString("SMS_STATUS");
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+	        
+	        if(StringUtils.equals(member_rec, null) || StringUtils.isBlank(member_rec)){
+	        	
+			    SINGLE_SQL_LIST = "SELECT MD.MEMBER_NUMBER, MD.SMS_STATUS  from SMART.FIN_MEMBER_DEP_DETAILS MD where MD.PHONE_NO ='"+phoneNumber+"'";
+			    System.out.println(SINGLE_SQL_LIST);
+		        try {
+						get_member_statement = connection.prepareStatement(SINGLE_SQL_LIST);
+						get_member_resultSet = get_member_statement.executeQuery();
+						while (get_member_resultSet.next()) {
+							   member_rec = get_member_resultSet.getString("MEMBER_NUMBER");
+							   sms_status = get_member_resultSet.getString("SMS_STATUS");
+						}
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	        }      
+  
+	    } finally {
+	    	
+	        if (get_member_resultSet != null) try { get_member_resultSet.close(); } catch (SQLException ignore) {}
+	        if (get_member_statement != null) try { get_member_statement.close(); } catch (SQLException ignore) {}
+	        if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+	    }
+	    	    
+	    	return sms_status;	
+	}
+	
 	public void MoneyCategorychangeMembersServiceDBAccess(String[] DBParams, String CUSTOMERID, String customercountry, int startindex, int maxresults, int status, String restrict,  String orderby){
         int lastindex  = startindex+maxresults;
         
@@ -1353,19 +1470,88 @@ public class MembersService implements IMembersService {
 		int rows =0;
 		Connection dbConnection = null;
 		PreparedStatement preparedStatement = null;
+		Connection dbConnectionD = null;
+		PreparedStatement preparedStatementD = null;
 		
 	    String updateTableSQLPrinciple = "UPDATE SMART.FIN_MEMBER_DETAILS SET SMS_STATUS = ?, PHONE_NO = ?, PIN_NO = ?  WHERE CARD_SERIAL_NUMBER = ? AND MEMBERSHIP_NUMBER = ?";
 	    String updateTableSQLDependant = "UPDATE SMART.FIN_MEMBER_DEP_DETAILS SET SMS_STATUS = ?, PHONE_NO = ?, PIN_NO = ?  WHERE CARD_SERIAL_NUMBER = ? AND MEMBER_NUMBER = ?";
-
+	    dbConnection = DBConSmartBO.getConnection();
+	    
 		try {
-			
-			dbConnection = DBConSmartBO.getConnection();
+
 			preparedStatement = dbConnection.prepareStatement(updateTableSQLPrinciple);
 		    preparedStatement.setString(1, "1");
 		    preparedStatement.setString(2, phoneNumber);
 		    preparedStatement.setInt(3, tempPin);
 		    preparedStatement.setString(4, cardSerial);
-		    preparedStatement.setString(5, memberNumber);
+		    preparedStatement.setString(5, memberNumber);  
+			// execute update SQL stetement
+		    rows = preparedStatement.executeUpdate();
+		    
+			if(rows == 0){
+				preparedStatement = dbConnection.prepareStatement(updateTableSQLDependant);
+			    preparedStatement.setString(1, "1");
+			    preparedStatement.setString(2, phoneNumber);
+			    preparedStatement.setInt(3, tempPin);
+			    preparedStatement.setString(4, cardSerial);
+			    preparedStatement.setString(5, memberNumber);
+				// execute update SQL stetement
+				rows = preparedStatement.executeUpdate();
+			}
+
+
+		} catch (SQLException e) {
+ 
+			System.out.println(e.getMessage());
+ 
+		} finally {
+ 
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+ 
+			if (dbConnection != null) {
+				try {
+					dbConnection.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+ 
+		}
+		
+
+
+
+
+		
+		System.out.println("BIRDMAN BIRDMAN BIRDMAN BIRDMAN BIRDMAN BIRDMAN BIRDMAN BIRDMAN BIRDMAN BIRDMAN ");
+		return rows;	
+	}
+	
+	
+	@SuppressWarnings("resource")
+	private int ChangeMemberUSSDSMSServiceDBAccess(String[] dbParams, String phoneNumber, String smsSettings) {
+		// TODO Auto-generated method stub
+		int rows =0;
+		Connection dbConnection = null;
+		PreparedStatement preparedStatement = null;
+		
+	    String updateTableSQLPrinciple = "UPDATE SMART.FIN_MEMBER_DETAILS SET SMS_STATUS = ? WHERE PHONE_NO = ?";
+	    String updateTableSQLDependant = "UPDATE SMART.FIN_MEMBER_DEP_DETAILS SET SMS_STATUS = ? WHERE PHONE_NO = ?";
+
+		try {
+			
+			dbConnection = DBConSmartBO.getConnection();
+			preparedStatement = dbConnection.prepareStatement(updateTableSQLPrinciple);
+		    preparedStatement.setString(1, smsSettings);
+		    preparedStatement.setString(2, phoneNumber);
 		    
 			// execute update SQL stetement
 		    rows = preparedStatement.executeUpdate();
@@ -1374,11 +1560,8 @@ public class MembersService implements IMembersService {
 		   if(rows == 0 ){
 			   
 				preparedStatement = dbConnection.prepareStatement(updateTableSQLDependant);
-			    preparedStatement.setString(1, "1");
+			    preparedStatement.setString(1, smsSettings);
 			    preparedStatement.setString(2, phoneNumber);
-			    preparedStatement.setInt(3, tempPin);
-			    preparedStatement.setString(4, cardSerial);
-			    preparedStatement.setString(5, memberNumber);
 			    
 				// execute update SQL stetement
 			    rows = preparedStatement.executeUpdate();
@@ -2892,7 +3075,7 @@ public class MembersService implements IMembersService {
 	    ResultSet get_member_resultSet = null;
 	    ResultSet service_tags_resultSet = null;
 	    //order by HOST_DATE asc
-	    String SINGLE_SQL_LIST = "Select MEMBERSHIP_NUMBER, NAMES_AS_IS, MEM_ID, GLOBAL_ID, REASON, SMS_STATUS, PIN_NO, CARD_SERIAL_NUMBER from SMART.FIN_MEMBER_DETAILS where PHONE_NO ="+phone_no+" ";
+	    String SINGLE_SQL_LIST = "Select MEMBERSHIP_NUMBER, NAMES_AS_IS, MEM_ID, GLOBAL_ID, REASON, SMS_STATUS, PIN_NO, CARD_SERIAL_NUMBER, MEM_STATUS from SMART.FIN_MEMBER_DETAILS where PHONE_NO ="+phone_no+" ";
 	    System.out.println(SINGLE_SQL_LIST);
 	    
 		
@@ -2921,6 +3104,9 @@ public class MembersService implements IMembersService {
 							resultArray[5] = get_member_resultSet.getString("SMS_STATUS");
 							resultArray[6] = get_member_resultSet.getString("PIN_NO");
 							resultArray[7] = get_member_resultSet.getString("CARD_SERIAL_NUMBER");
+							resultArray[8] = get_member_resultSet.getString("MEM_STATUS");
+							
+							
 					}
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
@@ -2951,7 +3137,7 @@ public class MembersService implements IMembersService {
 	    ResultSet get_member_resultSet = null;
 	    ResultSet service_tags_resultSet = null;
 	    //order by HOST_DATE asc
-	    String SINGLE_SQL_LIST = "Select MEMBERSHIP_NUMBER, NAMES_AS_IS, MEM_ID, GLOBAL_ID, REASON, SMS_STATUS, PIN_NO, CARD_SERIAL_NUMBER from SMART.FIN_MEMBER_DETAILS where MEMBERSHIP_NUMBER ='"+member_no+"' ";
+	    String SINGLE_SQL_LIST = "Select MEMBERSHIP_NUMBER, NAMES_AS_IS, MEM_ID, GLOBAL_ID, REASON, SMS_STATUS, PIN_NO, CARD_SERIAL_NUMBER, MEM_STATUS from SMART.FIN_MEMBER_DETAILS where MEMBERSHIP_NUMBER ='"+member_no+"' ";
 	    System.out.println(SINGLE_SQL_LIST);
 	    
 		
@@ -2980,6 +3166,7 @@ public class MembersService implements IMembersService {
 							resultArray[5] = get_member_resultSet.getString("SMS_STATUS");
 							resultArray[6] = get_member_resultSet.getString("PIN_NO");
 							resultArray[7] = get_member_resultSet.getString("CARD_SERIAL_NUMBER");
+							resultArray[8] = get_member_resultSet.getString("MEM_STATUS");
 					}
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
@@ -3010,7 +3197,7 @@ public class MembersService implements IMembersService {
 	    ResultSet get_member_dep_resultSet = null;
 	    ResultSet service_tags_resultSet = null;
 	    //order by HOST_DATE asc
-	    String SINGLE_SQL_LIST = "Select MEMBER_NUMBER, NAMES_AS_IS, MEM_ID, GLOBAL_ID, REASON, SMS_STATUS, PIN_NO, CARD_SERIAL_NUMBER from SMART.FIN_MEMBER_DEP_DETAILS where PHONE_NO ="+phone_no+" ";
+	    String SINGLE_SQL_LIST = "Select MEMBER_NUMBER, NAMES_AS_IS, MEM_ID, GLOBAL_ID, REASON, SMS_STATUS, PIN_NO, CARD_SERIAL_NUMBER, DEP_STATUS from SMART.FIN_MEMBER_DEP_DETAILS where PHONE_NO ="+phone_no+" ";
 	    System.out.println(SINGLE_SQL_LIST);
 	    
 	    try {
@@ -3038,6 +3225,7 @@ public class MembersService implements IMembersService {
 							resultArray[5] = get_member_dep_resultSet.getString("SMS_STATUS");
 							resultArray[6] = get_member_dep_resultSet.getString("PIN_NO");
 							resultArray[7] = get_member_dep_resultSet.getString("CARD_SERIAL_NUMBER");
+							resultArray[8] = get_member_dep_resultSet.getString("DEP_STATUS");
 							
 					}
 				} catch (SQLException e) {
@@ -3068,7 +3256,7 @@ public class MembersService implements IMembersService {
 	    ResultSet get_member_dep_resultSet = null;
 	    ResultSet service_tags_resultSet = null;
 	    //order by HOST_DATE asc
-	    String SINGLE_SQL_LIST = "Select MEMBER_NUMBER, NAMES_AS_IS, MEM_ID, GLOBAL_ID, REASON, SMS_STATUS, PIN_NO, CARD_SERIAL_NUMBER from SMART.FIN_MEMBER_DEP_DETAILS where MEMBER_NUMBER ='"+member_no+"' ";
+	    String SINGLE_SQL_LIST = "Select MEMBER_NUMBER, NAMES_AS_IS, MEM_ID, GLOBAL_ID, REASON, SMS_STATUS, PIN_NO, CARD_SERIAL_NUMBER, DEP_STATUS from SMART.FIN_MEMBER_DEP_DETAILS where MEMBER_NUMBER ='"+member_no+"' ";
 	    System.out.println(SINGLE_SQL_LIST);
 	    
 	    try {
@@ -3096,6 +3284,7 @@ public class MembersService implements IMembersService {
 							resultArray[5] = get_member_dep_resultSet.getString("SMS_STATUS");
 							resultArray[6] = get_member_dep_resultSet.getString("PIN_NO");
 							resultArray[7] = get_member_dep_resultSet.getString("CARD_SERIAL_NUMBER");
+							resultArray[8] = get_member_dep_resultSet.getString("DEP_STATUS");
 							
 					}
 				} catch (SQLException e) {
@@ -3159,7 +3348,7 @@ public class MembersService implements IMembersService {
 	}
 
 	
-	private String[] GET_MEMBER_BALANCE(String globalid, String memberid, String reason, String membership_number, String names_as_is, String phoneno, String user_status, String pin_no, String card_serial_no) {
+	private String[] GET_MEMBER_BALANCE(String globalid, String memberid, String reason, String membership_number, String names_as_is, String phoneno, String sms_status, String pin_no, String card_serial_no, String mem_status) {
 		String[] resultArray_PLAN = new String[80];
 	    Connection connection = null;
 	    PreparedStatement get_member_plan_bal_statement = null;
@@ -3390,12 +3579,12 @@ public class MembersService implements IMembersService {
 	    		resultArray_PLAN[57].trim() +" as OUT_P_GRAND_POOL,"+
 	    		resultArray_PLAN[58].trim() +" as OFFLINE_BILLING_BENEFIT,"+
 	    		resultArray_PLAN[59].trim() +" as NHIF"+
-	    				" from BENEFIT_TOTALS where GLOBAL_ID ='"+globalid+"'";
+	    				" from benefit_totals where GLOBAL_ID ='"+globalid+"'";
 
 	    System.out.println(SINGLE_SQL_SUM_LIST);
 
 	    try {
-	        connection_balance = DBConDistribution.getConnection();
+	        connection_balance = DBMyConDistribution.getConnection();
 	        try {
 					get_member_balance_bal_statement = connection_balance.prepareStatement(SINGLE_SQL_SUM_LIST);
 					get_member_balance_bal_resultSet = get_member_balance_bal_statement.executeQuery();
@@ -3471,7 +3660,7 @@ public class MembersService implements IMembersService {
 						resultArray_BALANCE[60] = membership_number;
 						resultArray_BALANCE[61] = names_as_is;
 						resultArray_BALANCE[62] = phoneno;
-						resultArray_BALANCE[63] = user_status;
+						resultArray_BALANCE[63] = mem_status;    //;
 						resultArray_BALANCE[64] = "messagesessesse";
 						resultArray_BALANCE[65] = "200";
 						resultArray_BALANCE[66] = pin_no;
@@ -3480,6 +3669,7 @@ public class MembersService implements IMembersService {
 						resultArray_BALANCE[69] = scheme_member_details[0];
 						resultArray_BALANCE[70] = scheme_member_details[1];
 						resultArray_BALANCE[71] = scheme_member_details[2];
+						resultArray_BALANCE[72] = sms_status;
 
 					}
 				} catch (SQLException e) {
@@ -3580,7 +3770,7 @@ public class MembersService implements IMembersService {
 		System.out.println("HERE WE GO?????????????????????????????????????????????");
 		
 		if(!member_details[0].isEmpty()){
-		member_details = 	GET_MEMBER_BALANCE(member_details[0], member_details[1], member_details[2], member_details[3], member_details[4], memnos, member_details[5], member_details[6], member_details[7]);
+		member_details = 	GET_MEMBER_BALANCE(member_details[0], member_details[1], member_details[2], member_details[3], member_details[4], memnos, member_details[5], member_details[6], member_details[7], member_details[8]);
 		}
 	
 		return member_details;
@@ -3601,9 +3791,22 @@ public class MembersService implements IMembersService {
 		}
 		
 		System.out.println("HERE WE GO?????????????????????????????????????????????");
+		System.out.println(member_details[0]); 
+		System.out.println(member_details[1]); 
+		System.out.println(member_details[2]); 
+		System.out.println(member_details[3]); 
+		System.out.println(member_details[4]); 
+		System.out.println(phoneno); 
+		System.out.println(member_details[5]); 
+		System.out.println(member_details[6]); 
+		System.out.println(member_details[7]);
+		System.out.println(member_details[8]);
+		System.out.println("HERE WE GO?????????????????????????????????????????????");
+		System.out.println("HERE WE GO?????????????????????????????????????????????");
+		System.out.println("HERE WE GO?????????????????????????????????????????????");
 		
 		if(!member_details[0].isEmpty()){
-		member_details = 	GET_MEMBER_BALANCE(member_details[0], member_details[1], member_details[2], member_details[3], member_details[4], phoneno, member_details[5], member_details[6], member_details[7]);
+		member_details = 	GET_MEMBER_BALANCE(member_details[0], member_details[1], member_details[2], member_details[3], member_details[4], phoneno, member_details[5], member_details[6], member_details[7], member_details[8]);
 		}
 	
 		return member_details;
@@ -4164,7 +4367,8 @@ public class MembersService implements IMembersService {
 				member_details[68],
 				member_details[69],
 				member_details[70],
-				member_details[71]
+				member_details[71],
+				member_details[72]
 				);
 		
 		/*
@@ -4288,7 +4492,8 @@ public class MembersService implements IMembersService {
 				member_details[68],
 				member_details[69],
 				member_details[70],
-				member_details[71]
+				member_details[71],
+				member_details[72]
 				);
 		
 		/*
@@ -4411,7 +4616,8 @@ public class MembersService implements IMembersService {
 				member_details[68],
 				member_details[69],
 				member_details[70],
-				member_details[71]
+				member_details[71],
+				member_details[72]
 				);
 		
 		/*
@@ -4541,7 +4747,8 @@ public class MembersService implements IMembersService {
 							member_details[68],
 							member_details[69],
 							member_details[70],
-							member_details[71]
+							member_details[71],
+							member_details[72]
 							);
 			}
 
@@ -4634,7 +4841,8 @@ public class MembersService implements IMembersService {
 						member_details[68],
 						member_details[69],
 						member_details[70],
-						member_details[71]
+						member_details[71],
+						member_details[72]
 						);
 			}
 
@@ -4727,7 +4935,8 @@ public class MembersService implements IMembersService {
 						member_details[68],
 						member_details[69],
 						member_details[70],
-						member_details[71]
+						member_details[71],
+						member_details[72]
 						);
 			}
 
@@ -5515,6 +5724,13 @@ public class MembersService implements IMembersService {
 
 		return RegMemberUSSDSMSServiceDBAccess(data.getDBParams(), phoneNumber, memberNumber, cardSerial, tempPin);
 	}
+	
+	public int ChangeMemberUSSDSMS(String phoneNumber, String smsSettings) {
+		// TODO Auto-generated method stub
+		RequestMapInteractive data = new RequestMapInteractive("ussd", "kenya");
+
+		return ChangeMemberUSSDSMSServiceDBAccess(data.getDBParams(), phoneNumber, smsSettings);
+	}
 
 	public String addUSSDCardReprint(String phoneNumber, String memberNumber, String names, String cardSerial, String paymentReceipts) {
 		// TODO Auto-generated method stub
@@ -5539,7 +5755,7 @@ public class MembersService implements IMembersService {
 			}
 
 		if(IsNullOrEmpty(details)){
-			message = "Dear Customer, no claim was found in our database";	
+			message = "Dear Customer, no claim was found in our system as at "+getCurrentSMSTimeStamp();	
 		}else{
 			Transaction myObject = details.get(0);
 			for(Transaction trObject : details){
@@ -5578,7 +5794,11 @@ public class MembersService implements IMembersService {
 	    return list == null || list.isEmpty();
 	}
 
-
+	private String getCurrentSMSTimeStamp() {
+		java.util.Date today = new java.util.Date();
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+		return formatter.format(today.getTime());
+	}
 
 	public List<Member> getMemberSMSUSSDVerification(String membership_nr, String insurer) {
 		// TODO Auto-generated method stub
@@ -5589,11 +5809,18 @@ public class MembersService implements IMembersService {
 		List<Member> allmembers = new ArrayList<Member>(smsussdmembers.values());
 		return allmembers;
 	}
-
-
-
-
-
+	
+	public Boolean checkPhoneSMSUSSDVerification(String PhoneNumber) {
+		// TODO Auto-generated method stub
+		RequestMapInteractive data = new RequestMapInteractive("ussd", "kenya");
+		return checkPhoneSMSUSSDVerificationServiceDBAccess(data.getDBParams(), PhoneNumber);
+	}
+	
+	public String checkPhoneSMSUSSDStatus(String PhoneNumber) {
+		// TODO Auto-generated method stub
+		RequestMapInteractive data = new RequestMapInteractive("ussd", "kenya");
+		return checkPhoneSMSUSSDStatusServiceDBAccess(data.getDBParams(), PhoneNumber);
+	}
 
 
  }

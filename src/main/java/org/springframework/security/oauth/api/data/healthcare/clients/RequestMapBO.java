@@ -143,9 +143,9 @@ public class RequestMapBO {
 	      switch (country) {
             case "kenya":  
           	  DBP[0] = "smart";
-          	  DBP[1] = "jdbc:oracle:thin:@192.168.1.27:1521:"+DBP[0];
-          	  DBP[2] = "gfsmart";
-          	  DBP[3] = "gfusersmart";
+          	  DBP[1] = "jdbc:oracle:thin:@192.180.3.14:1520:"+DBP[0];
+          	  DBP[2] = "API_USER";
+          	  DBP[3] = "ulTr@n7";
                    break;
             case "uganda":  
         	  DBP[0] = "";
@@ -184,10 +184,10 @@ public class RequestMapBO {
       	      DBP[3] = "";
                    break;
             default:
-        	  DBP[0] = "integstaging";
-        	  DBP[1] = "jdbc:oracle:thin:@192.168.1.228:1521:"+DBP[0];
-        	  DBP[2] = "integ_user";
-        	  DBP[3] = "integ_123";
+              DBP[0] = "smart";
+              DBP[1] = "jdbc:oracle:thin:@192.180.3.14:1520:"+DBP[0];
+              DBP[2] = "API_USER";
+              DBP[3] = "ulTr@n7";
                    break;
              }
 	

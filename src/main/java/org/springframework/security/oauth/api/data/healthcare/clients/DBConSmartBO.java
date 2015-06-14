@@ -23,8 +23,8 @@ public class DBConSmartBO {
 		
 		String SID = "smart";
 		String jdbcUrl = "jdbc:oracle:thin:@192.180.3.14:1520:"+SID;
-		String jdbcUser = "gfsmart";
-		String jdbcPassword = "gfusersmart";
+		String jdbcUser = "API_USER";
+		String jdbcPassword = "ulTr@n7";
 
 		Connection conn = null;
 		try {
