@@ -175,7 +175,7 @@ public class ProvidersService implements IProvidersService {
 					}
 				}
 			}
-
+/*
 			Connection dbMemberConnection2 = null;
 			//Connection dbConnection = null;
 			PreparedStatement preparedStatement2 = null;
@@ -254,7 +254,7 @@ public class ProvidersService implements IProvidersService {
 					}
 				}
 			}
-			
+			*/
 
 		return id;	
 	}

@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.security.oauth.api.data.healthcare.clients.DBConDistribution;
@@ -28,6 +29,7 @@ import org.springframework.security.oauth.api.data.healthcare.clients.DBConSmart
 import org.springframework.security.oauth.api.data.healthcare.clients.DBConSmart;
 import org.springframework.security.oauth.api.data.healthcare.clients.DBConnection;
 import org.springframework.security.oauth.api.data.healthcare.clients.DBMyConDistribution;
+import org.springframework.security.oauth.api.data.healthcare.clients.DbCon;
 import org.springframework.security.oauth.api.data.healthcare.clients.RequestMapIntegstaging;
 import org.springframework.security.oauth.api.data.healthcare.clients.RequestMapInteractive;
 import org.springframework.security.oauth.api.model.healthcare.clients.Activation;
@@ -63,7 +65,10 @@ public class MembersService implements IMembersService {
 	private Map<String, Deactivation> deactivations = new HashMap<String, Deactivation>();
 	private Map<String, Cardreprint> cardreprints = new HashMap<String, Cardreprint>();
 	private Map<String, Fingerprintremoval> fingerprintremovals = new HashMap<String, Fingerprintremoval>();
-	//private Map<String, MemberSMSUSSDVerification> membersmsussdverifications = new HashMap<String, MemberSMSUSSDVerification>();
+	private Map<String,String> memberverify = new HashMap<String,String>();
+	private Map<String,String> memberallocation = new HashMap<String,String>();
+	private Map<String,String> benefitpoolnumbers = new HashMap<String,String>();
+	private Map<String,String> memberbalance = new HashMap<String,String>();
 	private AtomicInteger idGen = new AtomicInteger();
 	
 	
@@ -757,11 +762,10 @@ public class MembersService implements IMembersService {
 	    ResultSet get_member_resultSet = null;
 	    ResultSet service_tags_resultSet = null;
 	    String SINGLE_SQL_LIST = null;
-
 	    try {
 	        connection = DBConSmartBO.getConnection();
 	       
-		    SINGLE_SQL_LIST = "SELECT MD.MEM_ID, MD.MEMBERSHIP_NUMBER, MD.MEM_STATUS, MD.REASON, MD.PHONE_NO, MD.SMS_STATUS, MD.CARD_SERIAL_NUMBER, PD.SMART_CODE  from SMART.FIN_MEMBER_DETAILS MD, SMART.FIN_POLICY_DETAILS PD where MD.POL_ID = PD.POL_ID AND MD.MEMBERSHIP_NUMBER ='"+membership_nr+"' ";
+		    SINGLE_SQL_LIST = "SELECT MD.MEM_ID, MD.POL_ID, MD.MEMBERSHIP_NUMBER, MD.GLOBAL_ID, MD.MEM_STATUS, MD.REASON, MD.PHONE_NO, MD.SMS_STATUS, MD.CARD_SERIAL_NUMBER, PD.SMART_CODE  from SMART.FIN_MEMBER_DETAILS MD, SMART.FIN_POLICY_DETAILS PD where MD.POL_ID = PD.POL_ID AND MD.MEMBERSHIP_NUMBER ='"+membership_nr+"' ";
 		    System.out.println(SINGLE_SQL_LIST);
 	        try {
 					get_member_statement = connection.prepareStatement(SINGLE_SQL_LIST);
@@ -769,6 +773,7 @@ public class MembersService implements IMembersService {
 					while (get_member_resultSet.next()) {
 						
 						      String rec_Id = get_member_resultSet.getString("MEMBERSHIP_NUMBER");
+						      String pol_Id = get_member_resultSet.getString("POL_ID");
 						      USSDSMSverifyMember(
 		                    		 new Member(
 		                    				    rec_Id,
@@ -778,9 +783,13 @@ public class MembersService implements IMembersService {
 		                    					get_member_resultSet.getString("PHONE_NO"),
 		                    					get_member_resultSet.getString("SMS_STATUS"),
 		                    					get_member_resultSet.getString("SMART_CODE"),
-		                    					get_member_resultSet.getString("CARD_SERIAL_NUMBER")
+		                    					get_member_resultSet.getString("CARD_SERIAL_NUMBER"),
+		                    					get_member_resultSet.getString("GLOBAL_ID"),
+		                    					pol_Id
 		                    					)
 		                    		  , rec_Id);
+						      
+						      
 
 					}
 				} catch (SQLException e) {
@@ -789,7 +798,7 @@ public class MembersService implements IMembersService {
 				}
 
 	        
-		    SINGLE_SQL_LIST = "SELECT MD.DEP_ID, MD.MEMBER_NUMBER, MD.DEP_STATUS, MD.REASON, MD.PHONE_NO, MD.SMS_STATUS, MD.CARD_SERIAL_NUMBER, PD.SMART_CODE  from SMART.FIN_MEMBER_DETAILS PMD, SMART.FIN_MEMBER_DEP_DETAILS MD, SMART.FIN_POLICY_DETAILS PD where PMD.POL_ID = PD.POL_ID AND PMD.FAMILY_CODE = MD.FAMILY_CODE AND  MD.MEMBER_NUMBER ='"+membership_nr+"'";
+		    SINGLE_SQL_LIST = "SELECT MD.DEP_ID, PMD.POL_ID, MD.MEMBER_NUMBER, MD.GLOBAL_ID, MD.DEP_STATUS, MD.REASON, MD.PHONE_NO, MD.SMS_STATUS, MD.CARD_SERIAL_NUMBER, PD.SMART_CODE  from SMART.FIN_MEMBER_DETAILS PMD, SMART.FIN_MEMBER_DEP_DETAILS MD, SMART.FIN_POLICY_DETAILS PD where PMD.POL_ID = PD.POL_ID AND PMD.FAMILY_CODE = MD.FAMILY_CODE AND  MD.MEMBER_NUMBER ='"+membership_nr+"'";
 		    
 
 		    System.out.println(SINGLE_SQL_LIST);
@@ -799,6 +808,7 @@ public class MembersService implements IMembersService {
 					while (get_member_resultSet.next()) {
 
 						      String rec_Id = get_member_resultSet.getString("MEMBER_NUMBER");
+						      String pol_Id = get_member_resultSet.getString("POL_ID");
 						      USSDSMSverifyMember(
 		                    		 new Member(
 		                    				    rec_Id,
@@ -808,7 +818,9 @@ public class MembersService implements IMembersService {
 		                    					get_member_resultSet.getString("PHONE_NO"),
 		                    					get_member_resultSet.getString("SMS_STATUS"),
 		                    					get_member_resultSet.getString("SMART_CODE"),
-		                    					get_member_resultSet.getString("CARD_SERIAL_NUMBER")
+		                    					get_member_resultSet.getString("CARD_SERIAL_NUMBER"),
+		                    					get_member_resultSet.getString("GLOBAL_ID"),
+		                    					pol_Id
 		                    					)
 		                    		  , rec_Id);
 
@@ -887,6 +899,74 @@ public class MembersService implements IMembersService {
 	    	return true;	
 	    }
 
+	}
+	
+	public Map<String, String> checkPhoneAdminSMSUSSDVerificationServiceDBAccess(String[] DBParams, String phoneNumber){
+
+	    Connection connection = null;
+	    PreparedStatement get_member_statement = null;
+	    PreparedStatement service_tags_statement = null;
+	    ResultSet get_member_resultSet = null;
+	    ResultSet service_tags_resultSet = null;
+	    String SINGLE_SQL_LIST = null;
+	    String member_rec = null;
+	    String dash_user = null;
+
+	    try {
+	        connection = DBConSmartBO.getConnection();
+		    SINGLE_SQL_LIST = "SELECT MD.MEMBERSHIP_NUMBER, UP.DASH_USER from SMART.FIN_MEMBER_DETAILS MD left outer join SMART.DASH_USERS_PERMISSIONS UP on MD.MEMBERSHIP_NUMBER = UP.MEMBER_NUMBER where  MD.PHONE_NO ='"+phoneNumber+"' ";
+		    System.out.println(SINGLE_SQL_LIST);
+	        try {
+					get_member_statement = connection.prepareStatement(SINGLE_SQL_LIST);
+					get_member_resultSet = get_member_statement.executeQuery();
+					while (get_member_resultSet.next()) {	
+						      member_rec = get_member_resultSet.getString("MEMBERSHIP_NUMBER");
+						      dash_user = get_member_resultSet.getString("DASH_USER");
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+	        
+	        if(StringUtils.equals(member_rec, null) || StringUtils.isBlank(member_rec)){
+	        	
+			    SINGLE_SQL_LIST = "SELECT MD.MEMBER_NUMBER, UP.DASH_USER  from SMART.FIN_MEMBER_DEP_DETAILS MD left outer join SMART.DASH_USERS_PERMISSIONS UP on MD.MEMBER_NUMBER = UP.MEMBER_NUMBER where MD.PHONE_NO ='"+phoneNumber+"'";
+			    System.out.println(SINGLE_SQL_LIST);
+		        try {
+						get_member_statement = connection.prepareStatement(SINGLE_SQL_LIST);
+						get_member_resultSet = get_member_statement.executeQuery();
+						while (get_member_resultSet.next()) {
+							     member_rec = get_member_resultSet.getString("MEMBER_NUMBER");
+							     dash_user = get_member_resultSet.getString("DASH_USER");
+						}
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		        
+	        }
+	        
+  
+	    } finally {
+	    	
+	        if (get_member_resultSet != null) try { get_member_resultSet.close(); } catch (SQLException ignore) {}
+	        if (get_member_statement != null) try { get_member_statement.close(); } catch (SQLException ignore) {}
+	        if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+	    }
+	    
+
+
+		
+	    if(StringUtils.equals(member_rec, null) || StringUtils.isBlank(member_rec)){
+	    	memberverify.put("PHONENUMBEREXIST","false");
+	    	memberverify.put("DASHUSER",dash_user);
+	    }else{
+	    	memberverify.put("PHONENUMBEREXIST","true");
+	    	memberverify.put("DASHUSER",dash_user);
+	    }
+
+		return memberverify;
 	}
 	
 	public String checkPhoneSMSUSSDStatusServiceDBAccess(String[] DBParams, String phoneNumber){
@@ -3128,6 +3208,68 @@ public class MembersService implements IMembersService {
 		return resultArray;
 	}
 
+	private String[] GET_MEMBER_DETAILS_PRINCIPLE_GLOBAL_ID(String globalid) {
+		String[] resultArray = new String[80];
+
+	    Connection connection = null;
+	    PreparedStatement get_member_statement = null;
+	    PreparedStatement service_tags_statement = null;
+	    ResultSet get_member_resultSet = null;
+	    ResultSet service_tags_resultSet = null;
+	    //order by HOST_DATE asc
+	    String SINGLE_SQL_LIST = "Select MEMBERSHIP_NUMBER, NAMES_AS_IS, MEM_ID, GLOBAL_ID, REASON, SMS_STATUS, PIN_NO, CARD_SERIAL_NUMBER, MEM_STATUS from SMART.FIN_MEMBER_DETAILS where GLOBAL_ID ='"+globalid+"' ";
+	    System.out.println(SINGLE_SQL_LIST);
+	    
+		
+		
+	    try {
+	        connection = DBConSmartBO.getConnection();
+	       
+	        try {
+					get_member_statement = connection.prepareStatement(SINGLE_SQL_LIST);
+					get_member_resultSet = get_member_statement.executeQuery();
+					
+					
+					if (!get_member_resultSet.isBeforeFirst()) {    
+						   // throw new IllegalArgumentException("There are no active MSG_OUT to send");
+							String status_msg = "There are no active messages to send";
+					
+				     }
+					
+		
+					while (get_member_resultSet.next()) {
+						    resultArray[0] = get_member_resultSet.getString("GLOBAL_ID");
+							resultArray[1] = get_member_resultSet.getString("MEM_ID");
+							resultArray[2] = get_member_resultSet.getString("REASON");
+							resultArray[3] = get_member_resultSet.getString("MEMBERSHIP_NUMBER");
+							resultArray[4] = get_member_resultSet.getString("NAMES_AS_IS");
+							resultArray[5] = get_member_resultSet.getString("SMS_STATUS");
+							resultArray[6] = get_member_resultSet.getString("PIN_NO");
+							resultArray[7] = get_member_resultSet.getString("CARD_SERIAL_NUMBER");
+							resultArray[8] = get_member_resultSet.getString("MEM_STATUS");
+							
+							
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					
+
+					
+					resultArray[64] = "Dear customer, we are experiencing technical issues at the moment. We're working to resolve the issues as soon as possible. Please try again later";
+					resultArray[65] = "503";
+				}
+	    } finally {
+	    	
+	        if (get_member_resultSet != null) try { get_member_resultSet.close(); } catch (SQLException ignore) {}
+	        if (get_member_statement != null) try { get_member_statement.close(); } catch (SQLException ignore) {}
+	        if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+	    }
+
+
+		return resultArray;
+	}
+	
 	private String[] GET_MEMBER_DETAILS_PRINCIPLE_MEMBER_NUMBER(String member_no) {
 		String[] resultArray = new String[80];
 
@@ -3198,6 +3340,64 @@ public class MembersService implements IMembersService {
 	    ResultSet service_tags_resultSet = null;
 	    //order by HOST_DATE asc
 	    String SINGLE_SQL_LIST = "Select MEMBER_NUMBER, NAMES_AS_IS, MEM_ID, GLOBAL_ID, REASON, SMS_STATUS, PIN_NO, CARD_SERIAL_NUMBER, DEP_STATUS from SMART.FIN_MEMBER_DEP_DETAILS where PHONE_NO ="+phone_no+" ";
+	    System.out.println(SINGLE_SQL_LIST);
+	    
+	    try {
+	        connection = DBConSmartBO.getConnection();
+	        try {
+					get_member_dep_statement = connection.prepareStatement(SINGLE_SQL_LIST);
+					get_member_dep_resultSet = get_member_dep_statement.executeQuery();
+					
+					
+					if (!get_member_dep_resultSet.isBeforeFirst()) {    
+						   // throw new IllegalArgumentException("There are no active MSG_OUT to send");
+							String status_msg = "There are no active messages to send";
+							
+							
+							resultArray[64] = "Dear customer, we are experiencing technical issues with your Smart mobile service. Please contact your scheme administrator or our call centre +254733320660, +254718222200 for any assistance.";
+							resultArray[65] = "404";
+				     }
+
+					while (get_member_dep_resultSet.next()) {
+						    resultArray[0] = get_member_dep_resultSet.getString("GLOBAL_ID");
+							resultArray[1] = get_member_dep_resultSet.getString("MEM_ID");
+							resultArray[2] = get_member_dep_resultSet.getString("REASON");
+							resultArray[3] = get_member_dep_resultSet.getString("MEMBER_NUMBER");
+							resultArray[4] = get_member_dep_resultSet.getString("NAMES_AS_IS");
+							resultArray[5] = get_member_dep_resultSet.getString("SMS_STATUS");
+							resultArray[6] = get_member_dep_resultSet.getString("PIN_NO");
+							resultArray[7] = get_member_dep_resultSet.getString("CARD_SERIAL_NUMBER");
+							resultArray[8] = get_member_dep_resultSet.getString("DEP_STATUS");
+							
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					
+					
+					resultArray[64] = "Dear customer, we are experiencing technical issues at the moment. We're working to resolve the issues as soon as possible. Please try again later";
+					resultArray[65] = "503";
+					e.printStackTrace();
+				}
+	    } finally {
+	    	
+	        if (get_member_dep_resultSet != null) try { get_member_dep_resultSet.close(); } catch (SQLException ignore) {}
+	        if (get_member_dep_statement != null) try { get_member_dep_statement.close(); } catch (SQLException ignore) {}
+	        if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+	    }
+	    
+		return resultArray;
+	}
+	
+	private String[] GET_MEMBER_DETAILS_DEPENDANCE_GLOBAL_ID(String globalid) {
+		String[] resultArray = new String[80];
+			
+	    Connection connection = null;
+	    PreparedStatement get_member_dep_statement = null;
+	    PreparedStatement service_tags_statement = null;
+	    ResultSet get_member_dep_resultSet = null;
+	    ResultSet service_tags_resultSet = null;
+	    //order by HOST_DATE asc
+	    String SINGLE_SQL_LIST = "Select MEMBER_NUMBER, NAMES_AS_IS, MEM_ID, GLOBAL_ID, REASON, SMS_STATUS, PIN_NO, CARD_SERIAL_NUMBER, DEP_STATUS from SMART.FIN_MEMBER_DEP_DETAILS where GLOBAL_ID ="+globalid+" ";
 	    System.out.println(SINGLE_SQL_LIST);
 	    
 	    try {
@@ -3418,7 +3618,7 @@ public class MembersService implements IMembersService {
 	    		"NHIF," +
 	    		"NHIF2" +
 	    		" from INTEG_USER.SMARTAPI_PLAN_MAP where STATUS= 1 ";
-	    //where REASON ='"+reason+"' AND STATUS= 1
+	            //where REASON ='"+reason+"' AND STATUS= 1
         System.out.println(SINGLE_SQL_LIST);
 
 	    try {
@@ -3517,8 +3717,6 @@ public class MembersService implements IMembersService {
 	    PreparedStatement get_member_balance_bal_statement = null;
 	    ResultSet get_member_balance_bal_resultSet = null;
 	    
-
-	    
 	    String SINGLE_SQL_SUM_LIST = "Select " +
 	    		resultArray_PLAN[0].trim() +" as OUT_P_OVERALL,"+
 	    		resultArray_PLAN[1].trim() +" as OUT_P_DENTAL,"+
@@ -3572,7 +3770,7 @@ public class MembersService implements IMembersService {
 	    		resultArray_PLAN[49].trim() +" as IN_P_NON_ACC_R_MAX_SUGERY,"+
 	    		resultArray_PLAN[51].trim() +" as ADDITIONAL_BENFIT,"+
 	    		resultArray_PLAN[52].trim() +" as ADDITIONAL_BENFIT2,"+
-	    		resultArray_PLAN[53].trim() +" as ADDITIONAL_BENFIT3,"+
+	    		resultArray_PLAN[53].trim() +" as ADDITIONAL_BENFIT3,"+  
 	    		resultArray_PLAN[54].trim() +" as ADDITIONAL_BENFIT4,"+
 	    		resultArray_PLAN[55].trim() +" as CASH,"+
 	    		resultArray_PLAN[56].trim() +" as IN_P_GRAND_POOL,"+
@@ -3689,6 +3887,193 @@ public class MembersService implements IMembersService {
 
 	}
 	
+	
+	public Map<String, String> GET_MEMBER_ALLOCATION(String reason) {
+		
+		String[] resultArray_PLAN = new String[80];
+	    Connection connection = null;
+	    PreparedStatement get_member_plan_bal_statement = null;
+	    PreparedStatement service_tags_statement = null;
+	    ResultSet get_member_plan_bal_resultSet = null;
+	    ResultSet service_tags_resultSet = null;
+	    List rowValues = new ArrayList();
+
+	    String SINGLE_SQL_LIST = "Select " +
+	    		"OUT_P_OVERALL," +
+	    		"OUT_P_DENTAL," +	    
+	    		"OUT_P_OPTICAL_DENTAL," +
+	    		"IN_P_OVERALL," +
+	    		"IN_P_MATERNITY_COVER" +
+	    		" from INTEG_USER.SMARTAPI_PLAN_MAP where REASON ='"+reason+"'";
+
+        System.out.println(SINGLE_SQL_LIST);
+
+	    try {
+	        connection = DBConSmart.getConnection();
+	        try {
+					get_member_plan_bal_statement = connection.prepareStatement(SINGLE_SQL_LIST);
+					get_member_plan_bal_resultSet = get_member_plan_bal_statement.executeQuery();
+					
+					
+					if (!get_member_plan_bal_resultSet.isBeforeFirst()) {    
+						   // throw new IllegalArgumentException("There are no active MSG_OUT to send");
+							String status_msg = "There are no plans available for the above reason";
+					
+				     }
+
+					while (get_member_plan_bal_resultSet.next()) {
+						rowValues.add(get_member_plan_bal_resultSet.getString("OUT_P_OVERALL"));
+						rowValues.add(get_member_plan_bal_resultSet.getString("OUT_P_DENTAL"));
+						rowValues.add(get_member_plan_bal_resultSet.getString("OUT_P_OPTICAL_DENTAL"));
+						rowValues.add(get_member_plan_bal_resultSet.getString("IN_P_OVERALL"));
+						rowValues.add(get_member_plan_bal_resultSet.getString("IN_P_MATERNITY_COVER"));
+						
+						benefitpoolnumbers.put("OUT_P_OVERALL", get_member_plan_bal_resultSet.getString("OUT_P_OVERALL").replace("p", ""));
+						benefitpoolnumbers.put("OUT_P_DENTAL", get_member_plan_bal_resultSet.getString("OUT_P_DENTAL").replace("p", ""));
+						benefitpoolnumbers.put("OUT_P_OPTICAL_DENTAL", get_member_plan_bal_resultSet.getString("OUT_P_OPTICAL_DENTAL").replace("p", ""));
+						benefitpoolnumbers.put("IN_P_OVERALL", get_member_plan_bal_resultSet.getString("IN_P_OVERALL").replace("p", ""));
+						benefitpoolnumbers.put("IN_P_MATERNITY_COVER", get_member_plan_bal_resultSet.getString("IN_P_MATERNITY_COVER").replace("p", ""));
+
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	    } finally {
+	    	
+	        if (get_member_plan_bal_resultSet != null) try { get_member_plan_bal_resultSet.close(); } catch (SQLException ignore) {}
+	        if (get_member_plan_bal_statement != null) try { get_member_plan_bal_statement.close(); } catch (SQLException ignore) {}
+	        if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+	    }
+	    
+	    
+		String[] scheme_member_details = new String[80];
+		scheme_member_details = GET_MEMBER_SCHEME_DETAILS(reason);
+		String[] resultArray_BALANCE = new String[80];	
+	    Connection connection_balance = null;
+	    PreparedStatement get_member_balance_bal_statement = null;
+	    ResultSet get_member_balance_bal_resultSet = null;
+	    String[] poolNumberList = (String[]) rowValues.toArray(new String[rowValues.size()]);
+	    String pools = "";
+	    for (String pool : poolNumberList) {
+	        pools=pools+pool.replace("p", "")+",";
+	    }
+	    if(pools.endsWith(",")) {
+	    	pools= pools.substring(0, pools.length() - 1);
+	     }
+	    
+	    System.out.println(pools);
+	    String collecter = "";
+	    	    String SINGLE_SQL_SUM_LIST = "Select " +
+	    	    		"BEN_ID," +
+	    	    		"POL_ID," +	    
+	    	    		"BEN_TYPE_ID," +
+	    	    		"CAT_ID," +
+	    	    		"SUB_LIMIT_AMT," +
+	    	    		"SERVICE_TYPE," +
+	    	    		"POOL_NUMBER," +
+	    	    		"BENEFIT_DESC" +
+	    	    		" from smart.fin_benefits where reason LIKE '"+reason+"'  and pool_number in ("+pools+") ";
+
+	    System.out.println(SINGLE_SQL_SUM_LIST);
+	    try {
+	        connection_balance = DbCon.getDBConnectionBO();
+	        
+	        try {
+					get_member_balance_bal_statement = connection_balance.prepareStatement(SINGLE_SQL_SUM_LIST);
+					get_member_balance_bal_resultSet = get_member_balance_bal_statement.executeQuery();
+					
+
+					if (!get_member_balance_bal_resultSet.isBeforeFirst()) {    
+						   // throw new IllegalArgumentException("There are no active MSG_OUT to send");
+							String status_msg = "There are no plans available for the above reason";
+					
+				     }
+
+					while (get_member_balance_bal_resultSet.next()) {
+						
+						if(get_member_balance_bal_resultSet.getString("POOL_NUMBER").equals(benefitpoolnumbers.get("OUT_P_OVERALL"))){
+							memberbalance.put("OUTPATIENT OVERALL",get_member_balance_bal_resultSet.getString("SUB_LIMIT_AMT"));
+						}else if(get_member_balance_bal_resultSet.getString("POOL_NUMBER").equals(benefitpoolnumbers.get("OUT_P_DENTAL"))){
+							memberbalance.put("OUTPATIENT DENTAL",get_member_balance_bal_resultSet.getString("SUB_LIMIT_AMT"));
+						}else if(get_member_balance_bal_resultSet.getString("POOL_NUMBER").equals(benefitpoolnumbers.get("OUT_P_OPTICAL_DENTAL"))){
+							memberbalance.put("OUTPATIENT OPTICAL",get_member_balance_bal_resultSet.getString("SUB_LIMIT_AMT"));
+						}else if(get_member_balance_bal_resultSet.getString("POOL_NUMBER").equals(benefitpoolnumbers.get("IN_P_OVERALL"))){
+							memberbalance.put("INPATIENT OVERALL" ,get_member_balance_bal_resultSet.getString("SUB_LIMIT_AMT"));
+						}else if(get_member_balance_bal_resultSet.getString("POOL_NUMBER").equals(benefitpoolnumbers.get("IN_P_MATERNITY_COVER"))){
+							memberbalance.put("OUTPATIENT MATERNITY",get_member_balance_bal_resultSet.getString("SUB_LIMIT_AMT"));
+						}
+
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	    } finally {
+	    	
+	        if (get_member_balance_bal_resultSet != null) try { get_member_balance_bal_resultSet.close(); } catch (SQLException ignore) {}
+	        if (get_member_balance_bal_statement != null) try { get_member_balance_bal_statement.close(); } catch (SQLException ignore) {}
+	        if (connection_balance != null) try { connection_balance.close(); } catch (SQLException ignore) {}
+	    }
+	    
+	    
+	    
+	    return memberbalance;
+	    
+	}
+	
+	
+	public Map<String, String> GET_MEMBER_BENEFIT_POOL_NUMBERS(String reason) {
+		
+		String[] resultArray_PLAN = new String[80];
+	    Connection connection = null;
+	    PreparedStatement get_member_plan_bal_statement = null;
+	    PreparedStatement service_tags_statement = null;
+	    ResultSet get_member_plan_bal_resultSet = null;
+	    ResultSet service_tags_resultSet = null;
+	    List rowValues = new ArrayList();
+
+	    String SINGLE_SQL_LIST = "Select " +
+	    		"OUT_P_OVERALL," +
+	    		"OUT_P_DENTAL," +	    
+	    		"OUT_P_OPTICAL_DENTAL," +
+	    		"IN_P_OVERALL," +
+	    		"IN_P_MATERNITY_COVER" +
+	    		" from INTEG_USER.SMARTAPI_PLAN_MAP where REASON ='"+reason+"'";
+
+        System.out.println(SINGLE_SQL_LIST);
+
+	    try {
+	        connection = DBConSmart.getConnection();
+	        try {
+					get_member_plan_bal_statement = connection.prepareStatement(SINGLE_SQL_LIST);
+					get_member_plan_bal_resultSet = get_member_plan_bal_statement.executeQuery();
+					
+					if (!get_member_plan_bal_resultSet.isBeforeFirst()) {    
+						   // throw new IllegalArgumentException("There are no active MSG_OUT to send");
+							String status_msg = "There are no plans available for the above reason";
+				     }
+					
+					while (get_member_plan_bal_resultSet.next()) {  
+						benefitpoolnumbers.put(get_member_plan_bal_resultSet.getString("OUT_P_OVERALL").replace("p", ""),"OUTPATIENT OVERALL");
+						benefitpoolnumbers.put(get_member_plan_bal_resultSet.getString("OUT_P_DENTAL").replace("p", ""),"OUTPATIENT DENTAL");
+						benefitpoolnumbers.put(get_member_plan_bal_resultSet.getString("OUT_P_OPTICAL_DENTAL").replace("p", ""),"OUTPATIENT OPTICAL");
+						benefitpoolnumbers.put(get_member_plan_bal_resultSet.getString("IN_P_OVERALL").replace("p", ""),"INPATIENT OVERALL");
+						benefitpoolnumbers.put(get_member_plan_bal_resultSet.getString("IN_P_MATERNITY_COVER").replace("p", ""),"OUTPATIENT MATERNITY");
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	    } finally {
+	    	
+	        if (get_member_plan_bal_resultSet != null) try { get_member_plan_bal_resultSet.close(); } catch (SQLException ignore) {}
+	        if (get_member_plan_bal_statement != null) try { get_member_plan_bal_statement.close(); } catch (SQLException ignore) {}
+	        if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+	    }
+
+	    return benefitpoolnumbers;
+	}
 	
 	private String[] GET_SCHEME_BALANCE(String globalid, String memberid, String reason, String membership_number, String names_as_is, String phoneno, String user_status, String pin_no, String card_serial_no) {
 
@@ -3813,6 +4198,42 @@ public class MembersService implements IMembersService {
 	}
 	
 	
+	private String[] CalculateMemberGlobalIDBalanceServiceDBAccess(String globalid){
+		String smart = "balance from phone";
+		String[] member_details = new String[80];
+
+		System.out.println("THIS IS THE GLOBAL ID///////////////////: = "+globalid);
+		member_details = GET_MEMBER_DETAILS_PRINCIPLE_GLOBAL_ID(globalid);
+		System.out.println("THIS IS THE FIRST GLOBAL ID||||||||||||||||||||||||: = "+member_details[0]);
+		if((member_details[0] == null)||(member_details[0].isEmpty())){
+		member_details = 	GET_MEMBER_DETAILS_DEPENDANCE_GLOBAL_ID(globalid);
+		System.out.println("THIS IS THE SECOND GLOBAL ID////////////////////: = "+member_details[0]);
+		}
+		
+		System.out.println("HERE WE GO?????????????????????????????????????????????");
+		System.out.println(member_details[0]); 
+		System.out.println(member_details[1]);
+		System.out.println("?????????????????????????");
+		System.out.println(member_details[2]); 
+		System.out.println(member_details[3]); 
+		System.out.println(member_details[4]); 
+		System.out.println(globalid); 
+		System.out.println(member_details[5]); 
+		System.out.println(member_details[6]); 
+		System.out.println(member_details[7]);
+		System.out.println(member_details[8]);
+		System.out.println("HERE WE GO?????????????????????????????????????????????");
+		System.out.println("HERE WE GO?????????????????????????????????????????????");
+		System.out.println("HERE WE GO?????????????????????????????????????????????");
+		
+		if(!member_details[0].isEmpty()){
+		member_details = 	GET_MEMBER_BALANCE(member_details[0], member_details[1], member_details[2], member_details[3], member_details[4], globalid, member_details[5], member_details[6], member_details[7], member_details[8]);
+		}
+	
+		return member_details;
+	}
+	
+	
 	
 	private String[] CalculateSchemePhoneBalanceServiceDBAccess(String phoneno){
 		String smart = "balance from phone";
@@ -3926,7 +4347,6 @@ public class MembersService implements IMembersService {
         
         return PROV_NAME;
 	}
-	
 	
 	private String[] ActivateMemberPhoneSMSServiceDBAccess(String phoneno){
 		String smart = "balance from phone";
@@ -4146,7 +4566,233 @@ public class MembersService implements IMembersService {
 		return output;
 	}
 	
+    public String saveFpRemoval(String now_polid, String memno, String requestedby, String msg, String now_user, String serial) {
+
+        String update="insert into smart.LOG_DASH_FP_REMOVAL "
+                + "(POL_ID, member_number, requested_by, msg, USER_NAME, card_serial,ACTION_STATUS,ACTION_TIME) "
+                + "values('"+now_polid+"','"+memno+"','"+requestedby+"','"+msg+"',"
+                + "'USSD:"+now_user+"','"+serial+"',1,current_timestamp)";
+        try{
+            System.out.println(update);
+            Statement st = DbCon.getDBConnectionBO().createStatement();
+            int i=st.executeUpdate(update);
+            if(i>0)
+            {
+          String update2="insert into ret.dbo.ret_generation "
+                        + "(head_lookup,head_type,loaded_by,patient_fingerCount,activity_reason) "
+                        + "values('"+serial+"',1,'USSD:"+now_user+"',0,'"+msg+"')";
+                System.out.println(update2);
+                st = DbCon.getDBConnectionMSSQL("ret").createStatement();
+                int j=st.executeUpdate(update2);
+                if(j>0){
+                	return "Request sent successfully.";
+                }else{
+              	  return "Unable to save request, please try again later.";
+                }     
+            }else{
+                  return "Unable to save request, please try again later.";
+            }
+            
+           
+
+        }catch(Exception x){
+            x.printStackTrace();
+            throw new IllegalArgumentException(x);
+        }
+         
+    }
+
+    public String saveStatusChange(String now_polid, String memno, String activate, String now_user,String msg, String serial) {	
+        //log activity
+    	int now_poltype = 1;
+    	int insertst = 0;
+    	String message = "";
+    	
+    	if(now_polid.contains(",")){
+    		now_poltype = 2;
+    	}else{
+    		now_poltype = 1;
+    	}
+    	
+        try {
+                String update = "insert into smart.LOG_DASH_STATUS_CHANGE "
+                        + "(POL_ID, member_number, IS_ACTIVATE, MEM_SCHEME, USER_NAME, STATUS_MSG,"
+                        + "card_serial,ACTION_STATUS,ACTION_TIME) "
+                        + "values('" + now_polid + "','" + memno + "','" + activate + "','member',"
+                        + "'" + now_user + "','" + msg + "','" + serial + "',1,current_timestamp)";
+                System.out.println(update);
+                Statement st = DbCon.getDBConnectionBO().createStatement();
+                int ldscstatus = st.executeUpdate(update);
+                if(ldscstatus == 1){
+                	
+                    //effect BO
+                    if (activate.equals("1")) {
+                        update = "update smart.fin_member_dep_details set dep_status='1',scheme_end_date=null "
+                                + "where member_number='" + memno + "'";
+                        insertst = st.executeUpdate(update);
+                        System.out.println(update);
+                        if (insertst == 0) {
+                            update = "update smart.fin_member_details set mem_status='1',scheme_end_date=null "
+                                    + "where membership_number='" + memno + "'";
+                        insertst = st.executeUpdate(update);
+                        System.out.println(update);
+                        }
+                        String famcode = getFamcode(memno);
+                        //log recalc
+                        if (insertst == 1) {
+                        update = "insert into smart.log_dash_recalc(pol_type,pol_id,family_code) "
+                                + "values('" + now_poltype + "','" + now_polid + "','" + famcode + "')";
+                        insertst = st.executeUpdate(update);
+                        System.out.println(update);
+                        }else{
+                        	return "Unable to save request, please try again later.";
+                        }
+                    } else {
+                        update = "update smart.fin_member_details set mem_status='1',scheme_end_date=sysdate-1 "
+                                + "where membership_number='" + memno + "'";
+                            insertst = st.executeUpdate(update);
+                            System.out.println(update);
+                        if (insertst == 0) {
+                            update = "update smart.fin_member_dep_details set dep_status='1',"
+                                    + "scheme_end_date=sysdate-1 where member_number='" + memno + "'";
+                            insertst = st.executeUpdate(update);
+                            System.out.println(update);
+                        }
+                    }
+                    
+                    //effect MS
+                    if(insertst == 1){
+                        if (activate.equals("0")) {
+                            activate = "2";
+                        }
+                        update = "insert into ret_generation "
+                                + "(head_lookup,head_type,loaded_by,card_validitystatus,activity_reason) "
+                                + "values('" + serial + "',1,'" + now_user + "',"
+                                + "" + activate + ",'" + msg + "')";
+                        st = DbCon.getDBConnectionMSSQL("ret").createStatement();
+                        insertst = st.executeUpdate(update);
+                        System.out.println(update);
+                    }else{
+                    	return "Unable to save request, please try again later.";
+                    }
 	
+                }else{
+                	return "Unable to save request, please try again later.";
+                }
+            
+        } catch (Exception x) {
+            x.printStackTrace();
+        }
+        
+        if (insertst == 1) {
+        	return "Request sent successfully.";
+        }else{
+        	return "Unable to save request, please try again later.";
+        } 
+    }
+
+  public String SaveReimbursement(String moneyact, String now_polid, String now_reason, String amt, String serial, String pool, String memno, String now_user, String benid1, String medcode, String medplan, String patname, String date1, String cmt, String poolnr1) {
+    
+    
+  //  boolean iscool=true;
+ //   String msg="";
+   
+   /*
+    if(fs.getSmcmbshooseaction_rm().getValue()==null)
+        msg="Please select transaction type";
+    else if(fs.getSmcmbchoosebenefit_rm().getValue()==null)
+        msg="Please select the benefit";
+    else if(fs.getSmcmbchooseprovider_rm().getValue()==null)
+        msg="Please select a provider";
+    else if(fs.getSmtxtamount_rm().getValue().replace(" ","").length()==0)
+        msg="Please select the amount";
+    else if(fs.getSmtxtcomments_rm().getValue().replace(" ","").length()==0)
+        msg="Comment missing";
+    else if(fs.getSmchoosedate_rm()==null)
+        msg="Transaction date missing";
+    if(msg.length()>0)
+    {
+        Notification.show(msg, Notification.Type.WARNING_MESSAGE);
+        
+    }
+    else
+    {
+        
+       
+        if(fs.getSmcmbshooseaction_rm().getValue().equals("Add Money"))
+        {
+            if(!fs.getSmtxtamount_rm().getValue().contains("-"))
+            {
+                msg="This transactions requires a negative amount (Money addition)";
+                iscool=false;
+                Notification.show(msg, Notification.Type.ERROR_MESSAGE);
+            }
+        }
+        else  if(fs.getSmcmbshooseaction_rm().getValue().equals("Reimburse"))
+        {
+
+                double amt=Double.parseDouble(bal);
+                if(amt<Double.parseDouble(fs.getSmtxtamount_rm().getValue()))
+                {
+                    msg="The amount you have entered is greater than the current balance";
+                    iscool=false;
+                }
+                else if(Double.parseDouble(fs.getSmtxtamount_rm().getValue())<0)
+                {
+                    msg="The amount should not be a negative (except for money additions)";
+                    iscool=false;
+                }
+            }
+        }
+
+        if(!iscool)
+        {
+            Notification.show(msg, Notification.Type.WARNING_MESSAGE);
+        }
+    */
+        
+
+          //  int i=cmbMemno.getSelectedIndex();
+          // Map hashpool = fs.fetch.fetchBal(now_polid, now_memno, now_reason);
+          //  List<String> lstpool=(List)hashpool.get("POOL_NUMBER");
+            String sksp="CENTRAL SERVER";
+          //  patname=now_name;
+            String codetype = ""; 
+            String invno="0";
+            String  enctype="Reimbursement";
+            if(moneyact.equals("1")){
+                codetype="Reimbursement";
+                amt="-"+amt;
+            }else if(moneyact.equals("2")){
+                codetype="Money Addition";
+                }
+            try{
+                Statement st = DbCon.getDBConnectionBO().createStatement();
+
+                String update="INSERT INTO smart.stg_ret_claims (central_id, point_id,id,amount,card_serial,patient_medicalaid_nr,"
+                        + "patient_medicalaid_code,patient_medicalaid_plan,invoice_nr,claim_nr,ip_address,"
+                        + "service_provider_key,service_provider_nr,"
+                        + "patient_name,patient_surname,INSERT_DATE,TRANSACTION_DATE,validity_status,family_done,"
+                        + "switch_refnr,encounter_type,code_type,diagnosis_description, SLINK_CLAIMS_CENTRAL_ID,SLINK_ADMIT_CENTRAL_ID,TRIG_SOURCE, pool_nr) "
+                        + "VALUES( smart.stg_claim_returns_sequence.NEXTVAL, 'integ',"+benid1+","+amt+",'"+serial+"','"+memno+"','"+medcode+"',"
+                        + "'"+medplan+"',"
+                        + "'"+invno+"','','"+sksp+"','"+sksp+"','"+sksp+"','"+patname+"','',to_date('"+ getCurrentSMSTimeStamp() + "', "+"'dd-mm-yyyy'"+"),"//"+sname+"
+                        + "to_date('"+ date1+ "', "+"'dd-mm-yyyy'"+"),1,0,'"+now_user+"','"+enctype+"','"+codetype+"',"
+                        + "'"+cmt+"',0,0,0, "+poolnr1+")";
+       
+                System.out.println(update);
+                st.executeUpdate(update);
+               return "Successfully saved!!";
+
+            }catch(Exception e){
+                
+            	return "Unable to save request, please try again later.";
+
+        }
+            
+            
+    }
+
 	private String[] DeactivateMemberPhoneSMSServiceDBAccess(String phoneno){
 		String smart = "balance from phone";
 		String[] member_details = new String[10];
@@ -4414,6 +5060,129 @@ public class MembersService implements IMembersService {
 		}
 	
 	
+	public Balance getMemberBalanceGlobalID(String text_code, String globalid, String memnos) {
+
+		String[] member_details = new String[80];
+
+		member_details = CalculateMemberGlobalIDBalanceServiceDBAccess(globalid);
+
+		Balance balancedetails = new Balance(
+				member_details[0],
+				member_details[1],
+				member_details[2], 
+				member_details[3],
+				member_details[4],
+				member_details[5],
+				member_details[6],
+				member_details[7],
+				member_details[8], 
+				member_details[9],
+				member_details[10],
+				member_details[11],
+				member_details[12],
+				member_details[13],
+				member_details[14], 
+				member_details[15],
+				member_details[16],
+				member_details[17],
+				member_details[18],
+				member_details[19],
+				member_details[20], 
+				member_details[21],
+				member_details[22],
+				member_details[23],
+				member_details[24],
+				member_details[25],
+				member_details[26], 
+				member_details[27],
+				member_details[28],
+				member_details[29],
+				member_details[30],
+				member_details[31],
+				member_details[32], 
+				member_details[33],
+				member_details[34],
+				member_details[35],
+				member_details[36],
+				member_details[37],
+				member_details[38], 
+				member_details[39],
+				member_details[40],
+				member_details[41],
+				member_details[42],
+				member_details[43],
+				member_details[44], 
+				member_details[45],
+				member_details[46],
+				member_details[47],
+				member_details[48],
+				member_details[49],
+				member_details[50], 
+				member_details[51],
+				member_details[52],
+				member_details[53],
+				member_details[54],
+				member_details[55],
+				member_details[56],
+				member_details[57],
+				member_details[58],
+				member_details[60],
+				member_details[61],
+				member_details[62],
+				member_details[63],
+				member_details[64],
+				member_details[65],
+				member_details[66],
+				member_details[67],
+				member_details[68],
+				member_details[69],
+				member_details[70],
+				member_details[71],
+				member_details[72]
+				);
+		
+		/*
+		if(!(memnos.equals("0"))){
+
+			memnos.trim();
+			String[] allmemnos=memnos.split("\\|");
+			String[] member_details = new String[10];
+			String balance = "";
+			for (String memno : allmemnos) { 
+				//balance = CalculateMemberMemnoBalanceServiceDBAccess(memno);
+				//balancedetails = new Balance(phoneno, member_details[0], member_details[0]);
+			}
+					
+		}
+		*/
+        /*
+		if(!(phonenos.equals("0"))){
+			
+			phonenos.trim();
+			String[] allphonenos=phonenos.split("\\|");
+			
+			for (String phoneno : allphonenos) {
+				
+				
+			
+		      //  for(String str : member_details){
+		      //      System.out.println(str+"  I AM IN");
+		      //  }
+		    
+		        
+				
+
+						
+			}
+			
+
+		}
+		
+		*/
+		return balancedetails;
+
+		}
+	
 	public Balance getSchemeBalancePhoneNumber(String text_code, String phonenos, String memnos) {
 
 		
@@ -4662,6 +5431,9 @@ public class MembersService implements IMembersService {
 
 
 		}
+	
+	
+	
 	
 	
 	public Balance updateMemberActivate(String phonenos) {
@@ -5816,11 +6588,31 @@ public class MembersService implements IMembersService {
 		return checkPhoneSMSUSSDVerificationServiceDBAccess(data.getDBParams(), PhoneNumber);
 	}
 	
+	public Map<String,String> checkPhoneAdminSMSUSSDVerification(String PhoneNumber) {
+		// TODO Auto-generated method stub
+		RequestMapInteractive data = new RequestMapInteractive("ussd", "kenya");
+		return checkPhoneAdminSMSUSSDVerificationServiceDBAccess(data.getDBParams(), PhoneNumber);
+	}
+	
 	public String checkPhoneSMSUSSDStatus(String PhoneNumber) {
 		// TODO Auto-generated method stub
 		RequestMapInteractive data = new RequestMapInteractive("ussd", "kenya");
 		return checkPhoneSMSUSSDStatusServiceDBAccess(data.getDBParams(), PhoneNumber);
 	}
 
+	public static String getFamcode(String memno) {
+	        //check if single family
+	        String famcode="";
+	        if(memno.contains("-")) {
+	            if(memno.contains("/"))
+	                famcode=memno.substring(0,memno.indexOf("-"));
+	            else
+	                famcode=memno.substring(0,memno.lastIndexOf("-"));
+	        }
+	        else
+	            famcode=memno;
+	        return famcode;
+	  }
+	
 
  }

@@ -50,14 +50,14 @@ public class DbCon {
 	  
 	  
 	
-	  public static Connection getDBConnection() {
+	  public static Connection getDBConnectionBO() {
 	    	 
 			Connection dbConnection = null;
 
 			final String DB_DRIVER = "oracle.jdbc.driver.OracleDriver";
-			final String DB_CONNECTION = "jdbc:oracle:thin:@192.168.1.27:1521/smart";
-			final String DB_USER = "MULAMAK";
-			final String DB_PASSWORD = "mulama123";
+			final String DB_CONNECTION = "jdbc:oracle:thin:@192.180.3.14:1520/smart";
+			final String DB_USER = "API_USER";
+			final String DB_PASSWORD = "ulTr@n7";
 
 			try {
 	 
@@ -89,28 +89,24 @@ public class DbCon {
 	  
 	  
 		
-	  public static Connection getDBConnectionMSSQL() {
+	  public static Connection getDBConnectionMSSQL(String dbname) {
 		  
 		   Connection dbConnection = null;
 		   Statement statement = null;
-		   
 		   
        try {
        	
            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
            dbConnection = DriverManager.getConnection(
-                           "jdbc:sqlserver://192.180.3.2:1433;databaseName=cl_integrate;selectMethod=cursor",
+                           "jdbc:sqlserver://192.180.3.14:1433;databaseName="+dbname+";selectMethod=cursor",
                            "sa", "YesoBa1002");
 
            System.out.println("DATABASE NAME IS:"
                    + dbConnection.getMetaData().getDatabaseProductName());
  
-
        } catch (Exception e) {
            e.printStackTrace();
        }
-       
-       
        
 			return dbConnection;
 	 

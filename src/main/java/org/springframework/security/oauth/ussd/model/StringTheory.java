@@ -1,11 +1,13 @@
 package org.springframework.security.oauth.ussd.model;
 
+import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -183,13 +185,11 @@ public class StringTheory {
 										String membersmsussd = null;
 										membersmsussdverifications = membersService.getMemberSMSUSSDVerification(accesslevels.get(membercounter), smartInsurercode);
 										for(Member member: membersmsussdverifications) {
-
 											membershipnumber = member.getMembershipNumber();
 											smartcode = member.getSmartCode();	
 											cardserial = member.getCardSerialNumber();
 											membersmsussd  = member.getSmsStatus();
 											break;
-
 										}
 
 										if(membershipnumber.equals(accesslevels.get(membercounter)) && (smartcode.equals(smartInsurercode))){
@@ -3959,7 +3959,511 @@ select_options.get(5).toString().substring(0,1).toUpperCase() + select_options.g
 
 		}
 
+		// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+		// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		else if ((accesslevels.get(0) != null)
+				&& (accesslevels.get(0).equals("7"))) {
+			
+			Map<String,String> memberverify = new HashMap<String,String>();
+			String smartInsurercode = "";
+            memberverify = membersService.checkPhoneAdminSMSUSSDVerification(PhoneNumber);
+                     
+         if(StringUtils.equals(memberverify.get("PHONENUMBEREXIST"), "true") && (memberverify.get("DASHUSER").contains("."))){
+        	 smartInsurercode = memberverify.get("DASHUSER").substring(0, memberverify.get("DASHUSER").indexOf('.'));
+        	 message = "CON Please select an option.\n1. Member administration\n2. Pre-authorization";
+		     
+		 if((accesslevels.get(1) != null)
+						&& (accesslevels.get(1).equals("1"))) {
+			 
+					message = "CON Please select an option\n1. Check member status\n2. Check allocation\n3. Check balance\n4. Debit or Credit\n5. Activate or Deactivate \n6. Remove fingerprint";
+					
+					if((accesslevels.get(2) != null)
+							&& (accesslevels.get(2).equals("1"))) {
+
+						//////////////////////////////////////////////////////////////////////////////////////////////////////
+						/////////////////////////////////////////////////////////////////////////////////////////////////////
+						int counter = 0;
+						message = "CON Please enter the member number ";
+
+						
+                          if(StringUtils.isNotEmpty(accesslevels.get(3)) || StringUtils.isNotEmpty(accesslevels.get(4)) || StringUtils.isNotEmpty(accesslevels.get(5))) {
+
+							int memberexit = 0;
+							int membercounter = 0;
+							Member m = null;
+							
+							if(StringUtils.isNotEmpty(accesslevels.get(3)) && containsMemberNumber(membersService.getMemberSMSUSSDVerification(accesslevels.get(3), smartInsurercode), smartInsurercode, accesslevels.get(3))){
+								membercounter = 3;
+							}else if(StringUtils.isNotEmpty(accesslevels.get(4)) && containsMemberNumber(membersService.getMemberSMSUSSDVerification(accesslevels.get(4), smartInsurercode), smartInsurercode, accesslevels.get(4))){
+								membercounter = 4;
+							}else if(StringUtils.isNotEmpty(accesslevels.get(5)) && containsMemberNumber(membersService.getMemberSMSUSSDVerification(accesslevels.get(5), smartInsurercode), smartInsurercode, accesslevels.get(5))){
+								membercounter = 5;
+							}
+
+							if(membercounter != 0){
+								String smartcode = null;
+								String membershipnumber = null;
+								String cardserial = null;
+								String membersmsussd = null;
+								String globalid = null;
+								membersmsussdverifications = membersService.getMemberSMSUSSDVerification(accesslevels.get(membercounter), smartInsurercode);
+								for(Member member: membersmsussdverifications) {
+									membershipnumber = member.getMembershipNumber();
+									smartcode = member.getSmartCode();	
+									cardserial = member.getCardSerialNumber();
+									membersmsussd  = member.getSmsStatus();
+									globalid = member.getGlobalId();
+									break;
+								}
+
+								Balance x = membersService.getMemberBalanceGlobalID(null,
+										globalid, null);
+						
+									System.out.println("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww "+x.getSmsStatus());
+									String memberstatus = "";
+									
+									if ((x.getUserStatus()).equals("1")
+											|| (x.getUserStatus()).equals("5")) {
+										memberstatus = "Active";
+									} else {
+										memberstatus = "Inactive";
+									}
+				              
+									StringBuffer stringbf = new StringBuffer();
+								      Matcher matcher = Pattern.compile("([a-z])([a-z]*)",
+								      Pattern.CASE_INSENSITIVE).matcher(x.getNames());
+								      while (matcher.find()) {
+								         matcher.appendReplacement(stringbf, 
+								         matcher.group(1).toUpperCase() + matcher.group(2).toLowerCase());
+								      }
+								      
+									message = "CON member name:" + matcher.appendTail(stringbf).toString()
+											+ ", member No:" + x.getMemberNumber()
+											+ ", card serial:" + x.getCardSerial()
+											+ ", member status:" + memberstatus
+											+ ".\n0 - Main Menu \n99 - Exit";
+
+							}else{
+								message = "CON You entered an invalid Member Number , Please try again!";
+								if (memberexit==6) {
+									message = "END You have already tried 3 times. Please contact your scheme administrator or our call centre +254733320660, +254718222200 for any assistance.";
+								}
+								
+							}
+
+						}
+						
+						/////////////////////////////////////////////////////////////////////////////////////////////////////
+						////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+					}else if((accesslevels.get(2) != null)
+							&& (accesslevels.get(2).equals("2"))) {
+						
+						//////////////////////////////////////////////////////////////////////////////////////////////////////
+						/////////////////////////////////////////////////////////////////////////////////////////////////////
+						int counter = 0;
+						message = "CON Please enter the member number ";
+                          if(StringUtils.isNotEmpty(accesslevels.get(3)) || StringUtils.isNotEmpty(accesslevels.get(4)) || StringUtils.isNotEmpty(accesslevels.get(5))) {
+
+							int memberexit = 0;
+							int membercounter = 0;
+							Member m = null;
+							String regex = "(\\d)(?=(\\d{3})+$)";
+							if(StringUtils.isNotEmpty(accesslevels.get(3)) && containsMemberNumber(membersService.getMemberSMSUSSDVerification(accesslevels.get(3), smartInsurercode), smartInsurercode, accesslevels.get(3))){
+								membercounter = 3;
+							}else if(StringUtils.isNotEmpty(accesslevels.get(4)) && containsMemberNumber(membersService.getMemberSMSUSSDVerification(accesslevels.get(4), smartInsurercode), smartInsurercode, accesslevels.get(4))){
+								membercounter = 4;
+							}else if(StringUtils.isNotEmpty(accesslevels.get(5)) && containsMemberNumber(membersService.getMemberSMSUSSDVerification(accesslevels.get(5), smartInsurercode), smartInsurercode, accesslevels.get(5))){
+								membercounter = 5;
+							}
+
+							if(membercounter != 0){
+								String smartcode = null;
+								String membershipnumber = null;
+								String cardserial = null;
+								String membersmsussd = null;
+								String globalid = null;
+								String reason = null;
+								membersmsussdverifications = membersService.getMemberSMSUSSDVerification(accesslevels.get(membercounter), smartInsurercode);
+								for(Member member: membersmsussdverifications) {
+									membershipnumber = member.getMembershipNumber();
+									smartcode = member.getSmartCode();	
+									cardserial = member.getCardSerialNumber();
+									membersmsussd  = member.getSmsStatus();
+									globalid = member.getGlobalId();
+									reason = member.getReason();
+									break;
+								}
+
+								message = "CON ";
+								for(Entry<String, String> pool : membersService.GET_MEMBER_ALLOCATION(reason).entrySet()){
+									message +=pool.getKey().substring(0,1).toUpperCase()+pool.getKey().substring(1).toLowerCase()+": ";
+									message +=pool.getValue().replaceAll(regex, "$1,")+" Ksh,"+"\n";
+								}
+							    if(message.endsWith(",")) {
+							    	message= message.substring(0, message.length() - 1);
+							     }
+								message +="0 - Main Menu \n99 - Exit";
+								
+							}else{
+								
+								message = "CON You entered an invalid Member Number , Please try again!";
+								System.out.println(memberexit);
+								if (memberexit==6) {
+									message = "END You have already tried 3 times. Please contact your scheme administrator or our call centre +254733320660, +254718222200 for any assistance.";
+								}
+								
+							}
+						}
+						/////////////////////////////////////////////////////////////////////////////////////////////////////
+						////////////////////////////////////////////////////////////////////////////////////////////////////
+                          
+					}else if((accesslevels.get(2) != null)
+							&& (accesslevels.get(2).equals("3"))) {
+						
+						//////////////////////////////////////////////////////////////////////////////////////////////////////
+						/////////////////////////////////////////////////////////////////////////////////////////////////////
+						int counter = 0;
+						String regex = "(\\d)(?=(\\d{3})+$)";
+						message = "CON Please enter the member number ";
+                          if(StringUtils.isNotEmpty(accesslevels.get(3)) || StringUtils.isNotEmpty(accesslevels.get(4)) || StringUtils.isNotEmpty(accesslevels.get(5))) {
+
+							int memberexit = 0;
+							int membercounter = 0;
+							Member m = null;
+							
+							if(StringUtils.isNotEmpty(accesslevels.get(3)) && containsMemberNumber(membersService.getMemberSMSUSSDVerification(accesslevels.get(3), smartInsurercode), smartInsurercode, accesslevels.get(3))){
+								membercounter = 3;
+							}else if(StringUtils.isNotEmpty(accesslevels.get(4)) && containsMemberNumber(membersService.getMemberSMSUSSDVerification(accesslevels.get(4), smartInsurercode), smartInsurercode, accesslevels.get(4))){
+								membercounter = 4;
+							}else if(StringUtils.isNotEmpty(accesslevels.get(5)) && containsMemberNumber(membersService.getMemberSMSUSSDVerification(accesslevels.get(5), smartInsurercode), smartInsurercode, accesslevels.get(5))){
+								membercounter = 5;
+							}
+
+							if(membercounter != 0){
+								String smartcode = null;
+								String membershipnumber = null;
+								String cardserial = null;
+								String membersmsussd = null;
+								String globalid = null;
+								membersmsussdverifications = membersService.getMemberSMSUSSDVerification(accesslevels.get(membercounter), smartInsurercode);
+								for(Member member: membersmsussdverifications) {
+									membershipnumber = member.getMembershipNumber();
+									smartcode = member.getSmartCode();	
+									cardserial = member.getCardSerialNumber();
+									membersmsussd  = member.getSmsStatus();
+									globalid = member.getGlobalId();
+									break;
+								}
+								
+								Balance x = membersService.getMemberBalanceGlobalID(
+										null, globalid, null);						
+								// ////////////////////////////////////////////////
+
+						message = "CON Member No:"
+								+ x.getMemberNumber()
+								+ ". Balance as at "
+								+ getCurrentSMSTimeStamp()
+								+ " is "
+								+ 
+                   select_options.get(1).toString().substring(0,1).toUpperCase() + select_options.get(1).toString().substring(1).toLowerCase()
+								+ ":"
+                   				+ x.getOUT_PATIENT_OVERALL().replaceAll(regex, "$1,")
+								+ "Ksh, "+
+							
+								select_options.get(2).toString().substring(0,1).toUpperCase() + select_options.get(2).toString().substring(1).toLowerCase()
+                                + ":"
+								+ x.getIN_PATIENT_OVERALL().replaceAll(regex, "$1,")
+								+ " KSH, "
+								+ 
+								select_options.get(3).toString().substring(0,1).toUpperCase() + select_options.get(3).toString().substring(1).toLowerCase()
+								+ ":"
+								+ x.getOUT_PATIENT_DENTAL().replaceAll(regex, "$1,")
+								+ " KSH, "
+								+ 
+								select_options.get(4).toString().substring(0,1).toUpperCase() + select_options.get(4).toString().substring(1).toLowerCase()
+								+ ":"
+								+ x.getOUT_PATIENT_OPTICAL_DENTAL().replaceAll(regex, "$1,")
+								+ " KSH, "
+								+ 
+								select_options.get(5).toString().substring(0,1).toUpperCase() + select_options.get(5).toString().substring(1).toLowerCase()
+								+ ":"
+								+ x.getOUT_PATIENT_MATERNITY().replaceAll(regex, "$1,")
+								+ " KSH. "
+								+ "\n0 - Main Menu \n99 - Exit";
+
+							}else{
+								
+								message = "CON You entered an invalid Member Number , Please try again!";
+								System.out.println(memberexit);
+								if (memberexit==6) {
+									message = "END You have already tried 3 times. Please contact your scheme administrator or our call centre +254733320660, +254718222200 for any assistance.";
+								}
+								
+							}
+						}
+						/////////////////////////////////////////////////////////////////////////////////////////////////////
+						////////////////////////////////////////////////////////////////////////////////////////////////////
+                          
+					}else if((accesslevels.get(2) != null)
+							&& (accesslevels.get(2).equals("4"))) {
+						
+						//////////////////////////////////////////////////////////////////////////////////////////////////////
+						/////////////////////////////////////////////////////////////////////////////////////////////////////
+						int counter = 0;
+						message = "CON Please enter the member number ";
+                          if(StringUtils.isNotEmpty(accesslevels.get(3)) || StringUtils.isNotEmpty(accesslevels.get(4)) || StringUtils.isNotEmpty(accesslevels.get(5))) {
+
+							int memberexit = 0;
+							int membercounter = 0;
+							Member m = null;
+							
+							if(StringUtils.isNotEmpty(accesslevels.get(3)) && containsMemberNumber(membersService.getMemberSMSUSSDVerification(accesslevels.get(3), smartInsurercode), smartInsurercode, accesslevels.get(3))){
+								membercounter = 3;
+							}else if(StringUtils.isNotEmpty(accesslevels.get(4)) && containsMemberNumber(membersService.getMemberSMSUSSDVerification(accesslevels.get(4), smartInsurercode), smartInsurercode, accesslevels.get(4))){
+								membercounter = 4;
+							}else if(StringUtils.isNotEmpty(accesslevels.get(5)) && containsMemberNumber(membersService.getMemberSMSUSSDVerification(accesslevels.get(5), smartInsurercode), smartInsurercode, accesslevels.get(5))){
+								membercounter = 5;
+							}
+
+							if(membercounter != 0){
+								String smartcode = null;
+								String membershipnumber = null;
+								String cardserial = null;
+								String membersmsussd = null;
+								String globalid = null;
+								String reason = null;
+								String now_polid = null;
+								String benid1 = null;
+								String medcode = null;
+								String medplan = null;
+								String patname = null;
+								List<String> rowValues = new ArrayList<String>();
+								membersmsussdverifications = membersService.getMemberSMSUSSDVerification(accesslevels.get(membercounter), smartInsurercode);
+								for(Member member: membersmsussdverifications) {
+									membershipnumber = member.getMembershipNumber();
+									smartcode = member.getSmartCode();	
+									cardserial = member.getCardSerialNumber();
+									membersmsussd  = member.getSmsStatus();
+									globalid = member.getGlobalId();
+									reason = member.getReason();
+									now_polid = member.getPolId();
+									medcode = smartcode;
+									medplan = member.getReason().replace(smartcode,"");
+									patname = member.getSecondName() + member.getThirdName() + member.getSurname();
+									break;
+								}
+
+								message = "CON Please select an option.\n1. Debit member account\n2. Credit member account";
+								if((accesslevels.get(4) != null)
+										&& (accesslevels.get(4).equals("1"))) {
+									
+									message = "CON Please enter the amount.";
+									
+									if((accesslevels.get(5) != null)) {
+										
+										message = "CON Please enter the transaction date.";
+										
+										if((accesslevels.get(6) != null)) {
+											
+											message = "CON Please enter the invoice number.";
+											
+											if((accesslevels.get(7) != null)) {
+										
+												String stgmessage = "CON Please select the benefit.\n";
+												for(Entry<String, String> pool : membersService.GET_MEMBER_BENEFIT_POOL_NUMBERS(reason).entrySet()){
+													rowValues.add(pool.getKey());
+												    stgmessage +=pool.getKey()+": ";
+												    stgmessage +=pool.getValue().substring(0,1).toUpperCase() + pool.getValue().substring(1).toLowerCase()+"\n";
+												}
+												message = stgmessage;
+												if(StringUtils.isNotEmpty(accesslevels.get(8)) && containsPoolNumber(accesslevels.get(8), rowValues) || StringUtils.isNotEmpty(accesslevels.get(9)) && containsPoolNumber(accesslevels.get(9), rowValues) || StringUtils.isNotEmpty(accesslevels.get(10)) && containsPoolNumber(accesslevels.get(10), rowValues)){
+													if(StringUtils.isNotEmpty(accesslevels.get(8))){
+														benid1 = accesslevels.get(8);
+													}else if(StringUtils.isNotEmpty(accesslevels.get(9))){
+														benid1 = accesslevels.get(9);
+													}else if(StringUtils.isNotEmpty(accesslevels.get(10))){
+														benid1 = accesslevels.get(10);
+													}
+													
+													message = membersService.SaveReimbursement(accesslevels.get(4), now_polid, reason, accesslevels.get(5), cardserial, benid1, membershipnumber, "USSD: "+memberverify.get("DASHUSER"), benid1, medcode, medplan, patname, accesslevels.get(6), "Requested by scheme administrator", benid1);
+													          
+												}
+											
+											}
+ 
+										} 
+										
+									}
+
+									
+								}else if((accesslevels.get(4) != null)
+										&& (accesslevels.get(4).equals("2"))) {
+									
+									String stgmessage = "CON Please choose an id\n";
+									for(Entry<String, String> pool : membersService.GET_MEMBER_BENEFIT_POOL_NUMBERS(reason).entrySet()){
+									    stgmessage +=pool.getKey()+":";
+									    stgmessage +=pool.getValue().substring(0,1).toUpperCase() + pool.getValue().substring(1).toLowerCase()+"\n";
+									}
+									message = stgmessage;
+									
+									
+								} 
+								
+							}else{
+								
+								message = "CON You entered an invalid Member Number , Please try again!";
+								System.out.println(memberexit);
+								if (memberexit==6) {
+									message = "END You have already tried 3 times. Please contact your scheme administrator or our call centre +254733320660, +254718222200 for any assistance.";
+								}
+								
+							}
+						}
+						/////////////////////////////////////////////////////////////////////////////////////////////////////
+						////////////////////////////////////////////////////////////////////////////////////////////////////
+                          
+					}else if((accesslevels.get(2) != null)
+							&& (accesslevels.get(2).equals("5"))) {
+						
+						//////////////////////////////////////////////////////////////////////////////////////////////////////
+						/////////////////////////////////////////////////////////////////////////////////////////////////////
+						int counter = 0;
+						message = "CON Please enter the member number ";
+                          if(StringUtils.isNotEmpty(accesslevels.get(3)) || StringUtils.isNotEmpty(accesslevels.get(4)) || StringUtils.isNotEmpty(accesslevels.get(5))) {
+
+							int memberexit = 0;
+							int membercounter = 0;
+							Member m = null;
+							
+							if(StringUtils.isNotEmpty(accesslevels.get(3)) && containsMemberNumber(membersService.getMemberSMSUSSDVerification(accesslevels.get(3), smartInsurercode), smartInsurercode, accesslevels.get(3))){
+								membercounter = 3;
+							}else if(StringUtils.isNotEmpty(accesslevels.get(4)) && containsMemberNumber(membersService.getMemberSMSUSSDVerification(accesslevels.get(4), smartInsurercode), smartInsurercode, accesslevels.get(4))){
+								membercounter = 4;
+							}else if(StringUtils.isNotEmpty(accesslevels.get(5)) && containsMemberNumber(membersService.getMemberSMSUSSDVerification(accesslevels.get(5), smartInsurercode), smartInsurercode, accesslevels.get(5))){
+								membercounter = 5;
+							}
+
+							if(membercounter != 0){
+								String smartcode = null;
+								String membershipnumber = null;
+								String cardserial = null;
+								String membersmsussd = null;
+								String globalid = null;
+								String now_polid = null;
+								membersmsussdverifications = membersService.getMemberSMSUSSDVerification(accesslevels.get(membercounter), smartInsurercode);
+								for(Member member: membersmsussdverifications) {
+									membershipnumber = member.getMembershipNumber();
+									smartcode = member.getSmartCode();	
+									cardserial = member.getCardSerialNumber();
+									membersmsussd  = member.getSmsStatus();
+									globalid = member.getGlobalId();
+									now_polid = member.getPolId();
+									break;
+								}
+								
+								message = "CON Please select an option.\n1. Activate \n2. Deactivate";
+								if((accesslevels.get(4) != null)
+										&& (accesslevels.get(4).equals("1"))) {
+									
+									message = "CON "+membersService.saveStatusChange(now_polid, membershipnumber, "1", "USSD: "+memberverify.get("DASHUSER"), "Requested by scheme administrator", cardserial)+".\n0  -  Main Menu .\n99 -  Exit";
+								}else if((accesslevels.get(4) != null)
+										&& (accesslevels.get(4).equals("2"))) {
+									
+									message = "CON "+membersService.saveStatusChange(now_polid, membershipnumber, "0", "USSD: "+memberverify.get("DASHUSER"), "Requested by scheme administrator", cardserial)+".\n0  -  Main Menu .\n99 -  Exit";				
+								} 				
+		
+							}else{
+								
+								message = "CON You entered an invalid Member Number , Please try again!";
+								System.out.println(memberexit);
+								if (memberexit==6) {
+									message = "END You have already tried 3 times. Please contact your scheme administrator or our call centre +254733320660, +254718222200 for any assistance.";
+								}
+								
+							}
+						}
+						/////////////////////////////////////////////////////////////////////////////////////////////////////
+						////////////////////////////////////////////////////////////////////////////////////////////////////
+                          
+					}else if((accesslevels.get(2) != null)
+							&& (accesslevels.get(2).equals("6"))) {
+						
+						//////////////////////////////////////////////////////////////////////////////////////////////////////
+						/////////////////////////////////////////////////////////////////////////////////////////////////////
+						int counter = 0;
+						message = "CON Please enter the member number ";
+                          if(StringUtils.isNotEmpty(accesslevels.get(3)) || StringUtils.isNotEmpty(accesslevels.get(4)) || StringUtils.isNotEmpty(accesslevels.get(5))) {
+
+							int memberexit = 0;
+							int membercounter = 0;
+							Member m = null;
+							
+							if(StringUtils.isNotEmpty(accesslevels.get(3)) && containsMemberNumber(membersService.getMemberSMSUSSDVerification(accesslevels.get(3), smartInsurercode), smartInsurercode, accesslevels.get(3))){
+								membercounter = 3;
+							}else if(StringUtils.isNotEmpty(accesslevels.get(4)) && containsMemberNumber(membersService.getMemberSMSUSSDVerification(accesslevels.get(4), smartInsurercode), smartInsurercode, accesslevels.get(4))){
+								membercounter = 4;
+							}else if(StringUtils.isNotEmpty(accesslevels.get(5)) && containsMemberNumber(membersService.getMemberSMSUSSDVerification(accesslevels.get(5), smartInsurercode), smartInsurercode, accesslevels.get(5))){
+								membercounter = 5;
+							}
+
+							if(membercounter != 0){
+								String smartcode = null;
+								String membershipnumber = null;
+								String cardserial = null;
+								String membersmsussd = null;
+								String globalid = null;
+								String now_polid = null;
+								membersmsussdverifications = membersService.getMemberSMSUSSDVerification(accesslevels.get(membercounter), smartInsurercode);
+								for(Member member: membersmsussdverifications) {
+									membershipnumber = member.getMembershipNumber();
+									smartcode = member.getSmartCode();	
+									cardserial = member.getCardSerialNumber();
+									membersmsussd  = member.getSmsStatus();
+									globalid = member.getGlobalId();
+									now_polid = member.getPolId();
+									break;
+								}
+
+								message = "CON "+membersService.saveFpRemoval(now_polid, membershipnumber, "USSD", "Requested by scheme administrator", memberverify.get("DASHUSER"), cardserial)+".\n0  -  Main Menu .\n99 -  Exit";
+								System.out.println(message);
+								
+							}else{
+								
+								message = "CON You entered an invalid Member Number , Please try again!";
+								System.out.println(memberexit);
+								if (memberexit==6) {
+									message = "END You have already tried 3 times. Please contact your scheme administrator or our call centre +254733320660, +254718222200 for any assistance.";
+								}
+								
+							}
+						}
+						/////////////////////////////////////////////////////////////////////////////////////////////////////
+						////////////////////////////////////////////////////////////////////////////////////////////////////
+                          
+					}				
+		 }else if((accesslevels.get(1) != null)
+					&& (accesslevels.get(1).equals("2"))) {
+			        //message = "CON Please select an option.\n1. Check scheme status\n2. Activation\n3. Deactivation\n4. Renewal";
+			        message = "CON Pre-authorization, still in development";
+			
+		 }
+
+
+
+			// //////////////////////////////////////////////////////
+            }else{
+            	message = "CON Dear Customer, your phone number:"+PhoneNumber+" is not registered as a Scheme Administrator. Please contact our call centre +254733320660, +254718222200 for any assistance.";
+            	
+            }
+			
+
+		}
 		// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3969,6 +4473,20 @@ select_options.get(5).toString().substring(0,1).toUpperCase() + select_options.g
 
 		return message;
 
+	}
+
+	private boolean containsPoolNumber(String enteredpool, List<String> pools) {
+		
+		System.out.println("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
+		   for (String pool : pools) {
+			   
+			   System.out.println("ENTERED POOL"+enteredpool);
+			   System.out.println("ORIGINAL"+pool);
+	        if (enteredpool.equals(pool)){
+	            return true;
+	        } 
+	    }
+		return false;
 	}
 
 	private String getCurrentSMSTimeStamp() {

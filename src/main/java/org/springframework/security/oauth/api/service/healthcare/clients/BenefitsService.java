@@ -465,6 +465,7 @@ public class BenefitsService implements IBenefitsService {
 					" VALUES"
 					+ "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			
+			/*
 			String insertTableSQLMAPBENEFITS = "INSERT INTO "+SMART[4]+"."+SMART[46]+""
 					+ "(" +
 					" REC_ID," +
@@ -478,6 +479,7 @@ public class BenefitsService implements IBenefitsService {
 					")" +
 					" VALUES"
 					+ "( ?, ?, ?, ?, ?, ?, ?, ?)";
+					*/
 
 			if((StringUtils.equals(benefit.getLayeredInd(), "1"))&&(StringUtils.isNotEmpty(benefit.getLayered1Value()))&&(StringUtils.isNotEmpty(benefit.getLayered2Value()))&&(StringUtils.isNotEmpty(benefit.getLayered3Value()))){
 				
@@ -567,7 +569,7 @@ public class BenefitsService implements IBenefitsService {
 		 
 				}
 
-				
+				/*
 				try {
 					dbBenefitConnection = DBConnection.getConnection(DBParams);
 					preparedBenefitStatement = dbBenefitConnection.prepareStatement(insertTableSQLMAPBENEFITS);
@@ -608,6 +610,7 @@ public class BenefitsService implements IBenefitsService {
 				}
 	 
 			}
+			*/
 				
 		 /*///////////////////////////////////////PART TWO OF THE TIER////////////////////////////////////////// */
 				
@@ -695,7 +698,7 @@ public class BenefitsService implements IBenefitsService {
 		 
 				}
 
-				
+				/*
 				try {
 					dbBenefitConnection = DBConnection.getConnection(DBParams);
 					preparedBenefitStatement = dbBenefitConnection.prepareStatement(insertTableSQLMAPBENEFITS);
@@ -736,7 +739,7 @@ public class BenefitsService implements IBenefitsService {
 				}
 	 
 			}
-				
+			*/
 			/*///////////////////////////////////////// PART THREE OF THE TIER ///////////////////////////////////////////// */
 				
 				itemId = Long.toString(get());
@@ -823,7 +826,7 @@ public class BenefitsService implements IBenefitsService {
 		 
 				}
 
-				
+				/*
 				try {
 					dbBenefitConnection = DBConnection.getConnection(DBParams);
 					preparedBenefitStatement = dbBenefitConnection.prepareStatement(insertTableSQLMAPBENEFITS);
@@ -864,6 +867,7 @@ public class BenefitsService implements IBenefitsService {
 				}
 	 
 			}
+			*/
 			/*///////////////////////////////////////////////////////////////////////////////////////// */
 				
 				
@@ -953,7 +957,7 @@ public class BenefitsService implements IBenefitsService {
 		 
 				}
 
-				
+				/*
 				try {
 					dbBenefitConnection = DBConnection.getConnection(DBParams);
 					preparedBenefitStatement = dbBenefitConnection.prepareStatement(insertTableSQLMAPBENEFITS);
@@ -994,6 +998,7 @@ public class BenefitsService implements IBenefitsService {
 				}
 	 
 			}
+			*/
 
 			}
 

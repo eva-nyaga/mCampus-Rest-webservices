@@ -250,7 +250,7 @@ public class SchemesService implements ISchemesService {
 	 
 			}
 			
-			
+			/*
 			String insertTableSchemesSQL = "INSERT INTO AAR_OWNER.MAP_AAR_COMPANIES"
 					+ "(" +
 					" CLN_CODE," +
@@ -311,7 +311,7 @@ public class SchemesService implements ISchemesService {
 				}
 	 
 			}
-
+          */
 		return id;	
 	}
 	

@@ -392,11 +392,15 @@ public class Member {
 	public String getRoamingEnabled() {
 		return roamingEnabled;
 	}
-	
 	public String getRoamingCountries() {
 		return roamingCountries;
 	}
-	
+	public String getReason() {
+		return reason;
+	}
+	public String getMemId() {
+		return memId;
+	}
 	public void setPrintCard(String printCard) {
 		this.printCard = printCard;
 	}
@@ -430,6 +434,15 @@ public class Member {
 	public void setRoamingCountries(String roamingCountries) {
 		this.roamingCountries = roamingCountries;
 	}
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+	public void setMemId(String memId) {
+		this.memId = memId;
+	}
+	
+	
+	
 	
 	public Member(
 			 String memId,
@@ -439,7 +452,9 @@ public class Member {
 			 String phoneNo,
 			 String smsStatus,
 			 String smartCode,
-			 String cardSerialNumber
+			 String cardSerialNumber,
+			 String globalId,
+			 String pol_Id
 			){
 		this.memId =  memId;
 		this.membershipNumber = membershipNumber;
@@ -449,6 +464,8 @@ public class Member {
 		this.smsStatus = smsStatus;
 		this.smartCode = smartCode;
 		this.cardSerialNumber = cardSerialNumber;
+		this.globalId = globalId;
+		this.polId = pol_Id;
 	}
 	
 	public Member(
