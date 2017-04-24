@@ -143,7 +143,7 @@ public class RequestMapInteractive {
 	      switch (country) {
             case "kenya":  
           	  DBP[0] = "integstaging";
-          	  DBP[1] = "jdbc:oracle:thin:@192.168.1.228:1521:"+DBP[0];
+          	  DBP[1] = "jdbc:oracle:thin:@//192.168.1.228:1521/"+DBP[0];
           	  DBP[2] = "integ_user";
           	  DBP[3] = "integ_123";
             	/*
@@ -191,7 +191,7 @@ public class RequestMapInteractive {
                    break;
             default:
         	  DBP[0] = "integstaging";
-        	  DBP[1] = "jdbc:oracle:thin:@192.168.1.228:1521:"+DBP[0];
+        	  DBP[1] = "jdbc:oracle:thin:@//192.168.1.228:1521/"+DBP[0];
         	  DBP[2] = "integ_user";
         	  DBP[3] = "integ_123";
                    break;

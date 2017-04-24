@@ -1,101 +1,59 @@
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\DbCon.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\controller\WelcomeController.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\ussd\model\BlackHole.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\Fingerprintremoval.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\PeopleWrapper.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\DBConSmart.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\service\healthcare\clients\IClaimsService.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\ussd\model\StringTheory.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\Person.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\ussd\model\PeopleWrapper.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\service\healthcare\clients\IPeopleService.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\providers\Provider.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\FingerprintremovalsWrapper.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\ClaimServicesWrapper.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\ussd\model\dbAccess.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\FirstExample.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\Benefit.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\Transaction.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\service\healthcare\clients\MembersService.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\controller\healthcare\clients\MembersController.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\controller\healthcare\clients\BenefitsController.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\Status.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\service\healthcare\clients\IMembersService.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\service\healthcare\clients\BenefitCategoriesService.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\ENIGMA.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\controller\healthcare\clients\ClaimsController.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\controller\healthcare\clients\Benefit_CategoriesController.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\CategorychangesWrapper.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\DBMyConDistribution.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\service\healthcare\providers\ProvidersService.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\service\healthcare\clients\IBenefit_CategoriesService.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\service\healthcare\providers\IProvidersService.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\service\healthcare\clients\IStatusesService.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\examples\sparklr\PhotoInfo.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\DBConDistribution.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\DBConnection.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\controller\healthcare\clients\ClientsController.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\ActivationsWrapper.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\examples\sparklr\mvc\PhotoServiceUserController.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\service\healthcare\clients\IBenefitsService.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\DBConSmartBO.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\controller\healthcare\providers\ProvidersController.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\RenewalsWrapper.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\Claim.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\SchemesWrapper.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\service\healthcare\clients\IClaimServicesService.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\MoneyAdditionsWrapper.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\RequestMapBO.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\providers\ProvidersWrapper.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\Codefile.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\service\healthcare\clients\BenefitsService.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\Renewal.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\providers\ApiMessage.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\BenefitCategory.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\SchemeRenewal.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\service\healthcare\clients\IFingerprintsService.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\examples\sparklr\PhotoServiceUser.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\ussd\model\UssdResponse.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\utils\SpringMVCUtils.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\ussd\model\ApiMessage.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\ClaimService.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\service\healthcare\clients\StatusesService.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\DeactivationsWrapper.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\StatusesWrapper.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\service\healthcare\clients\PeopleService.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\ussd\model\Person.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\ConnectionPool.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\BenefitCategoriesWrapper.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\CodefilesWrapper.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\Activation.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\service\healthcare\clients\ClaimsService.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\controller\healthcare\providers\PatientsController.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\examples\sparklr\PhotoService.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\ussd\model\Quantum.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\MoneyReductionsWrapper.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\Balance.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\ussd\model\UssdRequest.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\MembersWrapper.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\RequestMapIntegstaging.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\service\healthcare\clients\SchemesService.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\service\healthcare\clients\ClaimServicesService.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\ClaimsWrapper.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\MoneyReduction.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\ApiMessage.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\Main.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\controller\healthcare\clients\StatusesController.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\Member.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\examples\sparklr\impl\PhotoServiceImpl.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\DBMyConnection.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\MoneyAddition.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\Deactivation.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\Categorychange.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\service\healthcare\clients\ISchemesService.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\examples\sparklr\mvc\PhotoController.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\Cardreprint.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\Scheme.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\BenefitsWrapper.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\RequestMapInteractive.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\controller\healthcare\clients\SchemesController.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\controller\healthcare\providers\PeopleController.java
-C:\Users\User\Desktop\AVE MARIAH\oauth2-master\resource\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\DBConInteractive.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\utils\MappingJacksonJsonpView.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\DefermentRecords.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\FeeStructure.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\examples\sparklr\PhotoService.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\ChangeCourse.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\ussd\model\dbAccess.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\UnitsProgramme.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\CourseworkMarks.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\com\Utils.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\ussd\model\UssdResponse.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\utils\SimpleCORSFilter.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\DBConSmartBO.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\examples\sparklr\impl\PhotoServiceImpl.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\Main.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\com\connections\DbCon.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\CourseworkTimetable.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\DBMyOauthDBConnection.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\com\Parameters.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\DBConSmart.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\ussd\model\Quantum.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\CampusList.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\CompletedUnits.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\DBConDistribution.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\utils\SpringMVCUtils.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\FeeStatement.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\examples\sparklr\mvc\PhotoServiceUserController.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\UnitsModel.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\com\connections\AESenc.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\service\healthcare\clients\PeopleService.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\RequestMapInteractive.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\controller\healthcare\clients\StudentsController.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\ConnectionPool.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\MyUser.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\DBConInteractive.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\ExamCard.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\PendingUnits.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\ussd\model\UssdRequest.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\RequestMapBO.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\controller\WelcomeController.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\examples\sparklr\PhotoServiceUser.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\RequestMapIntegstaging.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\RetakesModel.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\DbCon.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\Login.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\DBMyConDistribution.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\UsersWrapper.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\DBConnection.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\service\healthcare\clients\StudentsService.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\FirstExample.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\service\healthcare\clients\IPeopleService.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\Reply.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\examples\sparklr\PhotoInfo.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\AdminProgress.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\ussd\model\BlackHole.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\UndoneUnits.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\service\healthcare\clients\IStudentsService.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\examples\sparklr\mvc\PhotoController.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\data\healthcare\clients\DBMyConnection.java
+C:\Users\Eva\Desktop\mCampusApi\mCampusApi\src\main\java\org\springframework\security\oauth\api\model\healthcare\clients\User.java

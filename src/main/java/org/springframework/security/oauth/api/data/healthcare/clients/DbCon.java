@@ -17,7 +17,7 @@ public class DbCon {
 			Connection dbConnection = null;
 
 			final String DB_DRIVER = "oracle.jdbc.driver.OracleDriver";
-			final String DB_CONNECTION = "jdbc:oracle:thin:@192.168.1.228:1521/integstaging";
+			final String DB_CONNECTION = "jdbc:oracle:thin:@//192.168.1.228:1521/integstaging";
 			final String DB_USER = "integ_user";
 			final String DB_PASSWORD = "integ_123";
 
@@ -55,7 +55,7 @@ public class DbCon {
 			Connection dbConnection = null;
 
 			final String DB_DRIVER = "oracle.jdbc.driver.OracleDriver";
-			final String DB_CONNECTION = "jdbc:oracle:thin:@192.180.3.14:1520/smart";
+			final String DB_CONNECTION = "jdbc:oracle:thin:@//192.180.3.14:1520/smart";
 			final String DB_USER = "API_USER";
 			final String DB_PASSWORD = "ulTr@n7";
 

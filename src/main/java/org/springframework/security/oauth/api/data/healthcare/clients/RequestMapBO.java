@@ -143,7 +143,7 @@ public class RequestMapBO {
 	      switch (country) {
             case "kenya":  
           	  DBP[0] = "smart";
-          	  DBP[1] = "jdbc:oracle:thin:@192.180.3.14:1520:"+DBP[0];
+          	  DBP[1] = "jdbc:oracle:thin:@//192.180.3.14:1520/"+DBP[0];
           	  DBP[2] = "API_USER";
           	  DBP[3] = "ulTr@n7";
                    break;
@@ -185,7 +185,7 @@ public class RequestMapBO {
                    break;
             default:
               DBP[0] = "smart";
-              DBP[1] = "jdbc:oracle:thin:@192.180.3.14:1520:"+DBP[0];
+              DBP[1] = "jdbc:oracle:thin:@//192.180.3.14:1520/"+DBP[0];
               DBP[2] = "API_USER";
               DBP[3] = "ulTr@n7";
                    break;

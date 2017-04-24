@@ -159,13 +159,13 @@ public class RequestMapIntegstaging {
 		  }
 
 	  public void setDBParamsManager(String country) {
-	  
+		  
 		  country.toLowerCase();
 		  String[] DBP = new String[10];
 	      switch (country) {
             case "kenya":  
           	  DBP[0] = "integstaging";
-          	  DBP[1] = "jdbc:oracle:thin:@192.168.1.228:1521:"+DBP[0];
+          	  DBP[1] = "jdbc:oracle:thin:@//192.180.3.14:1521/"+DBP[0];
           	  DBP[2] = "INTERACTIVE";
           	  DBP[3] = "Int3ract123";
             	/*
@@ -174,6 +174,12 @@ public class RequestMapIntegstaging {
              DBP[2] = "SMART";
              DBP[3] = "smart_123";
              */
+                   break;
+            case "abacus":  
+        	  DBP[0] = "integstaging";
+        	  DBP[1] = "jdbc:oracle:thin:@//192.180.3.14:1521/"+DBP[0];
+        	  DBP[2] = "INTERACTIVE";
+        	  DBP[3] = "Int3ract123";
                    break;
             case "uganda":  
         	  DBP[0] = "";
@@ -213,7 +219,7 @@ public class RequestMapIntegstaging {
                    break;
             default:
         	  DBP[0] = "integstaging";
-        	  DBP[1] = "jdbc:oracle:thin:@192.168.1.228:1521:"+DBP[0];
+        	  DBP[1] = "jdbc:oracle:thin:@//192.180.3.14:1521/"+DBP[0];
         	  DBP[2] = "INTERACTIVE";
         	  DBP[3] = "Int3ract123";
                    break;

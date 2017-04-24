@@ -7,16 +7,17 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 import javax.validation.Valid;
-import javax.xml.soap.Text;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.oauth.api.model.healthcare.clients.ApiMessage;
-import org.springframework.security.oauth.api.model.healthcare.clients.PeopleWrapper;
-import org.springframework.security.oauth.api.model.healthcare.clients.Person;
+
+import org.springframework.security.oauth.api.model.healthcare.clients.MyUser;
+import org.springframework.security.oauth.api.model.healthcare.clients.Reply;
 import org.springframework.security.oauth.api.service.healthcare.clients.IPeopleService;
 import org.springframework.security.oauth.api.utils.SpringMVCUtils;
 import org.springframework.security.oauth.ussd.model.UssdRequest;
@@ -39,21 +40,11 @@ import org.springframework.web.servlet.ModelAndView;
 /**
  * This class has the logic for acting on web requests.
  * 
- * @author Mulama
+ * @author Eva
  *
  */
 public class WelcomeController {
 
-	/**
-	 * A service that provides operations around managing people. Spring will
-	 * automatically wire in an implementation of the IPeopleService interface.
-	 * Since the only implementation is the PeopleService class, this will be
-	 * used. The autowiring is done when the controller is loaded, which happens
-	 * when the line <br />
-	 * {@code <context:component-scan base-package="org.springframework.security.oauth" />}
-	 * <br />
-	 * is run in the spring-servlet.xml.
-	 */
 	@Autowired
 	private IPeopleService peopleService;
 
@@ -65,15 +56,6 @@ public class WelcomeController {
 		return new ResponseEntity<String>("<h1>Hello!</h1>", HttpStatus.OK);
 	}
 
-	/**
-	 * Responds with a welcome message for users. Can be accessed with GET or
-	 * POST. If a name parameter is set, the name value will be included in the
-	 * welcome.
-	 * 
-	 * @param name
-	 *            an optional name for
-	 * @return
-	 */
 	@RequestMapping(value = "/welcome", method = { RequestMethod.GET,
 			RequestMethod.POST })
 	public ResponseEntity<String> welcomeGET(
@@ -89,219 +71,20 @@ public class WelcomeController {
 		return new ResponseEntity<String>(welcome, HttpStatus.OK);
 	}
 
-	
-	
-	
-	/*
-	######################################################################################################
-	                           Start of USSD
-	#####################################################################################################
-	 */
-	
-	/**
-	 * 
-	 * @param ussd
-	 *            the ussd object built from the request body.
-	 * @throws ApiException
-	 *             if the ussdrequest is not valid.
-	 */
-	
-	@RequestMapping(value = "/ussd", method = RequestMethod.GET, produces = "text/plain;charset=UTF-8")
-	public @ResponseBody String processUSSD(UssdRequest ussdrequest) {
-		
-  		System.out.println("#@#@##############@#@#@#@#@######################@#@#@#@############@");
-  		System.out.println("#@#@##############@#@#@#@#@"+ussdrequest.getSERVICE_CODE());
-  		System.out.println("#@#@##############@#@#@#@#@"+ussdrequest.getMSISDN());
-  		System.out.println("#@#@##############@#@#@#@#@"+ussdrequest.getSESSION_ID());
-  		System.out.println("#@#@##############@#@#@#@#@"+ussdrequest.getUSSD_STRING());
-  		System.out.println("#@#@##############@#@#@#@#@######################@#@#@#@############@");
-  		
-  		
-  		    //String message =  "";
-			String message = peopleService.processUssd(ussdrequest);
-			//return message+" - "+ussdrequest.getMSISDN();
-			return message;
-			
-	}
-	
-	
-	/*
-	//
-	@RequestMapping(value = "/ussd", method = RequestMethod.GET)
-	public @ResponseBody String processUSSD(
-			//@RequestParam(value = "SERVICE_CODE") String SERVICE_CODE,
-			@RequestParam(value = "MSISDN") String MSISDN,
-			@RequestParam(value = "SESSION_ID") String SESSION_ID,
-			@RequestParam(value = "USSD_STRING") String USSD_STRING,
-			HttpServletRequest request
+	@RequestMapping(value = "/login", method = RequestMethod.GET, produces = "application/json")
+	public ModelAndView getMemberDeactivations(
+			@RequestParam(value = "stdId") String stdId,
+			@RequestParam(value = "password") String password,
+                        @RequestParam(value = "database") String database
 			) {
-		
-  		System.out.println("#@#@##############@#@#@#@#@######################@#@#@#@############@");
-  		//System.out.println("#@#@##############@#@#@#@#@"+SERVICE_CODE);
-  		System.out.println("#@#@##############@#@#@#@#@"+MSISDN);
-  		System.out.println("#@#@##############@#@#@#@#@"+SESSION_ID);
-  		System.out.println("#@#@##############@#@#@#@#@"+USSD_STRING);
-  		System.out.println("#@#@##############@#@#@#@#@######################@#@#@#@############@");
-  		
-  		
-  		    String message =  "";
-			//String message = peopleService.processUssd(ussdrequest);
-			//return message+" - "+ussdrequest.getMSISDN();
-			return message;
-			
-	}
-	*/
 
-	/*
-	######################################################################################################
-	                           End of USSD
-	#####################################################################################################
-	 */
-
-	
-	
-	
-	
-	/*
-	######################################################################################################
-	                           Start of PEOPLE
-	#####################################################################################################
-	 */
-
-	@RequestMapping(value = "/people", method = RequestMethod.GET)
-	public ModelAndView getPeople() {
-		List<Person> people = peopleService.getPeople();
-		return SpringMVCUtils.getOutputModel(PeopleWrapper.createNew(people));
-	}
-
-	
-	@RequestMapping(value = "/people/{id}", method = RequestMethod.GET)
-	public ModelAndView getPersonById(@PathVariable(value = "id") int id) {
-		
-			Person p = peopleService.getPerson(id);
-			return SpringMVCUtils.getOutputModel(p);
-	}
-	
-	/**
-	 * 
-	 * @param person
-	 *            the person object built from the request body.
-	 * @throws ApiException
-	 *             if the person is not valid.
-	 */
-
-	@RequestMapping(value = "/people", method = RequestMethod.POST)
-	public ModelAndView addPerson(Person person) {
-
-			int id = peopleService.addPerson(person);
-			return SpringMVCUtils.getOutputModel(new ApiMessage(
-					"Person added with id=" + id));
-	}
-	
-
-	
+                        peopleService.fetchDatabase(database);
+                      List<MyUser>  p = peopleService.fetchUserDetails(stdId, password);
+                return SpringMVCUtils.getOutputModel(p);
+        
+        }
+        
   
-    
-	/**
-	 * Updates a stored person.
-	 * 
-	 * @param id
-	 * @param person
-	 *            the new person object.
-	 * @return A person object in a ModelAndView if successful, or an ApiMessage
-	 *         in the ModelAndView if an error occured.
-	 */
-	@RequestMapping(value = "/people/{id}", method = RequestMethod.PUT)
-	public ModelAndView updatePersonById(@PathVariable(value = "id") int id,
-			 Person person) {
-
-		person.setId(id);
-		peopleService.updatePerson(id, person);
-		return SpringMVCUtils.getOutputModel(person);
-	}
-	
-	
-	
-
-	@RequestMapping(value = "/people/{id}", method = RequestMethod.DELETE)
-	public ModelAndView deletePersonById(@PathVariable(value = "id") int id) {
-
-			peopleService.deletePerson(id);
-
-			return SpringMVCUtils.getOutputModel(new ApiMessage("Person with id "+id+" successfully deleted."));
-	}
-
-	@RequestMapping(value = "/people/search", method = { RequestMethod.POST,
-			RequestMethod.GET })
-	public ModelAndView getPeopleByName(
-			@RequestParam(value = "name") String name) {
-		List<Person> people = peopleService.getPeople(name);
-		return SpringMVCUtils.getOutputModel(PeopleWrapper.createNew(people));
-	}
-	
-
-	
-	/*
-	######################################################################################################
-	                           End of PEOPLE
-	#####################################################################################################
-	 */
-
-	
-	
-
-	
-
-	/**
-	 * Handles exceptions of the class ApiException that are thrown by controller methods. Sets the response status code to 400 BAD_REQUEST.
-	 * @param e
-	 * @param response
-	 * @return
-	 */
-	@ExceptionHandler(IllegalArgumentException.class)
-	public ModelAndView handleApiException(IllegalArgumentException e,
-			HttpServletResponse response) {
-
-		// set the response status code to indicate the request was bad.
-		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-
-		return SpringMVCUtils.getOutputModel(new ApiMessage(e.getMessage()));
-	}
-	
-  
-
-	/**
-	 * Shows a more descriptive error message to the user when a submitted
-	 * object fails validation.
-	 * 
-	 * @param e
-	 *            the MethodArgumentNotValidException that we are handling.
-	 * @return A ModelAndView containing a single ApiMessage object. We also
-	 *         alter the response to have the status code 400.
-	 */
-	@ExceptionHandler(org.springframework.web.bind.MethodArgumentNotValidException.class)
-	public ModelAndView handleBindingException(
-			MethodArgumentNotValidException e, HttpServletResponse response) {
-
-		// Build a list of all the validation errors to show to the user.
-		// WARNING this may not be a good idea on a production website because
-		// it may expose internal details such as the fact you are using Java,
-		// JSR-303, etc. A generic BAD_REQUEST error would probably be better.
-		String errors = buildErrorString(e.getBindingResult().getAllErrors());
-
-		// set the response status code to indicate the request was bad.
-		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-
-		return SpringMVCUtils.getOutputModel(new ApiMessage(errors));
-	}
-
-	/**
-	 * Concatenates the validation errors from the allErrors param into a single
-	 * string for display to a user.
-	 * 
-	 * @param allErrors
-	 * @return
-	 */
 	private String buildErrorString(List<ObjectError> allErrors) {
 		StringBuilder b = new StringBuilder();
 

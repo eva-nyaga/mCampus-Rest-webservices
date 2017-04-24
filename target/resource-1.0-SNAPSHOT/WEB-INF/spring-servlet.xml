@@ -46,7 +46,9 @@ access-decision-manager-ref="accessDecisionManager" xmlns="http://www.springfram
 <http pattern="/claims.*" create-session="never" entry-point-ref="oauthAuthenticationEntryPoint"
 access-decision-manager-ref="accessDecisionManager" xmlns="http://www.springframework.org/schema/security">
 <anonymous enabled="false" />
+<!--
 <intercept-url pattern="/claims.*" method="POST" access="ROLE_USER,SCOPE_WRITE" />
+-->
 <intercept-url pattern="/claims.*" method="GET" access="ROLE_CLIENT,SCOPE_READ" />
 <intercept-url pattern="/claims/search.*" method="GET" access="ROLE_CLIENT,SCOPE_READ" />
 <intercept-url pattern="/claims/returns.*" method="POST" access="ROLE_CLIENT,SCOPE_WRITE" />
@@ -63,7 +65,7 @@ access-decision-manager-ref="accessDecisionManager" xmlns="http://www.springfram
 		<!-- Set some properties to make the outputted xml look nicer -->
 		<property name="aliases">
 			<map>
-				<entry key="claims" value="org.springframework.security.oauth.api.model.healthcare.clients.ClaimsWrapper" />
+			<!--	<entry key="claims" value="org.springframework.security.oauth.api.model.healthcare.clients.ClaimsWrapper" />
 				<entry key="apimessage" value="org.springframework.security.oauth.api.model.healthcare.clients.ApiMessage" />
 				<entry key="claim" value="org.springframework.security.oauth.api.model.healthcare.clients.Claim" />
 				<entry key="apimessage" value="org.springframework.security.oauth.api.model.healthcare.clients.ApiMessage" />
@@ -92,14 +94,7 @@ access-decision-manager-ref="accessDecisionManager" xmlns="http://www.springfram
 				<entry key="apimessage" value="org.springframework.security.oauth.api.model.healthcare.clients.ApiMessage" />
 				<entry key="provider" value="org.springframework.security.oauth.api.model.healthcare.providers.Provider" />
 				<entry key="apimessage" value="org.springframework.security.oauth.api.model.healthcare.clients.ApiMessage" />
-				
-				<!--
-				<entry key="cardreprints" value="org.springframework.security.oauth.api.model.healthcare.clients.CardreprintsWrapper" />
-				<entry key="apimessage" value="org.springframework.security.oauth.api.model.healthcare.clients.ApiMessage" />
-				<entry key="cardreprint" value="org.springframework.security.oauth.api.model.healthcare.clients.Cardreprint" />
-				<entry key="apimessage" value="org.springframework.security.oauth.api.model.healthcare.clients.ApiMessage" />
-				-->
-				
+
 				<entry key="moneyadditions" value="org.springframework.security.oauth.api.model.healthcare.clients.MoneyAdditionsWrapper" />
 				<entry key="apimessage" value="org.springframework.security.oauth.api.model.healthcare.clients.ApiMessage" />
 				<entry key="moneyaddition" value="org.springframework.security.oauth.api.model.healthcare.clients.MoneyAddition" />
@@ -109,23 +104,52 @@ access-decision-manager-ref="accessDecisionManager" xmlns="http://www.springfram
 				<entry key="apimessage" value="org.springframework.security.oauth.api.model.healthcare.clients.ApiMessage" />
 				<entry key="claimservice" value="org.springframework.security.oauth.api.model.healthcare.clients.ClaimService" />
 				<entry key="apimessage" value="org.springframework.security.oauth.api.model.healthcare.clients.ApiMessage" />
+				
+				-->
+			<!--	<entry key="cardreprints" value="org.springframework.security.oauth.api.model.healthcare.clients.CardreprintsWrapper" />
+				<entry key="apimessage" value="org.springframework.security.oauth.api.model.healthcare.clients.ApiMessage" />
+				<entry key="cardreprint" value="org.springframework.security.oauth.api.model.healthcare.clients.Cardreprint" />
+				<entry key="apimessage" value="org.springframework.security.oauth.api.model.healthcare.clients.ApiMessage" />
+				-->
+				<!--<entry key="users" value="org.springframework.security.oauth.api.model.healthcare.clients.UsersWrapper" />
+				<entry key="apimessage" value="org.springframework.security.oauth.api.model.healthcare.clients.ApiMessage" />
+				<entry key="user" value="org.springframework.security.oauth.api.model.healthcare.clients.User" />
+				<entry key="apimessage" value="org.springframework.security.oauth.api.model.healthcare.clients.ApiMessage" />
+	            
+				 <entry key="logins" value="org.springframework.security.oauth.api.model.healthcare.clients.LoginsWrapper" />
+				<entry key="apimessage" value="org.springframework.security.oauth.api.model.healthcare.clients.ApiMessage" />
+				<entry key="login" value="org.springframework.security.oauth.api.model.healthcare.clients.Login" />
+				<entry key="apimessage" value="org.springframework.security.oauth.api.model.healthcare.clients.ApiMessage" />
+				
+				<entry key="people" value="org.springframework.security.oauth.api.model.healthcare.clients.PeopleWrapper" />
+				<entry key="apimessage" value="org.springframework.security.oauth.api.model.healthcare.clients.ApiMessage" />
+				<entry key="person" value="org.springframework.security.oauth.api.model.healthcare.clients.Person" />
+				<entry key="apimessage" value="org.springframework.security.oauth.api.model.healthcare.clients.ApiMessage" />
+		              -->
 			</map>
 		</property>
 		<property name="implicitCollections">
 			<map>
-				<entry key="org.springframework.security.oauth.api.model.healthcare.clients.ClaimsWrapper" value="claims" />
+				<!--<entry key="org.springframework.security.oauth.api.model.healthcare.clients.ClaimsWrapper" value="claims" />
 				<entry key="org.springframework.security.oauth.api.model.healthcare.clients.SchemesWrapper" value="schemes" />	
 				<entry key="org.springframework.security.oauth.api.model.healthcare.clients.BenefitsWrapper" value="benefits" />
 				<entry key="org.springframework.security.oauth.api.model.healthcare.clients.BenefitCategoriesWrapper" value="benefitCategories" />
 				<entry key="org.springframework.security.oauth.api.model.healthcare.clients.MembersWrapper" value="members" />
 				<entry key="org.springframework.security.oauth.api.model.healthcare.providers.ProvidersWrapper" value="providers" />
-				<!--
+				-->
+<!--
 				<entry key="org.springframework.security.oauth.api.model.healthcare.clients.CardreprintsWrapper" value="cardreprints" />
 				-->
-				<entry key="org.springframework.security.oauth.api.model.healthcare.clients.MoneyAdditionsWrapper" value="moneyadditions" />
+			<!--	<entry key="org.springframework.security.oauth.api.model.healthcare.clients.MoneyAdditionsWrapper" value="moneyadditions" />
 
 				<entry key="org.springframework.security.oauth.api.model.healthcare.clients.ClaimServicesWrapper" value="claimservices" />
-	
+				
+				<entry key="org.springframework.security.oauth.api.model.healthcare.clients.LoginsWrapper" value="logins" />
+				
+				<entry key="org.springframework.security.oauth.api.model.healthcare.clients.UsersWrapper" value="users" />
+				
+				<entry key="org.springframework.security.oauth.api.model.healthcare.clients.PeopleWrapper" value="people" />
+-->
 			</map>
 		</property>
 	</bean>
@@ -145,6 +169,7 @@ access-decision-manager-ref="accessDecisionManager" xmlns="http://www.springfram
 			<map>
 				<entry key="json" value="application/json" />
 				<entry key="xml" value="application/xml" />
+                                <entry key="jsonp" value="application/javascript"/>
 			</map>
 		</property>
 		<property name="defaultViews">
@@ -158,6 +183,7 @@ access-decision-manager-ref="accessDecisionManager" xmlns="http://www.springfram
 					<!-- see http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/springframework/web/servlet/view/xml/MarshallingView.html#setModelKey(java.lang.String) -->
 					<property name="modelKey" value="responseObject" />
 				</bean>
+                                <bean class="org.springframework.security.oauth.api.utils.MappingJacksonJsonpView"/>
 			</list>
 		</property>
 	</bean>

@@ -5,7 +5,7 @@ import org.springframework.web.servlet.ModelAndView;
 /**
  * Utils for dealing with Spring MVC
  * 
- * @author ajesler
+ * @author Eva
  * 
  */
 public class SpringMVCUtils {

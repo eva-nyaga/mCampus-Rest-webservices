@@ -21,7 +21,7 @@ public class DBConSmart {
 	
 	public static Connection getConnection() {
 		String SID = "integstaging";
-		String jdbcUrl = "jdbc:oracle:thin:@192.180.3.14:1521:"+SID;
+		String jdbcUrl = "jdbc:oracle:thin:@//192.180.3.14:1521/"+SID;
 		String jdbcUser = "INTERACTIVE";
 		String jdbcPassword = "Int3ract123";
 
